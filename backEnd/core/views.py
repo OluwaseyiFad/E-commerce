@@ -1,9 +1,9 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import (
     CustomTokenObtainPairSerializer, UserProfileSerializer, UserSerializer,
-    CategorySerializer
+    CategorySerializer, ProductSerializer
     )
-from .models import UserProfile, Category
+from .models import UserProfile, Category, Product
 
 from rest_framework import viewsets, permissions
 
@@ -29,6 +29,9 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
     
         

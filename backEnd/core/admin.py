@@ -1,6 +1,6 @@
 from django.contrib import admin
 from core.models import (
-    CustomUser, UserProfile, Category
+    CustomUser, UserProfile, Category, Product
 )
 from import_export.admin  import ImportExportModelAdmin
 
@@ -10,9 +10,13 @@ from import_export.admin  import ImportExportModelAdmin
 class CategoryAdmin(ImportExportModelAdmin):
     pass
 
+class ProductAdmin(ImportExportModelAdmin):
+    pass
+
 
 admin.site.register(CustomUser)
 admin.site.register(UserProfile)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(Product, ProductAdmin)
 
     
