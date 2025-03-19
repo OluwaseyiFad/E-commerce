@@ -1,9 +1,10 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import (
     CustomTokenObtainPairSerializer, UserProfileSerializer, UserSerializer,
-    CategorySerializer, ProductSerializer
+    CategorySerializer, ProductSerializer, CartSerializer, CartItemSerializer,
+    
     )
-from .models import UserProfile, Category, Product
+from .models import UserProfile, Category, Product, Cart, CartItem
 
 from rest_framework import viewsets, permissions
 
@@ -25,6 +26,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         kwargs['partial'] = True
         return super().partial_update(request, *args, **kwargs)
     
+    
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -32,6 +34,23 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    
+class CartViewSet(viewsets.ModelViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+    
+    # def get_queryset(self):
+    #     return self.queryset.filter(user=self.request.user)
+    
+class CartItemViewSet(viewsets.ModelViewSet):
+    queryset = CartItem.objects.all()
+    serializer_class = CartItemSerializer
+    
+    def get_queryset(self):
+        cart = Cart.objects.filter(user=self.request.user).first()
+        if cart:
+            return self.queryset.filter(cart=cart)
+        return CartItem.objects.none()
 
     
         

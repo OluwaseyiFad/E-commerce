@@ -2,7 +2,7 @@ from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import UserProfile, Category, Product
+from .models import UserProfile, Category, Product, Cart, CartItem
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -24,6 +24,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         data['user'] = UserSerializer(self.user).data
         return data
+    
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,5 +38,15 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ['created_at', 'updated_at']
 
+class CartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = "__all__"
+        read_only_fields = ['created_at', 'updated_at']
+        
+class CartItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartItem
+        fields = "__all__"
 
         
