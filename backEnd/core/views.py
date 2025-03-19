@@ -13,7 +13,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
