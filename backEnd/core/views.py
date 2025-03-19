@@ -1,8 +1,9 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import (
-    CustomTokenObtainPairSerializer, UserProfileSerializer, UserSerializer
+    CustomTokenObtainPairSerializer, UserProfileSerializer, UserSerializer,
+    CategorySerializer
     )
-from .models import UserProfile
+from .models import UserProfile, Category
 
 from rest_framework import viewsets, permissions
 
@@ -23,6 +24,11 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return super().partial_update(request, *args, **kwargs)
+    
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    
 
     
         

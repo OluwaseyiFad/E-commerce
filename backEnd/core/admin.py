@@ -1,17 +1,18 @@
 from django.contrib import admin
 from core.models import (
-    CustomUser, UserProfile
+    CustomUser, UserProfile, Category
 )
-# from import_export.admin  import ImportExportModelAdmin
+from import_export.admin  import ImportExportModelAdmin
 
 
 # Register your models here.
 
-# class CategoryAdmin(ImportExportModelAdmin):
-#     pass
+class CategoryAdmin(ImportExportModelAdmin):
+    pass
 
 
 admin.site.register(CustomUser)
 admin.site.register(UserProfile)
+admin.site.register(Category, CategoryAdmin)
 
     

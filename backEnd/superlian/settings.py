@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     
     'rest_framework',
     'djoser',
+    # 'corsheaders',
+    'import_export',
     'core',
 ]
 
