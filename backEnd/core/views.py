@@ -2,9 +2,12 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import (
     CustomTokenObtainPairSerializer, UserProfileSerializer, UserSerializer,
     CategorySerializer, ProductSerializer, CartSerializer, CartItemSerializer,
-    
+    OrderSerializer, OrderItemSerializer
     )
-from .models import UserProfile, Category, Product, Cart, CartItem
+from .models import (
+    UserProfile, Category, Product, Cart, CartItem,
+    Order, OrderItem
+    )
 
 from rest_framework import viewsets, permissions
 
@@ -51,6 +54,14 @@ class CartItemViewSet(viewsets.ModelViewSet):
         if cart:
             return self.queryset.filter(cart=cart)
         return CartItem.objects.none()
+    
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+class OrderItemViewSet(viewsets.ModelViewSet):
+    queryset = OrderItem.objects.all()
+    serializer_class = OrderItemSerializer
 
     
         

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from core.models import (
     CustomUser, UserProfile, Category, Product,
-    Cart, CartItem
+    Cart, CartItem, Order, OrderItem
 )
 from import_export.admin  import ImportExportModelAdmin
 
@@ -23,6 +23,12 @@ class ProductAdmin(ImportExportModelAdmin):
 class CartItemAdmin(ImportExportModelAdmin):
     pass
 
+class OrderAdmin(ImportExportModelAdmin):
+    pass
+
+class OrderItemAdmin(ImportExportModelAdmin):
+    pass
+
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(UserProfile, UserProfileAdmin)
@@ -30,5 +36,6 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Cart)
 admin.site.register(CartItem, CartItemAdmin)
+admin.site.register(Order, OrderAdmin)
+admin.site.register(OrderItem, OrderItemAdmin)
 
-    

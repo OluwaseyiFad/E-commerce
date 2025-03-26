@@ -2,7 +2,7 @@ from rest_framework import routers
 
 from .views import (
     UserProfileViewSet, CategoryViewSet, ProductViewSet, CartViewSet,
-    CartItemViewSet
+    CartItemViewSet, OrderViewSet, OrderItemViewSet
 )
 
 
@@ -15,6 +15,8 @@ routes.register(r'category', CategoryViewSet, basename='category')
 routes.register(r'product', ProductViewSet, basename='product')
 routes.register(r'cart', CartViewSet, basename='cart')
 routes.register(r'cart-item', CartItemViewSet, basename='cart-item')
+routes.register(r'order', OrderViewSet, basename='order')
+routes.register(r'order-item', OrderItemViewSet, basename='order-item')
 
 
 urlpatterns = [

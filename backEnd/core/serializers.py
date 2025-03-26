@@ -2,7 +2,10 @@ from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import UserProfile, Category, Product, Cart, CartItem
+from .models import (
+    UserProfile, Category, Product, Cart, CartItem, Order,
+    OrderItem
+)
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -47,6 +50,16 @@ class CartSerializer(serializers.ModelSerializer):
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
+        fields = "__all__"
+        
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = "__all__"
+        
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
         fields = "__all__"
 
         
