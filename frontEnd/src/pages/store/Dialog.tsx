@@ -20,6 +20,7 @@ type Props = {
 }
 
 const DialogOption: React.FC<Props> = ({open , setOpen}) => {
+  const isAuthenticated = !!localStorage.getItem("access");
     return (
       <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">
       <DialogBackdrop
@@ -114,6 +115,10 @@ const DialogOption: React.FC<Props> = ({open , setOpen}) => {
             ))}
           </div>
 
+          {
+          isAuthenticated ?
+          <div className="space-y-6 border-t border-gray-200 px-4 py-6">Log out</div>
+          :
           <div className="space-y-6 border-t border-gray-200 px-4 py-6">
             <div className="flow-root">
               <Link to="/login" className="-m-2 block p-2 font-medium text-gray-900">Sign in</Link>
@@ -122,6 +127,8 @@ const DialogOption: React.FC<Props> = ({open , setOpen}) => {
               <Link to="/register" className="-m-2 block p-2 font-medium text-gray-900">Create account</Link>
             </div>
           </div>
+    
+}
 
           <div className="border-t border-gray-200 px-4 py-6">
             <a href="#" className="-m-2 flex items-center p-2">

@@ -11,7 +11,7 @@ import PopoverComponent from './PopoverComponent';
 
 const HomePage = () => {
   const [open, setOpen] = useState(false)
-
+  const isAuthenticated = !!localStorage.getItem("access");
   return (
     <div className="bg-white">
       {/* Mobile Menu */}
@@ -50,11 +50,22 @@ const HomePage = () => {
               <PopoverComponent/>
 
               <div className="ml-auto flex items-center">
-                <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+
+                          {
+                          isAuthenticated ?
+                          <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+                  <Link to="/logout" className="text-sm font-medium text-gray-700 hover:text-gray-800">Log out</Link>
+                  <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
+                </div>
+                          :
+                          <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                   <Link to="/login" className="text-sm font-medium text-gray-700 hover:text-gray-800">Sign in</Link>
                   <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
                   <Link to="/register" className="text-sm font-medium text-gray-700 hover:text-gray-800">Create account</Link>
                 </div>
+                    
+                }
+                
 
                 <div className="hidden lg:ml-8 lg:flex">
                   <a href="#" className="flex items-center text-gray-700 hover:text-gray-800">
