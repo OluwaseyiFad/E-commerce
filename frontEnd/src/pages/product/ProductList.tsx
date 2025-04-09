@@ -1,17 +1,23 @@
 import { Link } from "react-router-dom";
-import { useGetProductsQuery } from "../../services/productApi";
+import {
+  useGetProductsQuery,
+  useGetCategoriesQuery,
+} from "../../services/productApi";
 import { useAppDispatch } from "@/utils/hooks";
 import { useEffect } from "react";
-import { setProducts } from "@/store/slices/productSlice";
+import { setProducts, setCategories } from "@/store/slices/productSlice";
+import ProductCard from "./ProductCard";
 
 const ProductList = () => {
   const dispatch = useAppDispatch();
   const { data: products, error, isLoading } = useGetProductsQuery({});
+  const { data: categories } = useGetCategoriesQuery({});
 
   useEffect(() => {
-    // Dispatch action to fetch products from backend
+    // Dispatch action to fetch products and categories from backend
     dispatch(setProducts(products));
-  }, [products, dispatch]); // Runs only when the component mounts
+    dispatch(setCategories(categories));
+  }, [products, categories, dispatch]); // Runs only when the component mounts
 
   if (isLoading) return <div>Loading...</div>;
   if (error) {
@@ -31,22 +37,7 @@ const ProductList = () => {
 
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           {products.map((product) => (
-            <Link
-              key={product.id}
-              to={`/products/${product.id}`}
-              className="group"
-            >
-              <img
-                // src={product.img}
-                src="https://picsum.photos/200/300"
-                alt={product.description}
-                className="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8"
-              />
-              <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
-              <p className="mt-1 text-lg font-medium text-gray-900">
-                {product.price}
-              </p>
-            </Link>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>
