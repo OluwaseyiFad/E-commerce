@@ -1,27 +1,34 @@
-'use client'
-
-import { useState } from 'react'
+import { useState } from "react";
 import { Link } from "react-router";
-import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
-import DialogOption from './Dialog';
-import logo from "../../assets/logo.svg"
-import PopoverComponent from './PopoverComponent';
-
-
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/slices/authSlice";
+import {
+  Bars3Icon,
+  MagnifyingGlassIcon,
+  ShoppingBagIcon,
+} from "@heroicons/react/24/outline";
+import DialogOption from "./Dialog";
+import logo from "../../assets/logo.svg";
+import PopoverComponent from "./PopoverComponent";
 
 const HomePage = () => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const isAuthenticated = !!localStorage.getItem("access");
+  const dispatch = useDispatch();
+
   return (
     <div className="bg-white">
       {/* Mobile Menu */}
-      <DialogOption open={open} setOpen={setOpen}/>
+      <DialogOption open={open} setOpen={setOpen} />
       <header className="relative bg-white">
         <p className="flex h-10 items-center justify-center bg-indigo-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
           Get free delivery on orders over $1000
         </p>
 
-        <nav aria-label="Top" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <nav
+          aria-label="Top"
+          className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+        >
           <div className="border-b border-gray-200">
             <div className="flex h-16 items-center">
               <button
@@ -38,52 +45,54 @@ const HomePage = () => {
               <div className="ml-4 flex lg:ml-0">
                 <a href="#">
                   <span className="sr-only">superLian</span>
-                  <img
-                    alt=""
-                    src={logo}
-                    className="h-8 w-auto"
-                  />
+                  <img alt="" src={logo} className="h-8 w-auto" />
                 </a>
               </div>
 
               {/* Flyout menus */}
-              <PopoverComponent/>
+              <PopoverComponent />
 
               <div className="ml-auto flex items-center">
-
-                          {
-                          isAuthenticated ?
-                          <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  <Link to="/logout" className="text-sm font-medium text-gray-700 hover:text-gray-800">Log out</Link>
-                  <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
-                </div>
-                          :
-                          <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  <Link to="/login" className="text-sm font-medium text-gray-700 hover:text-gray-800">Sign in</Link>
-                  <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
-                  <Link to="/register" className="text-sm font-medium text-gray-700 hover:text-gray-800">Create account</Link>
-                </div>
-                    
-                }
-                
-
-                <div className="hidden lg:ml-8 lg:flex">
-                  <a href="#" className="flex items-center text-gray-700 hover:text-gray-800">
-                    <img
-                      alt=""
-                      src="https://tailwindcss.com/plus-assets/img/flags/flag-canada.svg"
-                      className="block h-auto w-5 shrink-0"
-                    />
-                    <span className="ml-3 block text-sm font-medium">USD</span>
-                    <span className="sr-only">, change currency</span>
-                  </a>
-                </div>
+                {isAuthenticated ? (
+                  <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+                    <Link
+                      to="/login"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        dispatch(logout());
+                      }}
+                      className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                    >
+                      Log out
+                    </Link>
+                    <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
+                  </div>
+                ) : (
+                  <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+                    <Link
+                      to="/login"
+                      className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                    >
+                      Sign in
+                    </Link>
+                    <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
+                    <Link
+                      to="/register"
+                      className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                    >
+                      Create account
+                    </Link>
+                  </div>
+                )}
 
                 {/* Search */}
                 <div className="flex lg:ml-6">
                   <a href="#" className="p-2 text-gray-400 hover:text-gray-500">
                     <span className="sr-only">Search</span>
-                    <MagnifyingGlassIcon aria-hidden="true" className="size-6" />
+                    <MagnifyingGlassIcon
+                      aria-hidden="true"
+                      className="size-6"
+                    />
                   </a>
                 </div>
 
@@ -94,7 +103,9 @@ const HomePage = () => {
                       aria-hidden="true"
                       className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
                     />
-                    <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
+                    <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+                      0
+                    </span>
                     <span className="sr-only">items in cart, view bag</span>
                   </a>
                 </div>
@@ -104,8 +115,7 @@ const HomePage = () => {
         </nav>
       </header>
     </div>
-  )
-}
-
+  );
+};
 
 export default HomePage;

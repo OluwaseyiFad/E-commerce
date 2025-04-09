@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
+import { useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -12,71 +12,80 @@ import {
   MenuButton,
   MenuItem,
   MenuItems,
-} from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
+} from "@headlessui/react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  ChevronDownIcon,
+  FunnelIcon,
+  MinusIcon,
+  PlusIcon,
+  Squares2X2Icon,
+} from "@heroicons/react/20/solid";
 
 const sortOptions = [
-  { name: 'Most Popular', href: '#', current: true },
-  { name: 'Best Rating', href: '#', current: false },
-  { name: 'Newest', href: '#', current: false },
-  { name: 'Price: Low to High', href: '#', current: false },
-  { name: 'Price: High to Low', href: '#', current: false },
-]
+  { name: "Most Popular", href: "#", current: true },
+  { name: "Best Rating", href: "#", current: false },
+  { name: "Newest", href: "#", current: false },
+  { name: "Price: Low to High", href: "#", current: false },
+  { name: "Price: High to Low", href: "#", current: false },
+];
 const subCategories = [
-  { name: 'Android', href: '#' },
-  { name: 'Iphones', href: '#' },
-  { name: 'Tablets', href: '#' },
-  { name: 'Ipads', href: '#' },
-  { name: 'Audio Devices & Wearables', href: '#' },
-]
+  { name: "Android", href: "#" },
+  { name: "Iphones", href: "#" },
+  { name: "Tablets", href: "#" },
+  { name: "Ipads", href: "#" },
+  { name: "Audio Devices & Wearables", href: "#" },
+];
 const filters = [
   {
-    id: 'color',
-    name: 'Color',
+    id: "color",
+    name: "Color",
     options: [
-      { value: 'black', label: 'Black', checked: true },
-      { value: 'white', label: 'White', checked: false },
-      { value: 'blue', label: 'Blue', checked: false },
-      { value: 'red', label: 'Red', checked: false },
-      { value: 'green', label: 'Green', checked: false },
+      { value: "black", label: "Black", checked: true },
+      { value: "white", label: "White", checked: false },
+      { value: "blue", label: "Blue", checked: false },
+      { value: "red", label: "Red", checked: false },
+      { value: "green", label: "Green", checked: false },
     ],
-  },  
+  },
   {
-    id: 'type',
-    name: 'Type',
+    id: "type",
+    name: "Type",
     options: [
-      { value: 'phone', label: 'Phone', checked: true },
-      { value: 'ipad', label: 'iPad', checked: false },
-      { value: 'tablet', label: 'Tablet', checked: false },
-      { value: 'accessory', label: 'Accessories', checked: false },
+      { value: "phone", label: "Phone", checked: true },
+      { value: "ipad", label: "iPad", checked: false },
+      { value: "tablet", label: "Tablet", checked: false },
+      { value: "accessory", label: "Accessories", checked: false },
     ],
-  },  
+  },
   {
-    id: 'storage',
-    name: 'Storage',
+    id: "storage",
+    name: "Storage",
     options: [
-      { value: '64gb', label: '64GB', checked: false },
-      { value: '128gb', label: '128GB', checked: true },
-      { value: '256gb', label: '256GB', checked: false },
-      { value: '512gb', label: '512GB', checked: false },
+      { value: "64gb", label: "64GB", checked: false },
+      { value: "128gb", label: "128GB", checked: true },
+      { value: "256gb", label: "256GB", checked: false },
+      { value: "512gb", label: "512GB", checked: false },
     ],
-  }
-  
-]
+  },
+];
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Example() {
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   return (
     <div className="bg-white">
       <div>
         {/* Mobile filter dialog */}
-        <Dialog open={mobileFiltersOpen} onClose={setMobileFiltersOpen} className="relative z-40 lg:hidden">
+        <Dialog
+          open={mobileFiltersOpen}
+          onClose={setMobileFiltersOpen}
+          className="relative z-40 lg:hidden"
+        >
           <DialogBackdrop
             transition
             className="fixed inset-0 bg-black/25 transition-opacity duration-300 ease-linear data-closed:opacity-0"
@@ -113,13 +122,25 @@ export default function Example() {
                 </ul>
 
                 {filters.map((section) => (
-                  <Disclosure key={section.id} as="div" className="border-t border-gray-200 px-4 py-6">
+                  <Disclosure
+                    key={section.id}
+                    as="div"
+                    className="border-t border-gray-200 px-4 py-6"
+                  >
                     <h3 className="-mx-2 -my-3 flow-root">
                       <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                        <span className="font-medium text-gray-900">{section.name}</span>
+                        <span className="font-medium text-gray-900">
+                          {section.name}
+                        </span>
                         <span className="ml-6 flex items-center">
-                          <PlusIcon aria-hidden="true" className="size-5 group-data-open:hidden" />
-                          <MinusIcon aria-hidden="true" className="size-5 group-not-data-open:hidden" />
+                          <PlusIcon
+                            aria-hidden="true"
+                            className="size-5 group-data-open:hidden"
+                          />
+                          <MinusIcon
+                            aria-hidden="true"
+                            className="size-5 group-not-data-open:hidden"
+                          />
                         </span>
                       </DisclosureButton>
                     </h3>
@@ -177,7 +198,9 @@ export default function Example() {
 
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-baseline justify-between border-b border-gray-200 pt-24 pb-6">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900">Latest Products</h1>
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+              Latest Products
+            </h1>
 
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
@@ -193,7 +216,7 @@ export default function Example() {
 
                 <MenuItems
                   transition
-                  className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white ring-1 shadow-2xl ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+                  className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
                 >
                   <div className="py-1">
                     {sortOptions.map((option) => (
@@ -201,8 +224,10 @@ export default function Example() {
                         <a
                           href={option.href}
                           className={classNames(
-                            option.current ? 'font-medium text-gray-900' : 'text-gray-500',
-                            'block px-4 py-2 text-sm data-focus:bg-gray-100 data-focus:outline-hidden',
+                            option.current
+                              ? "font-medium text-gray-900"
+                              : "text-gray-500",
+                            "block px-4 py-2 text-sm data-focus:bg-gray-100 data-focus:outline-hidden",
                           )}
                         >
                           {option.name}
@@ -213,7 +238,10 @@ export default function Example() {
                 </MenuItems>
               </Menu>
 
-              <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
+              <button
+                type="button"
+                className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
+              >
                 <span className="sr-only">View grid</span>
                 <Squares2X2Icon aria-hidden="true" className="size-5" />
               </button>
@@ -237,7 +265,10 @@ export default function Example() {
               {/* Filters */}
               <form className="hidden lg:block">
                 <h3 className="sr-only">Categories</h3>
-                <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
+                <ul
+                  role="list"
+                  className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900"
+                >
                   {subCategories.map((category) => (
                     <li key={category.name}>
                       <a href={category.href}>{category.name}</a>
@@ -246,13 +277,25 @@ export default function Example() {
                 </ul>
 
                 {filters.map((section) => (
-                  <Disclosure key={section.id} as="div" className="border-b border-gray-200 py-6">
+                  <Disclosure
+                    key={section.id}
+                    as="div"
+                    className="border-b border-gray-200 py-6"
+                  >
                     <h3 className="-my-3 flow-root">
                       <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                        <span className="font-medium text-gray-900">{section.name}</span>
+                        <span className="font-medium text-gray-900">
+                          {section.name}
+                        </span>
                         <span className="ml-6 flex items-center">
-                          <PlusIcon aria-hidden="true" className="size-5 group-data-open:hidden" />
-                          <MinusIcon aria-hidden="true" className="size-5 group-not-data-open:hidden" />
+                          <PlusIcon
+                            aria-hidden="true"
+                            className="size-5 group-data-open:hidden"
+                          />
+                          <MinusIcon
+                            aria-hidden="true"
+                            className="size-5 group-not-data-open:hidden"
+                          />
                         </span>
                       </DisclosureButton>
                     </h3>
@@ -292,7 +335,10 @@ export default function Example() {
                                 </svg>
                               </div>
                             </div>
-                            <label htmlFor={`filter-${section.id}-${optionIdx}`} className="text-sm text-gray-600">
+                            <label
+                              htmlFor={`filter-${section.id}-${optionIdx}`}
+                              className="text-sm text-gray-600"
+                            >
                               {option.label}
                             </label>
                           </div>
@@ -310,5 +356,5 @@ export default function Example() {
         </main>
       </div>
     </div>
-  )
+  );
 }

@@ -1,0 +1,80 @@
+[
+    {
+      "user": 1,
+      "shipping_address": "123 Main St, City A",
+      "total_price": 150.75,
+      "status": "Pending",
+      "placed_at": "2025-03-26 10:00:00"
+    },
+    {
+      "user": 2,
+      "shipping_address": "456 Oak Ave, City B",
+      "total_price": 299.99,
+      "status": "Shipped",
+      "placed_at": "2025-03-26 11:00:00"
+    },
+    {
+      "user": 3,
+      "shipping_address": "789 Pine Rd, City C",
+      "total_price": 89.50,
+      "status": "Delivered",
+      "placed_at": "2025-03-26 12:00:00"
+    },
+    {
+      "user": 4,
+      "shipping_address": "101 Maple St, City D",
+      "total_price": 450.00,
+      "status": "Pending",
+      "placed_at": "2025-03-26 13:00:00"
+    },
+    {
+      "user": 5,
+      "shipping_address": "202 Birch Blvd, City E",
+      "total_price": 199.99,
+      "status": "Cancelled",
+      "placed_at": "2025-03-26 14:00:00"
+    },
+    {
+      "user": 6,
+      "shipping_address": "303 Cedar Ave, City F",
+      "total_price": 75.25,
+      "status": "Pending",
+      "placed_at": "2025-03-26 15:00:00"
+    },
+    {
+      "user": 7,
+      "shipping_address": "404 Walnut St, City G",
+      "total_price": 329.99,
+      "status": "Delivered",
+      "placed_at": "2025-03-26 16:00:00"
+    },
+    {
+      "user": 8,
+      "shipping_address": "505 Spruce Dr, City H",
+      "total_price": 120.00,
+      "status": "Shipped",
+      "placed_at": "2025-03-26 17:00:00"
+    },
+    {
+      "user": 9,
+      "shipping_address": "606 Ash St, City I",
+      "total_price": 250.50,
+      "status": "Pending",
+      "placed_at": "2025-03-26 18:00:00"
+    },
+    {
+      "user": 10,
+      "shipping_address": "707 Elm Ave, City J",
+      "total_price": 99.99,
+      "status": "Shipped",
+      "placed_at": "2025-03-26 19:00:00"
+    },
+    {
+      "user": 11,
+      "shipping_address": "808 Chestnut Blvd, City K",
+      "total_price": 499.99,
+      "status": "Delivered",
+      "placed_at": "2025-03-26 20:00:00"
+    }
+  ]
+  

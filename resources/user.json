@@ -1,0 +1,62 @@
+[
+    {
+        "username": "john_doe",
+        "email": "john.doe@example.com",
+        "is_active": true,
+        "is_staff": false
+    },
+    {
+        "username": "jane_smith",
+        "email": "jane.smith@example.com",
+        "is_active": true,
+        "is_staff": false
+    },
+    {
+        "username": "michael_brown",
+        "email": "michael.brown@example.com",
+        "is_active": true,
+        "is_staff": false
+    },
+    {
+        "username": "emily_davis",
+        "email": "emily.davis@example.com",
+        "is_active": true,
+        "is_staff": false
+    },
+    {
+        "username": "william_miller",
+        "email": "william.miller@example.com",
+        "is_active": true,
+        "is_staff": false
+    },
+    {
+        "username": "sophia_garcia",
+        "email": "sophia.garcia@example.com",
+        "is_active": true,
+        "is_staff": false
+    },
+    {
+        "username": "daniel_wilson",
+        "email": "daniel.wilson@example.com",
+        "is_active": true,
+        "is_staff": false
+    },
+    {
+        "username": "olivia_moore",
+        "email": "olivia.moore@example.com",
+        "is_active": true,
+        "is_staff": false
+    },
+    {
+        "username": "james_taylor",
+        "email": "james.taylor@example.com",
+        "is_active": true,
+        "is_staff": false
+    },
+    {
+        "username": "isabella_anderson",
+        "email": "isabella.anderson@example.com",
+        "is_active": true,
+        "is_staff": false
+    }
+]

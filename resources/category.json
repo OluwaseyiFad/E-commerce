@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Apple",
+        "description": "The latest and most popular iPhones and accessories.",
+        "image": "category_images/apple.png"
+    },
+    {
+        "name": "Samsung",
+        "description": "Samsung Galaxy phones, tablets, and accessories.",
+        "image": "category_images/samsung.png"
+    },
+    {
+        "name": "Budget Phones",
+        "description": "Affordable smartphones with great features for everyday use.",
+        "image": "category_images/budget_phones.png"
+    },
+    {
+        "name": "Flagship Phones",
+        "description": "High-end smartphones with the latest technology and features.",
+        "image": "category_images/flagship_phones.png"
+    },
+    {
+        "name": "Accessories",
+        "description": "Phone cases, chargers, screen protectors, and other accessories.",
+        "image": "category_images/accessories.png"
+    },
+    {
+        "name": "Tablets",
+        "description": "High-quality tablets for work and entertainment.",
+        "image": "category_images/tablets.png"
+    },
+    {
+        "name": "Wearables",
+        "description": "Smartwatches and fitness trackers to keep you connected and healthy.",
+        "image": "category_images/wearables.png"
+    },
+    {
+        "name": "Gaming Phones",
+        "description": "Phones designed specifically for gaming enthusiasts.",
+        "image": "category_images/gaming_phones.png"
+    }
+]
