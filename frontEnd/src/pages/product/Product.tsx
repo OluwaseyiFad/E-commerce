@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { StarIcon } from "@heroicons/react/20/solid";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "@/utils/hooks";
@@ -8,6 +7,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+// Add feature list to products that covers warranty, battery Life, display, camera, Condition etc
 const Product = () => {
   const { id } = useParams(); // Get product id from the URL
   const productId = id ? parseInt(id, 10) : null;

@@ -33,7 +33,7 @@ const ProductList = () => {
           {products.map((product) => (
             <Link
               key={product.id}
-              to={`/product/${product.id}`}
+              to={`/products/${product.id}`}
               className="group"
             >
               <img

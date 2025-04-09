@@ -3,12 +3,10 @@ import { Routes, Route } from "react-router";
 import "./App.css";
 import Product from "./pages/product/Product";
 import ProductList from "./pages/product/ProductList";
-import ProductFeature from "./pages/product/ProductFeature";
-import ProductQuickview from "./pages/product/ProductQuickview";
 import ShoppingCart from "./pages/order/ShoppingCart";
 
 import CategoryFilter from "./pages/category/CategoryFilter";
-import HomePage from "./pages/store/HomePage";
+import HomePage from "./pages/home/HomePage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
@@ -17,11 +15,9 @@ function App() {
     <>
       <Routes>
         <Route index element={<HomePage />} />
-        <Route path="product">
+        <Route path="products">
           <Route index element={<ProductList />} />
-          <Route path="/product/:id" element={<Product />} />
-          <Route path="feature" element={<ProductFeature />} />
-          <Route path="quickview" element={<ProductQuickview />} />
+          <Route path="/products/:id" element={<Product />} />
         </Route>
         {/* <Route element={<AuthLayout />}></Route> */}
         <Route path="login" element={<Login />} />
