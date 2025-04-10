@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { useParams } from "react-router-dom";
-import { useAppSelector } from "@/utils/hooks";
+import { useAppSelector, useAppDispatch } from "@/utils/hooks";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -12,7 +12,7 @@ const Product = () => {
   const { id } = useParams(); // Get product id from the URL
   const productId = id ? parseInt(id, 10) : null;
 
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const products = useAppSelector((state) => state.products.products); // Get products from the Redux store
   console.log("products:", products);
   console.log(`id: ${productId}`);

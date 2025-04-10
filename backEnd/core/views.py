@@ -1,4 +1,5 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.response import Response
 from .serializers import (
     CustomTokenObtainPairSerializer, UserProfileSerializer, UserSerializer,
     CategorySerializer, ProductSerializer, CartSerializer, CartItemSerializer,
@@ -10,6 +11,7 @@ from .models import (
     )
 
 from rest_framework import viewsets, permissions
+from rest_framework.decorators import action
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -17,17 +19,19 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    # permission_classes = [permissions.IsAuthenticated]
-    
+    permission_classes = [permissions.IsAuthenticated]
+
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
-    
+        user = self.request.user
+        if user.is_authenticated:
+            return self.queryset.filter(user=user)
+        return self.queryset.none()  
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user) 
-        
+        serializer.save(user=self.request.user)
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return super().partial_update(request, *args, **kwargs)
+
     
     
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -37,23 +41,60 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAuthenticated]
     
 class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
-    
-    # def get_queryset(self):
-    #     return self.queryset.filter(user=self.request.user)
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Get the cart for the authenticated user
+        cart = Cart.objects.filter(user=self.request.user).first()
+
+        if not cart:
+            return Cart.objects.none()
+        
+        return [cart]  # Return the cart object in a list
+
+    def list(self, request, *args, **kwargs):
+        # Get the cart for the authenticated user
+        cart = Cart.objects.filter(user=request.user).first()
+
+        if not cart:
+            return Response({"detail": "No cart found for this user"}, status=404)
+
+        # Serialize the cart using the CartSerializer
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)
+
     
 class CartItemViewSet(viewsets.ModelViewSet):
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def partial_update(self, request, *args, **kwargs):
+        cart_item = self.get_object()
+        action_type = request.data.get("action")  # 'increment' or 'decrement'
+
+        if action_type == "increment":
+            cart_item.quantity += 1
+            cart_item.save()
+        elif action_type == "decrement":
+            cart_item.quantity -= 1
+            if cart_item.quantity <= 0:
+                cart_item.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            cart_item.save()
+        else:
+            return Response({"detail": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(cart_item)
+        return Response(serializer.data)
     
-    def get_queryset(self):
-        cart = Cart.objects.filter(user=self.request.user).first()
-        if cart:
-            return self.queryset.filter(cart=cart)
-        return CartItem.objects.none()
+    
+
     
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()

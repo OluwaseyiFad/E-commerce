@@ -34,6 +34,32 @@ export const productApi = baseApi.injectEndpoints({
         headers: getHeaderAuthorization(),
       }),
     }),
+    getCartItemsByUser: builder.query({
+      query: () => ({
+        url: "/api/cart/",
+        method: "GET",
+        headers: getHeaderAuthorization(),
+      }),
+      providesTags: ["Cart"],
+    }),
+    addToCart: builder.mutation({
+      query: (newItem) => ({
+        url: "/api/cart/",
+        method: "POST",
+        body: newItem,
+      }),
+      // triggers refetch of cart
+      invalidatesTags: ["Cart"],
+    }),
+    updateCartItem: builder.mutation({
+      query: ({ id, action }) => ({
+        url: `/api/cart-item/${id}/`,
+        method: "PATCH",
+        body: { action },
+        headers: getHeaderAuthorization(),
+      }),
+      invalidatesTags: ["Cart"],
+    }),
   }),
 });
 
@@ -42,4 +68,7 @@ export const {
   useGetCategoryByIdQuery,
   useGetProductsQuery,
   useGetProductByIdQuery,
+  useGetCartItemsByUserQuery,
+  useAddToCartMutation,
+  useUpdateCartItemMutation,
 } = productApi;

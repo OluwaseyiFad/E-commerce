@@ -1,4 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAppDispatch } from "@/utils/hooks";
+import { setCart } from "@/store/slices/productSlice";
+import {
+  useGetCartItemsByUserQuery,
+  useUpdateCartItemMutation,
+} from "@/services/productApi";
 import {
   Dialog,
   DialogBackdrop,
@@ -7,34 +13,36 @@ import {
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-const products = [
-  {
-    id: 1,
-    name: "Iphone 11",
-    href: "#",
-    color: "Black",
-    price: "$900.00",
-    quantity: 1,
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/shopping-cart-page-04-product-01.jpg",
-    imageAlt: "Iphoen 11 black, 250gb.",
-  },
-  {
-    id: 2,
-    name: "Google Pixel 2020",
-    href: "#",
-    color: "Blue",
-    price: "$350.00",
-    quantity: 1,
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/shopping-cart-page-04-product-02.jpg",
-    imageAlt: "Google pixel phone with 3 cameras, blue.",
-  },
-  // More products...
-];
-
-export default function Example() {
+const ShoppingCart = () => {
   const [open, setOpen] = useState(true);
+  const [updateCartItem] = useUpdateCartItemMutation();
+  const { data: cart, error, isLoading } = useGetCartItemsByUserQuery({});
+  const [cartItems, setCartItems] = useState([]);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    console.log("cart ", cart);
+
+    if (cart) {
+      // Set cart in Redux store
+      dispatch(setCart(cart));
+      // Set cart items in local state
+      setCartItems(cart.items);
+    }
+  }, [cart, dispatch]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) {
+    console.error("Error fetching product:", error);
+    return <div>Error fetching cart items</div>;
+  }
+
+  const modifyQuantity = (itemId: number, action: string) => {
+    console.log("itemId", itemId);
+    console.log("action", action);
+    // Call the updateCartItem mutation with the item ID and action
+    updateCartItem({ id: itemId, action: action });
+  };
 
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-10">
@@ -75,12 +83,12 @@ export default function Example() {
                         role="list"
                         className="-my-6 divide-y divide-gray-200"
                       >
-                        {products.map((product) => (
-                          <li key={product.id} className="flex py-6">
+                        {cartItems.map((item) => (
+                          <li key={item.id} className="flex py-6">
                             <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
                               <img
-                                alt={product.imageAlt}
-                                src={product.imageSrc}
+                                alt={item.name}
+                                src="https://picsum.photos/200/300"
                                 className="size-full object-cover"
                               />
                             </div>
@@ -89,17 +97,36 @@ export default function Example() {
                               <div>
                                 <div className="flex justify-between text-base font-medium text-gray-900">
                                   <h3>
-                                    <a href={product.href}>{product.name}</a>
+                                    <a href="">{item.product_name}</a>
                                   </h3>
-                                  <p className="ml-4">{product.price}</p>
+                                  <p className="ml-4">{item.total_price}</p>
                                 </div>
-                                <p className="mt-1 text-sm text-gray-500">
-                                  {product.color}
+                                <p className="mt-1 mr-4 text-sm text-gray-500">
+                                  {item.color}
                                 </p>
+                                {/* Add button to add or subtract quantity */}
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    onClick={() =>
+                                      modifyQuantity(item.id, "increment")
+                                    }
+                                    className="mt-1 text-2xl text-green-500"
+                                  >
+                                    +
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      modifyQuantity(item.id, "decrement")
+                                    }
+                                    className="mt-1 text-2xl text-red-500"
+                                  >
+                                    -
+                                  </button>
+                                </div>
                               </div>
                               <div className="flex flex-1 items-end justify-between text-sm">
                                 <p className="text-gray-500">
-                                  Qty {product.quantity}
+                                  Qty {item.quantity}
                                 </p>
 
                                 <div className="flex">
@@ -122,7 +149,7 @@ export default function Example() {
                 <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                   <div className="flex justify-between text-base font-medium text-gray-900">
                     <p>Subtotal</p>
-                    <p>$960.00</p>
+                    <p>{cart.total_price}</p>
                   </div>
                   <p className="mt-0.5 text-sm text-gray-500">
                     Shipping and taxes calculated at checkout.
@@ -156,4 +183,6 @@ export default function Example() {
       </div>
     </Dialog>
   );
-}
+};
+
+export default ShoppingCart;

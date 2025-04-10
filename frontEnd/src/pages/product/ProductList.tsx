@@ -22,11 +22,7 @@ const ProductList = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) {
     console.error("Error fetching product:", error);
-    if (typeof error === "string") {
-      return <div>Error: {error}</div>;
-    } else if (error instanceof Error) {
-      return <div>Error: {error.message}</div>;
-    }
+    return <div>Error fetching cart items</div>;
   }
 
   // console.log(`products: ${products}`)

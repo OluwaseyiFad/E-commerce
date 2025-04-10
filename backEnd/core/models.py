@@ -103,15 +103,29 @@ class Cart(models.Model):
     
     def __str__(self):
         return f"{self.user.username}'s cart"
+    
+    # Get all cart items related to the user through the cart
+    def get_items(self):
+        return self.items.all()
+
+    # Get the total price of the cart
+    def get_total_price(self):
+        return sum(item.get_total_price() for item in self.get_items())
 
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+    color = models.CharField(max_length=50, blank=True, null=True)
+    size = models.CharField(max_length=50, blank=True, null=True)
     
     def __str__(self):
         return f"{self.cart.user.username}'s cartitem ({self.quantity} {self.product.name})"
+    
+    # Get the total price of cart items
+    def get_total_price(self):
+        return self.quantity * self.product.price
 
 
 class Order(models.Model):

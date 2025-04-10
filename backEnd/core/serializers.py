@@ -41,16 +41,35 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ['created_at', 'updated_at']
 
-class CartSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Cart
-        fields = "__all__"
-        read_only_fields = ['created_at', 'updated_at']
         
 class CartItemSerializer(serializers.ModelSerializer):
+    # Use a SerializerMethodField to get the product name
+    product_name = serializers.CharField(source='product.name', read_only=True)
+    # Use a SerializerMethodField to get the product price
+    total_price = serializers.SerializerMethodField()
+    
+    
     class Meta:
         model = CartItem
-        fields = "__all__"
+        fields = ['id', 'product_name', 'quantity', 'total_price', 'color', 'size']
+        read_only_fields = ['id', 'product_name', 'quantity', 'color', 'size']
+        
+    def get_total_price(self, obj):
+        return obj.get_total_price()
+        
+class CartSerializer(serializers.ModelSerializer):
+    # Serialize the related CartItems
+    items = CartItemSerializer(many=True, read_only=True)
+    total_price = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Cart
+        fields = ['id', 'user', 'created_at', 'updated_at', 'items', 'total_price']
+        read_only_fields = ['created_at', 'updated_at']
+
+    def get_total_price(self, obj):
+        return obj.get_total_price()
+
         
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
