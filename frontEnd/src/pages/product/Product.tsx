@@ -8,6 +8,14 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+const colorClassMap = {
+  Black: { class: "bg-black", selectedClass: "ring-black" },
+  White: { class: "bg-white", selectedClass: "ring-gray-300" },
+  Silver: { class: "bg-gray-300", selectedClass: "ring-gray-400" },
+  Gold: { class: "bg-yellow-500", selectedClass: "ring-yellow-600" },
+  Blue: { class: "bg-blue-500", selectedClass: "ring-blue-600" },
+};
+
 // Add feature list to products that covers warranty, battery Life, display, camera, Condition etc
 const Product = () => {
   const [createCartItem] = useCreateCartItemMutation(); // Hook to create a cart item
@@ -20,24 +28,31 @@ const Product = () => {
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
 
+  const transformedColors = product.colors.map(({ color, in_stock }) => ({
+    name: color,
+    in_stock,
+    ...(colorClassMap[color] || {
+      class: "bg-gray-200",
+      selectedClass: "ring-gray-400",
+    }),
+  }));
+
   const createCartItemHandler = async () => {
     console.log("Creating cart item with productId:", productId);
     console.log("Selected color:", selectedColor);
     console.log("Selected size:", selectedSize);
-    if (product) {
-      const cartItem = {
-        productId: productId,
-        color: selectedColor,
-        size: selectedSize,
-      };
-      try {
-        const response = await createCartItem(cartItem).unwrap();
-        console.log("Cart item created successfully:", response);
-      } catch (error) {
-        console.error("Error creating cart item:", error);
-      }
-    } else {
-      console.error("Product not found");
+
+    const cartItem = {
+      productId: productId,
+      color: selectedColor,
+      size: selectedSize,
+    };
+
+    try {
+      const response = await createCartItem(cartItem).unwrap();
+      console.log("Cart item created successfully:", response);
+    } catch (error) {
+      console.error("Error creating cart item:", error);
     }
   };
 
@@ -119,96 +134,109 @@ const Product = () => {
 
             <form className="mt-10">
               {/* Colors */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-900">Color</h3>
+              {[
+                "Gaming Phones",
+                "Flagship Phones",
+                "Budget Phones",
+                "Tablets",
+              ].includes(product.category) && (
+                <>
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-900">Color</h3>
 
-                <fieldset aria-label="Choose a color" className="mt-4">
-                  <RadioGroup
-                    value={selectedColor}
-                    onChange={setSelectedColor}
-                    className="flex items-center gap-x-3"
-                  >
-                    {product.colors.map((color) => (
-                      <Radio
-                        key={color.name}
-                        value={color}
-                        aria-label={color.name}
-                        className={classNames(
-                          color.selectedClass,
-                          "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-hidden data-checked:ring-2 data-focus:data-checked:ring-3 data-focus:data-checked:ring-offset-1",
-                        )}
+                    <fieldset aria-label="Choose a color" className="mt-4">
+                      <RadioGroup
+                        value={selectedColor}
+                        onChange={setSelectedColor}
+                        className="flex items-center gap-x-3"
                       >
-                        <span
-                          aria-hidden="true"
-                          className={classNames(
-                            color.class,
-                            "size-8 rounded-full border border-black/10",
-                          )}
-                        />
-                      </Radio>
-                    ))}
-                  </RadioGroup>
-                </fieldset>
-              </div>
-
-              {/* Sizes */}
-              <div className="mt-10">
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">
-                    Storage sizes
-                  </h3>
-                </div>
-
-                <fieldset aria-label="Choose a size" className="mt-4">
-                  <RadioGroup
-                    value={selectedSize}
-                    onChange={setSelectedSize}
-                    className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4"
-                  >
-                    {product.storage.map((size) => (
-                      <Radio
-                        key={size.name}
-                        value={size}
-                        disabled={!size.inStock}
-                        className={classNames(
-                          size.inStock
-                            ? "cursor-pointer bg-white text-gray-900 shadow-xs"
-                            : "cursor-not-allowed bg-gray-50 text-gray-200",
-                          "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-hidden data-focus:ring-2 data-focus:ring-indigo-500 sm:flex-1 sm:py-6",
-                        )}
-                      >
-                        <span>{size.name}</span>
-                        {size.inStock ? (
-                          <span
-                            aria-hidden="true"
-                            className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent group-data-checked:border-indigo-500 group-data-focus:border"
-                          />
-                        ) : (
-                          <span
-                            aria-hidden="true"
-                            className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
+                        {transformedColors.map((color) => (
+                          <Radio
+                            key={color.name}
+                            value={color.name}
+                            disabled={!color.in_stock}
+                            aria-label={color.name}
+                            className={classNames(
+                              color.selectedClass,
+                              color.in_stock
+                                ? ""
+                                : "cursor-not-allowed opacity-30",
+                              "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-hidden data-checked:ring-2 data-focus:data-checked:ring-3 data-focus:data-checked:ring-offset-1",
+                            )}
                           >
-                            <svg
-                              stroke="currentColor"
-                              viewBox="0 0 100 100"
-                              preserveAspectRatio="none"
-                              className="absolute inset-0 size-full stroke-2 text-gray-200"
-                            >
-                              <line
-                                x1={0}
-                                x2={100}
-                                y1={100}
-                                y2={0}
-                                vectorEffect="non-scaling-stroke"
+                            <span
+                              aria-hidden="true"
+                              className={classNames(
+                                color.class,
+                                "size-8 rounded-full border border-black/10",
+                              )}
+                            />
+                          </Radio>
+                        ))}
+                      </RadioGroup>
+                    </fieldset>
+                  </div>
+
+                  {/* Sizes */}
+                  <div className="mt-10">
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900">
+                        Storage sizes
+                      </h3>
+                    </div>
+
+                    <fieldset aria-label="Choose a size" className="mt-4">
+                      <RadioGroup
+                        value={selectedSize}
+                        onChange={setSelectedSize}
+                        className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4"
+                      >
+                        {product.storage.map((size) => (
+                          <Radio
+                            key={size.size}
+                            value={size.size}
+                            disabled={!size.in_stock}
+                            className={classNames(
+                              size.in_stock
+                                ? "cursor-pointer bg-white text-gray-900 shadow-xs"
+                                : "cursor-not-allowed bg-gray-50 text-gray-200",
+                              "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-hidden data-focus:ring-2 data-focus:ring-indigo-500 sm:flex-1 sm:py-6",
+                            )}
+                          >
+                            <span>{size.size}</span>
+                            {size.in_stock ? (
+                              <span
+                                aria-hidden="true"
+                                className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent group-data-checked:border-indigo-500 group-data-focus:border"
                               />
-                            </svg>
-                          </span>
-                        )}
-                      </Radio>
-                    ))}
-                  </RadioGroup>
-                </fieldset>
-              </div>
+                            ) : (
+                              <span
+                                aria-hidden="true"
+                                className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
+                              >
+                                <svg
+                                  stroke="currentColor"
+                                  viewBox="0 0 100 100"
+                                  preserveAspectRatio="none"
+                                  className="absolute inset-0 size-full stroke-2 text-gray-200"
+                                >
+                                  <line
+                                    x1={0}
+                                    x2={100}
+                                    y1={100}
+                                    y2={0}
+                                    vectorEffect="non-scaling-stroke"
+                                  />
+                                </svg>
+                              </span>
+                            )}
+                          </Radio>
+                        ))}
+                      </RadioGroup>
+                    </fieldset>
+                  </div>
+                </>
+              )}
 
               <button
                 type="submit"
@@ -216,7 +244,16 @@ const Product = () => {
                   e.preventDefault();
                   createCartItemHandler();
                 }}
-                disabled={!selectedColor || !selectedSize}
+                disabled={
+                  (!selectedColor || !selectedSize) &&
+                  product.category in
+                    [
+                      "Gaming Phones",
+                      "Flagship Phones",
+                      "Budget Phones",
+                      "Tablets",
+                    ]
+                }
                 className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
               >
                 Add to bag

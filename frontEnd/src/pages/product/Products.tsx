@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useAppDispatch } from "@/utils/hooks";
 import {
   Disclosure,
   DisclosureButton,
@@ -13,7 +14,11 @@ import {
   MinusIcon,
   PlusIcon,
 } from "@heroicons/react/20/solid";
-import { useAppSelector } from "@/utils/hooks";
+import { setProducts, setCategories } from "@/store/slices/productSlice";
+import {
+  useGetProductsQuery,
+  useGetCategoriesQuery,
+} from "../../services/productApi";
 import ProductCard from "./ProductCard";
 
 const sortOptions = [
@@ -28,15 +33,45 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-const ProductsFilter = () => {
-  const categories = useAppSelector((state) => state.products.categories); // Get categories from the Redux store
-  const products = useAppSelector((state) => state.products.products); // Get products from the Redux store
+const filters = [
+  {
+    id: "color",
+    name: "Color",
+    options: [
+      { value: "black", label: "Black", checked: true },
+      { value: "white", label: "White", checked: false },
+      { value: "gray", label: "Gray", checked: false },
+      { value: "red", label: "Red", checked: false },
+      { value: "blue", label: "Blue", checked: false },
+    ],
+  },
+  {
+    id: "storage",
+    name: "Storage",
+    options: [
+      { value: "64gb", label: "64GB", checked: false },
+      { value: "128gb", label: "128GB", checked: true },
+      { value: "256gb", label: "256GB", checked: false },
+      { value: "512gb", label: "512GB", checked: false },
+      { value: "1tb", label: "1TB", checked: false },
+    ],
+  },
+];
+
+// I noticed when i access this page before accessing productlist page, the categories are not fetched yet.
+
+const Products = () => {
+  const dispatch = useAppDispatch();
+  const { data: products, error, isLoading } = useGetProductsQuery({}); // Get products from the backend
+  const { data: categories } = useGetCategoriesQuery({}); // Get categories from the backend
   const [selectedCategoryName, setSelectedCategoryName] = useState("");
   const [filteredProducts, setFilteredProducts] = useState(products); // Initialize filteredProducts with all products
 
   // Filter products based on selected category
   useEffect(() => {
     console.log("selectedCategoryName: ", selectedCategoryName);
+    dispatch(setProducts(products));
+    dispatch(setCategories(categories));
     if (selectedCategoryName) {
       const filtered = products.filter(
         (product) => product.category === selectedCategoryName,
@@ -45,42 +80,13 @@ const ProductsFilter = () => {
     } else {
       setFilteredProducts(products);
     }
-  }, [selectedCategoryName, products]);
+  }, [selectedCategoryName, products, categories, dispatch]);
 
-  const filters = [
-    {
-      id: "color",
-      name: "Color",
-      options: [
-        { value: "black", label: "Black", checked: true },
-        { value: "white", label: "White", checked: false },
-        { value: "gray", label: "Gray", checked: false },
-        { value: "red", label: "Red", checked: false },
-        { value: "blue", label: "Blue", checked: false },
-      ],
-    },
-    // {
-    //   id: "type",
-    //   name: "Type",
-    //   options: [
-    //     { value: "phone", label: "Phone", checked: true },
-    //     { value: "ipad", label: "iPad", checked: false },
-    //     { value: "tablet", label: "Tablet", checked: false },
-    //     { value: "accessory", label: "Accessories", checked: false },
-    //   ],
-    // },
-    {
-      id: "storage",
-      name: "Storage",
-      options: [
-        { value: "64gb", label: "64GB", checked: false },
-        { value: "128gb", label: "128GB", checked: true },
-        { value: "256gb", label: "256GB", checked: false },
-        { value: "512gb", label: "512GB", checked: false },
-        { value: "1tb", label: "1TB", checked: false },
-      ],
-    },
-  ];
+  if (isLoading) return <div>Loading...</div>;
+  if (error) {
+    console.error("Error fetching product:", error);
+    return <div>Error fetching cart items</div>;
+  }
 
   return (
     <div className="bg-white">
@@ -246,4 +252,4 @@ const ProductsFilter = () => {
   );
 };
 
-export default ProductsFilter;
+export default Products;
