@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/utils/hooks";
+import { useCreateCartItemMutation } from "@/services/productApi";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -9,17 +10,36 @@ function classNames(...classes) {
 
 // Add feature list to products that covers warranty, battery Life, display, camera, Condition etc
 const Product = () => {
+  const [createCartItem] = useCreateCartItemMutation(); // Hook to create a cart item
   const { id } = useParams(); // Get product id from the URL
   const productId = id ? parseInt(id, 10) : null;
 
   const dispatch = useAppDispatch();
   const products = useAppSelector((state) => state.products.products); // Get products from the Redux store
-  console.log("products:", products);
-  console.log(`id: ${productId}`);
-
   const product = products.find((product) => product.id === productId); // Find the product by id
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
+
+  const createCartItemHandler = async () => {
+    console.log("Creating cart item with productId:", productId);
+    console.log("Selected color:", selectedColor);
+    console.log("Selected size:", selectedSize);
+    if (product) {
+      const cartItem = {
+        productId: productId,
+        color: selectedColor,
+        size: selectedSize,
+      };
+      try {
+        const response = await createCartItem(cartItem).unwrap();
+        console.log("Cart item created successfully:", response);
+      } catch (error) {
+        console.error("Error creating cart item:", error);
+      }
+    } else {
+      console.error("Product not found");
+    }
+  };
 
   return (
     <div className="bg-white">
@@ -192,6 +212,11 @@ const Product = () => {
 
               <button
                 type="submit"
+                onClick={(e) => {
+                  e.preventDefault();
+                  createCartItemHandler();
+                }}
+                disabled={!selectedColor || !selectedSize}
                 className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
               >
                 Add to bag

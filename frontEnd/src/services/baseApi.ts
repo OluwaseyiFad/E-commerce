@@ -5,7 +5,7 @@ const baseApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_REACT_APP_API_URL,
   }),
-  tagTypes: ["api", "Cart"], // Define tag types for caching
+  tagTypes: ["Cart", "Product"], // Define tag types for caching
   endpoints: () => ({}), // Define API endpoints here
 });
 

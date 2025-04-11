@@ -60,6 +60,23 @@ export const productApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Cart"],
     }),
+    deleteCartItem: builder.mutation({
+      query: (id) => ({
+        url: `/api/cart-item/${id}/`,
+        method: "DELETE",
+        headers: getHeaderAuthorization(),
+      }),
+      invalidatesTags: ["Cart"],
+    }),
+    createCartItem: builder.mutation({
+      query: (newItem) => ({
+        url: "/api/cart-item/",
+        method: "POST",
+        body: newItem,
+        headers: getHeaderAuthorization(),
+      }),
+      invalidatesTags: ["Cart"],
+    }),
   }),
 });
 
@@ -71,4 +88,6 @@ export const {
   useGetCartItemsByUserQuery,
   useAddToCartMutation,
   useUpdateCartItemMutation,
+  useDeleteCartItemMutation,
+  useCreateCartItemMutation,
 } = productApi;

@@ -10,8 +10,9 @@ from .models import (
     Order, OrderItem
     )
 
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -87,11 +88,52 @@ class CartItemViewSet(viewsets.ModelViewSet):
                 cart_item.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
             cart_item.save()
+        elif action_type == "remove":
+            cart_item.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"detail": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.get_serializer(cart_item)
         return Response(serializer.data)
+    
+    def create(self, serializer):
+        cart = Cart.objects.filter(user=self.request.user).first()
+        if not cart:
+            cart = Cart.objects.create(user=self.request.user)
+
+        product_id = self.request.data.get('productId')
+        # Check if the product exists
+        existing_item = CartItem.objects.filter(cart=cart, product_id=product_id).first()
+
+        # If the product already exists in the cart, increment the quantity
+        if existing_item:
+            print("existing item found")
+            existing_item.quantity += 1
+            existing_item.save()
+            serializer = self.get_serializer(existing_item)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        print("existing item not found")
+        # If the product does not exist, create a new cart item
+        new_item = CartItem.objects.create(
+            cart=cart,
+            product_id=product_id,
+            quantity=1,
+            color=self.request.data.get('color'),
+            size=self.request.data.get('size')
+        )
+        serializer = self.get_serializer(new_item)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    
+    def perform_destroy(self, instance):
+        # Delete the cart item
+        instance.delete()
+        # Return a response indicating success
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    
     
     
 

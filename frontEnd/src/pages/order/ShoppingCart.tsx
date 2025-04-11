@@ -4,6 +4,7 @@ import { setCart } from "@/store/slices/productSlice";
 import {
   useGetCartItemsByUserQuery,
   useUpdateCartItemMutation,
+  useDeleteCartItemMutation,
 } from "@/services/productApi";
 import {
   Dialog,
@@ -16,7 +17,13 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 const ShoppingCart = () => {
   const [open, setOpen] = useState(true);
   const [updateCartItem] = useUpdateCartItemMutation();
-  const { data: cart, error, isLoading } = useGetCartItemsByUserQuery({});
+  const [deleteCartItem] = useDeleteCartItemMutation();
+  const {
+    data: cart,
+    error,
+    isLoading,
+    refetch,
+  } = useGetCartItemsByUserQuery({});
   const [cartItems, setCartItems] = useState([]);
   const dispatch = useAppDispatch();
 
@@ -27,7 +34,7 @@ const ShoppingCart = () => {
       // Set cart in Redux store
       dispatch(setCart(cart));
       // Set cart items in local state
-      setCartItems(cart.items);
+      setCartItems(cart.items || []);
     }
   }, [cart, dispatch]);
 
@@ -37,11 +44,32 @@ const ShoppingCart = () => {
     return <div>Error fetching cart items</div>;
   }
 
-  const modifyQuantity = (itemId: number, action: string) => {
+  const modifyCartItem = async (itemId: number, action: string) => {
     console.log("itemId", itemId);
     console.log("action", action);
-    // Call the updateCartItem mutation with the item ID and action
-    updateCartItem({ id: itemId, action: action });
+    // Check if the action is to remove the item
+    if (action === "remove") {
+      // Call the deleteCartItem mutation with the item ID
+      try {
+        const res = await deleteCartItem(itemId).unwrap();
+        console.log("Delete success", res);
+      } catch (err) {
+        console.error("Delete failed", err);
+      }
+    } else {
+      // Call the updateCartItem mutation with the item ID and action
+      try {
+        const res = await updateCartItem({
+          id: itemId,
+          action: action,
+        }).unwrap();
+        console.log("Update success", res);
+      } catch (err) {
+        console.error("Update failed", err);
+      }
+    }
+    // Refetch the cart items to update the UI
+    await refetch(); // I may remove if cache tags logic works
   };
 
   return (
@@ -108,7 +136,7 @@ const ShoppingCart = () => {
                                 <div className="flex items-center gap-2">
                                   <button
                                     onClick={() =>
-                                      modifyQuantity(item.id, "increment")
+                                      modifyCartItem(item.id, "increment")
                                     }
                                     className="mt-1 text-2xl text-green-500"
                                   >
@@ -116,7 +144,7 @@ const ShoppingCart = () => {
                                   </button>
                                   <button
                                     onClick={() =>
-                                      modifyQuantity(item.id, "decrement")
+                                      modifyCartItem(item.id, "decrement")
                                     }
                                     className="mt-1 text-2xl text-red-500"
                                   >
@@ -132,6 +160,9 @@ const ShoppingCart = () => {
                                 <div className="flex">
                                   <button
                                     type="button"
+                                    onClick={() =>
+                                      modifyCartItem(item.id, "remove")
+                                    }
                                     className="font-medium text-indigo-600 hover:text-indigo-500"
                                   >
                                     Remove
