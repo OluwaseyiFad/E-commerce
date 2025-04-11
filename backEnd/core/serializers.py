@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import (
-    UserProfile, Category, Product, Cart, CartItem, Order,
+    UserProfile, Category, Brand, Product, Cart, CartItem, Order,
     OrderItem
 )
 
@@ -32,6 +32,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
+        fields = "__all__"
+        
+class BrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
         fields = "__all__"
         
 class ProductSerializer(serializers.ModelSerializer):

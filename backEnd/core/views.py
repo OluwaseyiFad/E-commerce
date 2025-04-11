@@ -2,11 +2,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from .serializers import (
     CustomTokenObtainPairSerializer, UserProfileSerializer, UserSerializer,
-    CategorySerializer, ProductSerializer, CartSerializer, CartItemSerializer,
+    CategorySerializer, BrandSerializer, ProductSerializer, CartSerializer, CartItemSerializer,
     OrderSerializer, OrderItemSerializer
     )
 from .models import (
-    UserProfile, Category, Product, Cart, CartItem,
+    UserProfile, Category, Brand, Product, Cart, CartItem,
     Order, OrderItem
     )
 
@@ -38,6 +38,10 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    
+class BrandViewSet(viewsets.ModelViewSet):
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
     
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()

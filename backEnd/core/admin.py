@@ -1,6 +1,6 @@
 from django.contrib import admin
 from core.models import (
-    CustomUser, UserProfile, Category, Product,
+    CustomUser, UserProfile, Category, Brand, Product,
     Cart, CartItem, Order, OrderItem
 )
 from import_export.admin  import ImportExportModelAdmin
@@ -17,8 +17,13 @@ class UserProfileAdmin(ImportExportModelAdmin):
 class CategoryAdmin(ImportExportModelAdmin):
     pass
 
-class ProductAdmin(ImportExportModelAdmin):
+class BrandAdmin(ImportExportModelAdmin):
     pass
+
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ['name', 'brand', 'price', 'stock', 'category']
+    search_fields = ['name', 'brand']
+    list_filter = ['category']
 
 class CartItemAdmin(ImportExportModelAdmin):
     pass
@@ -33,6 +38,7 @@ class OrderItemAdmin(ImportExportModelAdmin):
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(Brand, BrandAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Cart)
 admin.site.register(CartItem, CartItemAdmin)

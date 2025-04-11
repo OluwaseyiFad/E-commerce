@@ -1,0 +1,91 @@
+[
+    {
+      "name": "Apple",
+      "image": "https://example.com/images/brands/apple.png"
+    },
+    {
+      "name": "Samsung",
+      "image": "https://example.com/images/brands/samsung.png"
+    },
+    {
+      "name": "Xiaomi",
+      "image": "https://example.com/images/brands/xiaomi.png"
+    },
+    {
+      "name": "OnePlus",
+      "image": "https://example.com/images/brands/oneplus.png"
+    },
+    {
+      "name": "Google",
+      "image": "https://example.com/images/brands/google.png"
+    },
+    {
+      "name": "Huawei",
+      "image": "https://example.com/images/brands/huawei.png"
+    },
+    {
+      "name": "Infinix",
+      "image": "https://example.com/images/brands/infinix.png"
+    },
+    {
+      "name": "Tecno",
+      "image": "https://example.com/images/brands/tecno.png"
+    },
+    {
+      "name": "Itel",
+      "image": "https://example.com/images/brands/itel.png"
+    },
+    {
+      "name": "Motorola",
+      "image": "https://example.com/images/brands/motorola.png"
+    },
+    {
+      "name": "Sony",
+      "image": "https://example.com/images/brands/sony.png"
+    },
+    {
+      "name": "Realme",
+      "image": "https://example.com/images/brands/realme.png"
+    },
+    {
+      "name": "Nokia",
+      "image": "https://example.com/images/brands/nokia.png"
+    },
+    {
+      "name": "Vivo",
+      "image": "https://example.com/images/brands/vivo.png"
+    },
+    {
+      "name": "Oppo",
+      "image": "https://example.com/images/brands/oppo.png"
+    },
+    {
+      "name": "Lenovo",
+      "image": "https://example.com/images/brands/lenovo.png"
+    },
+    {
+      "name": "Asus",
+      "image": "https://example.com/images/brands/asus.png"
+    },
+    {
+      "name": "Nothing",
+      "image": "https://example.com/images/brands/nothing.png"
+    },
+    {
+      "name": "Anker",
+      "image": "https://example.com/images/brands/anker.png"
+    },
+    {
+      "name": "JBL",
+      "image": "https://example.com/images/brands/jbl.png"
+    },
+    {
+      "name": "Beats",
+      "image": "https://example.com/images/brands/beats.png"
+    },
+    {
+      "name": "Oraimo",
+      "image": "https://example.com/images/brands/oraimo.png"
+    }
+  ]
+  

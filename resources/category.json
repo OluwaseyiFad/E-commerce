@@ -1,42 +1,73 @@
 [
     {
-        "name": "Apple",
-        "description": "The latest and most popular iPhones and accessories.",
-        "image": "category_images/apple.png"
+      "name": "Gaming Phones",
+      "description": "Smartphones designed for high performance and optimal gaming experience.",
+      "image": "https://example.com/images/gaming-phones.jpg"
     },
     {
-        "name": "Samsung",
-        "description": "Samsung Galaxy phones, tablets, and accessories.",
-        "image": "category_images/samsung.png"
+      "name": "Flagship Phones",
+      "description": "Top-tier smartphones with cutting-edge features and premium build quality.",
+      "image": "https://example.com/images/flagship-phones.jpg"
     },
     {
-        "name": "Budget Phones",
-        "description": "Affordable smartphones with great features for everyday use.",
-        "image": "category_images/budget_phones.png"
+      "name": "Budget Phones",
+      "description": "Affordable phones offering solid performance and good value.",
+      "image": "https://example.com/images/budget-phones.jpg"
     },
     {
-        "name": "Flagship Phones",
-        "description": "High-end smartphones with the latest technology and features.",
-        "image": "category_images/flagship_phones.png"
+      "name": "Tablets",
+      "description": "Larger mobile devices ideal for reading, entertainment, and productivity on the go.",
+      "image": "https://example.com/images/tablets.jpg"
     },
     {
-        "name": "Accessories",
-        "description": "Phone cases, chargers, screen protectors, and other accessories.",
-        "image": "category_images/accessories.png"
+      "name": "Wearables",
+      "description": "Smart devices like smartwatches and fitness trackers that you can wear.",
+      "image": "https://example.com/images/wearables.jpg"
     },
     {
-        "name": "Tablets",
-        "description": "High-quality tablets for work and entertainment.",
-        "image": "category_images/tablets.png"
+      "name": "Accessories",
+      "description": "Essential add-ons like cases, chargers, and audio gear to enhance your device.",
+      "image": "https://example.com/images/accessories.jpg"
     },
     {
-        "name": "Wearables",
-        "description": "Smartwatches and fitness trackers to keep you connected and healthy.",
-        "image": "category_images/wearables.png"
+      "name": "Power Banks",
+      "description": "Portable battery packs to keep your devices charged on the move.",
+      "image": "https://example.com/images/power-banks.jpg"
     },
     {
-        "name": "Gaming Phones",
-        "description": "Phones designed specifically for gaming enthusiasts.",
-        "image": "category_images/gaming_phones.png"
+      "name": "Chargers & Cables",
+      "description": "Reliable chargers and cables for fast, efficient charging and data transfer.",
+      "image": "https://example.com/images/chargers-cables.jpg"
+    },
+    {
+      "name": "Phone Cases",
+      "description": "Protective and stylish phone cases tailored for various models.",
+      "image": "https://example.com/images/phone-cases.jpg"
+    },
+    {
+      "name": "Screen Protectors",
+      "description": "Durable protectors to guard your screen against scratches and cracks.",
+      "image": "https://example.com/images/screen-protectors.jpg"
+    },
+    {
+      "name": "Smartwatches",
+      "description": "Wrist-worn smart devices that connect to your phone and track fitness, messages, and more.",
+      "image": "https://example.com/images/smartwatches.jpg"
+    },
+    {
+      "name": "Wireless Earbuds",
+      "description": "Compact, wireless earphones with Bluetooth connectivity and great sound quality.",
+      "image": "https://example.com/images/wireless-earbuds.jpg"
+    },
+    {
+      "name": "Headphones",
+      "description": "Over-ear and on-ear headphones delivering immersive sound and comfort.",
+      "image": "https://example.com/images/headphones.jpg"
+    },
+    {
+      "name": "Bluetooth Speakers",
+      "description": "Portable speakers that wirelessly stream audio from your devices.",
+      "image": "https://example.com/images/bluetooth-speakers.jpg"
     }
-]
+  ]
+  
