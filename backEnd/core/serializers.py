@@ -1,6 +1,7 @@
 from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.utils.formats import date_format
 
 from .models import (
     UserProfile, Category, Brand, Product, Cart, CartItem, Order,
@@ -76,14 +77,46 @@ class CartSerializer(serializers.ModelSerializer):
         return obj.get_total_price()
 
         
-class OrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = "__all__"
         
 class OrderItemSerializer(serializers.ModelSerializer):
+    # Use a SerializerMethodField to get the product name
+    product_name = serializers.CharField(source='product.name', read_only=True)
+    # Use a SerializerMethodField to get the product price
+    total_price = serializers.SerializerMethodField()
+    
+    
     class Meta:
         model = OrderItem
-        fields = "__all__"
+        fields = ['id', 'product_name', 'status', 'quantity', 'total_price', 'color', 'size']
+        read_only_fields = ['id', 'product_name', 'quantity', 'color', 'size']
+        
+    def get_total_price(self, obj):
+        return obj.get_total_price()
+    
+    
+class OrderSerializer(serializers.ModelSerializer):
+      # Serialize the related OrderItems
+    items = OrderItemSerializer(many=True, read_only=True)
+    total_price = serializers.SerializerMethodField()
+    placed_at = serializers.SerializerMethodField()
 
+    class Meta:
+        model = Order
+        fields = [
+            'id',
+            'user',
+            'shipping_address',
+            'placed_at',
+            'status',
+            'items',
+            'total_price'
+        ]
+        
+
+    def get_total_price(self, obj):
+        return obj.get_total_price()
+    
+    # Format the placed_at date to a more readable format
+    def get_placed_at(self, obj):
+        return date_format(obj.placed_at, 'F j, Y')
         

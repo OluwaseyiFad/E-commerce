@@ -3,6 +3,8 @@ import "./App.css";
 
 import Product from "./pages/product/Product";
 import ShoppingCart from "./pages/order/ShoppingCart";
+import Order from "./pages/order/Orders";
+import OrderSummary from "./pages/order/OrderSummary";
 import MainLayout from "./components/MainLayout";
 
 import Products from "./pages/product/Products";
@@ -27,6 +29,10 @@ function App() {
         </Route>
 
         <Route path="shopping-cart" element={<ShoppingCart />} />
+        <Route path="orders">
+          <Route index element={<Order />} />
+          <Route path=":id" element={<OrderSummary />} />
+        </Route>
       </Route>
     </Routes>
   );

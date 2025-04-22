@@ -4,6 +4,7 @@ const initialState = {
   categories: [],
   products: [],
   cart: [],
+  orders: [],
 };
 
 const productsSlice = createSlice({
@@ -19,8 +20,12 @@ const productsSlice = createSlice({
     setCart: (state, action) => {
       state.cart = action.payload;
     },
+    setOrders: (state, action) => {
+      state.orders = action.payload;
+    },
   },
 });
 
-export const { setProducts, setCategories, setCart } = productsSlice.actions;
+export const { setProducts, setCategories, setCart, setOrders } =
+  productsSlice.actions;
 export default productsSlice;

@@ -77,6 +77,30 @@ export const productApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Cart"],
     }),
+    getOrdersByUser: builder.query({
+      query: () => ({
+        url: "/api/orders/",
+        method: "GET",
+        headers: getHeaderAuthorization(),
+      }),
+      providesTags: ["Orders"],
+    }),
+    getOrderById: builder.query({
+      query: (id) => ({
+        url: `/api/orders/${id}/`,
+        method: "GET",
+        headers: getHeaderAuthorization(),
+      }),
+    }),
+    createOrder: builder.mutation({
+      query: (newOrder) => ({
+        url: "/api/orders/",
+        method: "POST",
+        body: newOrder,
+        headers: getHeaderAuthorization(),
+      }),
+      invalidatesTags: ["Orders"],
+    }),
   }),
 });
 
@@ -90,4 +114,7 @@ export const {
   useUpdateCartItemMutation,
   useDeleteCartItemMutation,
   useCreateCartItemMutation,
+  useGetOrdersByUserQuery,
+  useGetOrderByIdQuery,
+  useCreateOrderMutation,
 } = productApi;

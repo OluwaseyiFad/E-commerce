@@ -140,9 +140,16 @@ class CartItem(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='orders')
     shipping_address = models.TextField()
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=50, default='Pending')
+    status = models.CharField(max_length=50, default='Order placed')
     placed_at = models.DateTimeField(auto_now_add=True)
+    
+     # Get all order items related to the user through the order
+    def get_items(self):
+        return self.items.all()
+    
+    # Get the total price of the order
+    def get_total_price(self):
+        return sum(item.get_total_price() for item in self.get_items())
     
     # def __str__(self):
     #     return str(self.id)
@@ -151,8 +158,13 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    status = models.CharField(max_length=50, default='Order placed')
     quantity = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    color = models.CharField(max_length=50, blank=True, null=True)
+    size = models.CharField(max_length=50, blank=True, null=True)
+    
+    def get_total_price(self):
+        return self.quantity * self.product.price
 
 
 class Wishlist(models.Model):
