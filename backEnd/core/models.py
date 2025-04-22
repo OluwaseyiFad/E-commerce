@@ -47,11 +47,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    address = models.CharField(max_length=255)
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100, default="")
-    postal_code = models.CharField(max_length=20)
-    country = models.CharField(max_length=100)
+    shipping_address = models.CharField(max_length=255)
+    billing_address = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20)
     
     def __str__(self):

@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import logo from "../../assets/logo.svg";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useLoginMutation } from "../../services/userApi";
 import { setAuthTokens, setUser } from "../../store/slices/authSlice";
 
@@ -49,6 +49,7 @@ const Login = () => {
       const { access, refresh, user } = response.data as LoginResponse;
       dispatch(setAuthTokens({ access, refresh }));
       dispatch(setUser(user));
+
       navigate("/");
     }
     if ("error" in response && response.error) {

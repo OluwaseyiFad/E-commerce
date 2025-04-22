@@ -6,7 +6,7 @@ const PopoverComponent = () => {
   const links = [
     { name: "Products", href: "/products" },
     { name: "Orders", href: "/orders" },
-    { name: "Profile", href: "/profile" },
+    { name: "Profile", href: "/user-profile" },
   ];
 
   return (

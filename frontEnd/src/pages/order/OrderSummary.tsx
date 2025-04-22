@@ -21,7 +21,7 @@ const OrderSummary = () => {
         </a>
       </div>
 
-      {/* Product 1 */}
+      {/* Order items */}
       {order.items.map((item) => (
         <div key={item.id} className="space-y-3 rounded-lg border p-4">
           <div className="flex items-center justify-between">
@@ -48,7 +48,6 @@ const OrderSummary = () => {
               {item.status} on {order.placed_at}
             </p> */}
             <OrderProgress currentStep={item.status} />{" "}
-            {/* Or "Shipped", etc. */}
           </div>
         </div>
       ))}

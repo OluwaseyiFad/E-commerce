@@ -136,10 +136,6 @@ class CartItemViewSet(viewsets.ModelViewSet):
         instance.delete()
         # Return a response indicating success
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
-    
-    
-    
 
     
 class OrderViewSet(viewsets.ModelViewSet):

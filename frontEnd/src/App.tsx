@@ -11,6 +11,7 @@ import Products from "./pages/product/Products";
 import HomePage from "./pages/home/HomePage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import UserProfile from "./pages/user/UserProfile";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route index element={<Order />} />
           <Route path=":id" element={<OrderSummary />} />
         </Route>
+        <Route path="user-profile" element={<UserProfile />} />
       </Route>
     </Routes>
   );

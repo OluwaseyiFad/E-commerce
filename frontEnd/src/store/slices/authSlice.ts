@@ -1,16 +1,17 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserType, AuthType } from "../../utils/types";
+import { createSlice } from "@reduxjs/toolkit";
 
-const initialState: AuthType = { access: null, refresh: null, user: null };
+const initialState = {
+  access: null,
+  refresh: null,
+  user: null,
+  userProfile: null,
+};
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuthTokens(
-      state: AuthType,
-      action: PayloadAction<{ access: string; refresh: string }>,
-    ) {
+    setAuthTokens: (state, action) => {
       state.refresh = action.payload.refresh;
       state.access = action.payload.access;
       if (state.access) {
@@ -20,12 +21,16 @@ const authSlice = createSlice({
         localStorage.setItem("refresh", state.refresh);
       }
     },
-    setUser(state: AuthType, action: PayloadAction<UserType>) {
+    setUser: (state, action) => {
       state.user = action.payload;
       localStorage.setItem("user", JSON.stringify(state.user));
     },
+    setUserProfile: (state, action) => {
+      state.userProfile = action.payload;
+      localStorage.setItem("userProfile", JSON.stringify(state.userProfile));
+    },
 
-    logout(state: AuthType) {
+    logout: (state) => {
       // state.user = initialState.user;
       // state.refresh = initialState.refresh;
       // state.access = initialState.access;
@@ -37,6 +42,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuthTokens, setUser, logout } = authSlice.actions;
+export const { setAuthTokens, setUser, setUserProfile, logout } =
+  authSlice.actions;
 
 export default authSlice;
