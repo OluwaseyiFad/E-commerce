@@ -3,6 +3,8 @@ import {
   usePatchCurrentUserProfileMutation,
   useGetCurrrentUserProfileQuery,
 } from "@/services/userApi";
+import { useDispatch } from "react-redux";
+import { setUserProfile } from "@/store/slices/authSlice";
 
 interface UserProfileType {
   id: number;
@@ -25,12 +27,13 @@ const initialState: UserProfileType = {
 };
 
 const UserProfile = () => {
+  const dispatch = useDispatch();
   const {
     data: userProfileData,
     error,
     isLoading,
   } = useGetCurrrentUserProfileQuery({});
-  const [userProfile, setUserProfile] = useState<UserProfileType>(initialState);
+  const [profile, setProfile] = useState<UserProfileType>(initialState);
   const [updateProfile] = usePatchCurrentUserProfileMutation();
 
   useEffect(() => {
@@ -38,7 +41,7 @@ const UserProfile = () => {
       console.log("It met requirement");
       const profile = userProfileData[0];
       console.log("profile", profile);
-      setUserProfile({
+      setProfile({
         id: profile.id || 0,
         firstName: profile.first_name || "",
         lastName: profile.last_name || "",
@@ -47,20 +50,21 @@ const UserProfile = () => {
         phoneNumber: profile.phone_number || "",
         user: profile.user || 0,
       });
+      dispatch(setUserProfile(profile));
     }
-  }, [userProfileData]);
+  }, [userProfileData, dispatch]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUserProfile((prev) => ({ ...prev, [name]: value }));
+    setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await updateProfile({
-        id: userProfile.id,
-        data: userProfile,
+        id: profile.id,
+        data: profile,
       }).unwrap();
       console.log("Profile updated:", response);
     } catch (err) {
@@ -77,7 +81,7 @@ const UserProfile = () => {
       <p className="mt-10 text-center text-red-500">Failed to load profile.</p>
     );
 
-  console.log("userProfile", userProfile);
+  console.log("profile", profile);
   console.log("userProfileData", userProfileData[0]);
   return (
     <div className="mx-auto mt-12 max-w-xl rounded-2xl border bg-white p-6 shadow-md">
@@ -104,7 +108,7 @@ const UserProfile = () => {
               type="text"
               id={field.name}
               name={field.name}
-              value={userProfile[field.name] || ""}
+              value={profile[field.name] || ""}
               onChange={handleInputChange}
               className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm focus:border-blue-500 focus:ring-blue-500"
             />
