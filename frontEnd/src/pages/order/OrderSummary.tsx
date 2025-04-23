@@ -13,10 +13,10 @@ const OrderSummary = () => {
     <div className="mx-auto max-w-4xl space-y-6 rounded-xl bg-white p-6 shadow-md">
       <div>
         <h2 className="text-xl font-semibold">
-          Order <span className="text-indigo-600">#{productId}</span>
+          Order <span className="text-cyan-600">#{productId}</span>
         </h2>
         <p className="text-sm text-gray-500">Order placed {order.placed_at}</p>
-        <a href="#" className="text-sm text-indigo-600 hover:underline">
+        <a href="#" className="text-sm text-cyan-600 hover:underline">
           View Invoice
         </a>
       </div>

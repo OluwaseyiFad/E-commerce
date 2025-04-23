@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAppDispatch } from "@/utils/hooks";
 import { setCart } from "@/store/slices/productSlice";
 import {
@@ -6,213 +7,146 @@ import {
   useUpdateCartItemMutation,
   useDeleteCartItemMutation,
 } from "@/services/productApi";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
 
 const ShoppingCart = () => {
-  const [open, setOpen] = useState(true);
   const [updateCartItem] = useUpdateCartItemMutation();
   const [deleteCartItem] = useDeleteCartItemMutation();
   const {
     data: cart,
-    error,
     isLoading,
+    error,
     refetch,
   } = useGetCartItemsByUserQuery({});
-  const [cartItems, setCartItems] = useState([]);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    console.log("cart ", cart);
-
     if (cart) {
-      // Set cart in Redux store
       dispatch(setCart(cart));
-      // Set cart items in local state
-      setCartItems(cart.items || []);
     }
   }, [cart, dispatch]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) {
-    console.error("Error fetching product:", error);
-    return <div>Error fetching cart items</div>;
-  }
-
+  // Function to modify cart item
+  // action can be "increment +", "decrement -", or "remove"
   const modifyCartItem = async (itemId: number, action: string) => {
-    console.log("itemId", itemId);
-    console.log("action", action);
-    // Check if the action is to remove the item
-    if (action === "remove") {
-      // Call the deleteCartItem mutation with the item ID
-      try {
-        const res = await deleteCartItem(itemId).unwrap();
-        console.log("Delete success", res);
-      } catch (err) {
-        console.error("Delete failed", err);
+    try {
+      if (action === "remove") {
+        await deleteCartItem(itemId).unwrap();
+      } else {
+        await updateCartItem({ id: itemId, action }).unwrap();
       }
-    } else {
-      // Call the updateCartItem mutation with the item ID and action
-      try {
-        const res = await updateCartItem({
-          id: itemId,
-          action: action,
-        }).unwrap();
-        console.log("Update success", res);
-      } catch (err) {
-        console.error("Update failed", err);
-      }
+      await refetch();
+    } catch (err) {
+      console.error("Error modifying cart item:", err);
     }
-    // Refetch the cart items to update the UI
-    await refetch(); // I may remove if cache tags logic works
   };
 
+  if (isLoading) return <div className="p-6">Loading...</div>;
+  if (error) return <div className="p-6 text-red-500">Error loading cart.</div>;
+
   return (
-    <Dialog open={open} onClose={setOpen} className="relative z-10">
-      <DialogBackdrop
-        transition
-        className="fixed inset-0 bg-gray-500/75 transition-opacity duration-500 ease-in-out data-closed:opacity-0"
-      />
+    <div className="min-h-screen bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="rounded-lg bg-white p-6 shadow lg:col-span-2">
+          <h2 className="mb-4 text-2xl font-semibold">Your Cart</h2>
+          {cart?.items?.length === 0 ? (
+            <p className="text-gray-600">Your cart is empty.</p>
+          ) : (
+            <ul className="divide-y divide-gray-200">
+              {cart?.items?.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex border-b border-gray-200 py-6"
+                >
+                  <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                    <img
+                      src="https://picsum.photos/200/300"
+                      alt={item.product_name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
 
-      <div className="fixed inset-0 overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
-            <DialogPanel
-              transition
-              className="pointer-events-auto w-screen max-w-md transform transition duration-500 ease-in-out data-closed:translate-x-full sm:duration-700"
+                  {/* Product details */}
+                  <div className="ml-4 flex flex-1 justify-between">
+                    <div className="flex w-full flex-col items-start justify-start space-y-1 text-left">
+                      <h3 className="text-base font-medium text-gray-900">
+                        {item.product_name}
+                      </h3>
+                      <div className="flex gap-3 text-sm text-gray-500">
+                        {item.color && <span>{item.color}</span>}
+                        {item.size && <span>{item.size}</span>}
+                      </div>
+                      <p className="text-sm text-gray-900">
+                        ${item.total_price.toFixed(2)}
+                      </p>
+                    </div>
+
+                    {/* Quantity modification and remove button */}
+                    <div className="flex w-28 flex-col items-center justify-center">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => modifyCartItem(item.id, "increment")}
+                          className="text-lg font-bold text-green-600"
+                        >
+                          +
+                        </button>
+                        <span className="text-sm">Qty: {item.quantity}</span>
+                        <button
+                          onClick={() => modifyCartItem(item.id, "decrement")}
+                          className="text-lg font-bold text-red-600"
+                        >
+                          -
+                        </button>
+                      </div>
+                      <button
+                        onClick={() => modifyCartItem(item.id, "remove")}
+                        className="mt-2 text-sm text-cyan-600 hover:underline"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Order Summary */}
+        <div className="h-fit rounded-lg bg-white p-6 shadow">
+          <h3 className="mb-4 text-xl font-semibold">Order Summary</h3>
+          <div className="mb-2 flex justify-between text-lg font-medium text-gray-800">
+            <span>Subtotal</span>
+            <span>{cart?.total_price}</span>
+          </div>
+          <div className="mb-2 flex justify-between text-lg font-medium text-gray-800">
+            <span>Shipping</span>
+            <span>$5.00</span>
+          </div>
+          <div className="mb-2 flex justify-between text-lg font-medium text-gray-800">
+            <span>Tax</span>
+            <span>$6.16</span>
+          </div>
+          <div className="mb-2 flex justify-between text-lg font-medium text-gray-800">
+            <span>Order total</span>
+            <span>${(cart?.total_price + 5 + 6.16).toFixed(2)}</span>
+          </div>
+          <p className="mb-4 text-sm text-gray-500">
+            Shipping and taxes calculated at checkout.
+          </p>
+          <div className="flex flex-col gap-3">
+            <button className="w-full rounded-md bg-cyan-600 py-2 font-medium text-white transition hover:bg-cyan-700">
+              Checkout
+            </button>
+            <Link
+              to="/products"
+              className="text-center text-sm text-cyan-600 hover:underline"
             >
-              <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
-                <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
-                  <div className="flex items-start justify-between">
-                    <DialogTitle className="text-lg font-medium text-gray-900">
-                      Shopping cart
-                    </DialogTitle>
-                    <div className="ml-3 flex h-7 items-center">
-                      <button
-                        type="button"
-                        onClick={() => setOpen(false)}
-                        className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
-                      >
-                        <span className="absolute -inset-0.5" />
-                        <span className="sr-only">Close panel</span>
-                        <XMarkIcon aria-hidden="true" className="size-6" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="mt-8">
-                    <div className="flow-root">
-                      <ul
-                        role="list"
-                        className="-my-6 divide-y divide-gray-200"
-                      >
-                        {cartItems.map((item) => (
-                          <li key={item.id} className="flex py-6">
-                            <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
-                              <img
-                                alt={item.name}
-                                src="https://picsum.photos/200/300"
-                                className="size-full object-cover"
-                              />
-                            </div>
-
-                            <div className="ml-4 flex flex-1 flex-col">
-                              <div>
-                                <div className="flex justify-between text-base font-medium text-gray-900">
-                                  <h3>
-                                    <a href="">{item.product_name}</a>
-                                  </h3>
-                                  <p className="ml-4">{item.total_price}</p>
-                                </div>
-                                <p className="mt-1 mr-4 text-sm text-gray-500">
-                                  {item.color}
-                                </p>
-                                {/* Add button to add or subtract quantity */}
-                                <div className="flex items-center gap-2">
-                                  <button
-                                    onClick={() =>
-                                      modifyCartItem(item.id, "increment")
-                                    }
-                                    className="mt-1 text-2xl text-green-500"
-                                  >
-                                    +
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      modifyCartItem(item.id, "decrement")
-                                    }
-                                    className="mt-1 text-2xl text-red-500"
-                                  >
-                                    -
-                                  </button>
-                                </div>
-                              </div>
-                              <div className="flex flex-1 items-end justify-between text-sm">
-                                <p className="text-gray-500">
-                                  Qty {item.quantity}
-                                </p>
-
-                                <div className="flex">
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      modifyCartItem(item.id, "remove")
-                                    }
-                                    className="font-medium text-indigo-600 hover:text-indigo-500"
-                                  >
-                                    Remove
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-                  <div className="flex justify-between text-base font-medium text-gray-900">
-                    <p>Subtotal</p>
-                    <p>{cart.total_price}</p>
-                  </div>
-                  <p className="mt-0.5 text-sm text-gray-500">
-                    Shipping and taxes calculated at checkout.
-                  </p>
-                  <div className="mt-6">
-                    <a
-                      href="#"
-                      className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-indigo-700"
-                    >
-                      Checkout
-                    </a>
-                  </div>
-                  <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
-                    <p>
-                      or{" "}
-                      <button
-                        type="button"
-                        onClick={() => setOpen(false)}
-                        className="font-medium text-indigo-600 hover:text-indigo-500"
-                      >
-                        Continue Shopping
-                        <span aria-hidden="true"> &rarr;</span>
-                      </button>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </DialogPanel>
+              Continue Shopping
+            </Link>
           </div>
         </div>
       </div>
-    </Dialog>
+    </div>
   );
 };
 

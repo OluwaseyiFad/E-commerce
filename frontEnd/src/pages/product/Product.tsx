@@ -200,14 +200,14 @@ const Product = () => {
                               size.in_stock
                                 ? "cursor-pointer bg-white text-gray-900 shadow-xs"
                                 : "cursor-not-allowed bg-gray-50 text-gray-200",
-                              "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-hidden data-focus:ring-2 data-focus:ring-indigo-500 sm:flex-1 sm:py-6",
+                              "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-hidden data-focus:ring-2 data-focus:ring-cyan-500 sm:flex-1 sm:py-6",
                             )}
                           >
                             <span>{size.size}</span>
                             {size.in_stock ? (
                               <span
                                 aria-hidden="true"
-                                className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent group-data-checked:border-indigo-500 group-data-focus:border"
+                                className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent group-data-checked:border-cyan-500 group-data-focus:border"
                               />
                             ) : (
                               <span
@@ -254,7 +254,7 @@ const Product = () => {
                       "Tablets",
                     ]
                 }
-                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
+                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-cyan-600 px-8 py-3 text-base font-medium text-white hover:bg-cyan-700 focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:outline-hidden"
               >
                 Add to bag
               </button>

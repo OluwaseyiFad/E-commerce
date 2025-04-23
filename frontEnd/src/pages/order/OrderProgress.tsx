@@ -18,21 +18,21 @@ const OrderProgress = ({ currentStep }: Props) => {
     idx <= currentIndex
       ? isDelivered
         ? "bg-green-600"
-        : "bg-indigo-600"
+        : "bg-cyan-600"
       : "bg-gray-300";
 
   const getTextClass = (idx: number) =>
     idx <= currentIndex
       ? isDelivered
         ? "text-green-600 font-medium"
-        : "text-indigo-600 font-medium"
+        : "text-cyan-600 font-medium"
       : "text-gray-400";
 
   const getLineClass = (idx: number) =>
     idx < currentIndex
       ? isDelivered
         ? "bg-green-600"
-        : "bg-indigo-600"
+        : "bg-cyan-600"
       : "bg-gray-300";
 
   return (

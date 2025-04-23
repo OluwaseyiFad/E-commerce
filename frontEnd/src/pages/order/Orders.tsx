@@ -31,7 +31,7 @@ const Orders: React.FC = () => {
             </div>
             <Link
               to={`/orders/${order.id}`}
-              className="text-sm text-indigo-600 hover:underline"
+              className="text-sm text-cyan-600 hover:underline"
             >
               View Summary →
             </Link>

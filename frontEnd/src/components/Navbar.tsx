@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "@/utils/hooks";
 import {
   Bars3Icon,
   MagnifyingGlassIcon,
@@ -12,8 +12,9 @@ import PopoverComponent from "./PopoverComponent";
 
 const Navbar = ({ open, setOpen }) => {
   const isAuthenticated = !!localStorage.getItem("access");
-  const dispatch = useDispatch();
-
+  const dispatch = useAppDispatch();
+  const cart = useAppSelector((state) => state.products.cart);
+  console.log("cart", cart);
   return (
     <nav aria-label="Top" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="border-b border-gray-200">
@@ -91,7 +92,7 @@ const Navbar = ({ open, setOpen }) => {
                   className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
                 />
                 <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                  0
+                  {cart?.items?.length || 0}
                 </span>
                 <span className="sr-only">items in cart, view bag</span>
               </Link>

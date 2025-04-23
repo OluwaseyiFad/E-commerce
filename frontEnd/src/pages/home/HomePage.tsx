@@ -1,10 +1,86 @@
+import { useAppSelector } from "@/utils/hooks";
+import ProductCard from "../product/ProductCard";
+
 const HomePage = () => {
+  const products = useAppSelector((state) => state.products.products);
+  console.log("products", products);
   return (
-    <>
-      <section className="py-10 text-center">
-        <h1 className="text-3xl font-bold">Welcome to superLian</h1>
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <section className="bg-cyan-900 py-20 text-white">
+        <div className="mx-auto max-w-7xl px-4 text-center">
+          <h1 className="text-4xl leading-tight font-bold">
+            Discover Your Perfect Device
+          </h1>
+          <p className="mt-4 text-lg">
+            Explore a wide range of phones, iPads, tablets, and accessories! all
+            at unbeatable prices.
+          </p>
+          <div className="mt-8">
+            <a
+              href="#shop-now"
+              className="inline-block rounded-lg bg-white px-6 py-3 text-lg font-semibold text-cyan-600 transition hover:bg-gray-100"
+            >
+              Shop Now
+            </a>
+          </div>
+        </div>
       </section>
-    </>
+
+      {/* Featured Products Section */}
+      <section id="shop-now" className="py-20">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="flex items-center justify-between">
+            <div className="text-center md:text-left">
+              <h2 className="text-3xl font-semibold">Featured Products</h2>
+              <p className="mt-2 text-lg text-gray-600">
+                Check out our latest and most popular items!
+              </p>
+            </div>
+            <div className="mt-4 md:mt-0">
+              <a
+                href="/products"
+                className="inline-block rounded-md bg-cyan-600 px-5 py-2 text-sm font-medium text-white shadow hover:bg-cyan-700"
+              >
+                See All
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {/* Show only the first 8 products */}
+            {products.slice(0, 8).map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 py-8 text-white">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-xl font-semibold">SuperLian</h3>
+              <p className="mt-2 text-sm">
+                Your one-stop shop for all things tech.
+              </p>
+            </div>
+            <div className="space-x-6">
+              <a href="#" className="text-sm">
+                Privacy Policy
+              </a>
+              <a href="#" className="text-sm">
+                Terms of Service
+              </a>
+              <a href="#" className="text-sm">
+                Contact Us
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 };
 
