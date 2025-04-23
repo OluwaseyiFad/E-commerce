@@ -56,6 +56,10 @@ const Product = () => {
     }
   };
 
+  if (!product) {
+    return <div className="p-4 text-red-500">Product not found</div>;
+  }
+
   return (
     <div className="bg-white">
       <div className="pt-6">
@@ -129,7 +133,7 @@ const Product = () => {
           <div className="mt-4 lg:row-span-3 lg:mt-0">
             <h2 className="sr-only">Product information</h2>
             <p className="text-3xl tracking-tight text-gray-900">
-              {product.price}
+              ${product.price}
             </p>
 
             <form className="mt-10">
@@ -246,13 +250,12 @@ const Product = () => {
                 }}
                 disabled={
                   (!selectedColor || !selectedSize) &&
-                  product.category in
-                    [
-                      "Gaming Phones",
-                      "Flagship Phones",
-                      "Budget Phones",
-                      "Tablets",
-                    ]
+                  [
+                    "Gaming Phones",
+                    "Flagship Phones",
+                    "Budget Phones",
+                    "Tablets",
+                  ].includes(product.category)
                 }
                 className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-cyan-600 px-8 py-3 text-base font-medium text-white hover:bg-cyan-700 focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:outline-hidden"
               >
@@ -270,6 +273,17 @@ const Product = () => {
                 <p className="text-base text-gray-900">{product.description}</p>
               </div>
             </div>
+            {/* For features */}
+            {/* <div className="mt-6">
+              <h4 className="text-sm font-semibold text-gray-900">
+                Key Features
+              </h4>
+              <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-gray-700">
+                {product.features?.map((feature, idx) => (
+                  <li key={idx}>{feature}</li>
+                ))}
+              </ul>
+            </div> */}
           </div>
         </div>
       </div>
