@@ -7,7 +7,7 @@ from .serializers import (
     )
 from .models import (
     UserProfile, Category, Brand, Product, Cart, CartItem,
-    Order, OrderItem
+    Order, OrderItem, CardDetails
     )
 
 from rest_framework import viewsets, permissions, status
@@ -72,6 +72,18 @@ class CartViewSet(viewsets.ModelViewSet):
         # Serialize the cart using the CartSerializer
         serializer = CartSerializer(cart)
         return Response(serializer.data)
+    
+    
+    # This action will be called when the user wants to clear their cart
+    # It will delete all items in the cart and return a success message
+    @action(detail=False, methods=['post'], url_path='clear')
+    def clear_cart(self, request):
+        cart = Cart.objects.filter(user=request.user).first()
+        if not cart:
+            return Response({"detail": "No cart found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        cart.items.all().delete()
+        return Response({"detail": "Cart cleared."})
 
     
 class CartItemViewSet(viewsets.ModelViewSet):
@@ -141,6 +153,46 @@ class CartItemViewSet(viewsets.ModelViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+  
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        items = data.pop("items", [])
+        card_data = data.pop("card", None)
+
+        # Create card if card data exists
+        card = None
+        if card_data:
+            card = CardDetails.objects.create(
+                card_number=card_data.get("cardNumber"),
+                expiry=card_data.get("expiry"),
+                cvv=card_data.get("cvv")
+            )
+
+        # Create order
+        order = Order.objects.create(
+            user=request.user,
+            shipping_address=data.get("shipping_address"),
+            billing_address=data.get("billing_address"),
+            payment_method=data.get("payment_method"),
+            card=card,
+        )
+
+        # Create order items
+        for item in items:
+            product_id = item.get("product_id")
+            product = Product.objects.get(id=product_id)
+            OrderItem.objects.create(
+                order=order,
+                product=product,
+                quantity=item["quantity"],
+                color=item.get("color"),
+                size=item.get("size")
+            )
+
+        serializer = self.get_serializer(order)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)  
+    
 
 class OrderItemViewSet(viewsets.ModelViewSet):
     queryset = OrderItem.objects.all()

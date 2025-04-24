@@ -1,3 +1,4 @@
+import { clear } from "console";
 import { getHeaderAuthorization } from "../utils/functions";
 import baseApi from "./baseApi";
 
@@ -49,6 +50,14 @@ export const productApi = baseApi.injectEndpoints({
         body: newItem,
       }),
       // triggers refetch of cart
+      invalidatesTags: ["Cart"],
+    }),
+    clearCart: builder.mutation({
+      query: () => ({
+        url: "/api/cart/clear/",
+        method: "POST",
+        headers: getHeaderAuthorization(),
+      }),
       invalidatesTags: ["Cart"],
     }),
     updateCartItem: builder.mutation({
@@ -111,6 +120,7 @@ export const {
   useGetProductByIdQuery,
   useGetCartItemsByUserQuery,
   useAddToCartMutation,
+  useClearCartMutation,
   useUpdateCartItemMutation,
   useDeleteCartItemMutation,
   useCreateCartItemMutation,

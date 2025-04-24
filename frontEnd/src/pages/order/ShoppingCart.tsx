@@ -7,6 +7,7 @@ import {
   useUpdateCartItemMutation,
   useDeleteCartItemMutation,
 } from "@/services/productApi";
+import CartSummary from "./CartSummary";
 
 const ShoppingCart = () => {
   const [updateCartItem] = useUpdateCartItemMutation();
@@ -113,30 +114,14 @@ const ShoppingCart = () => {
 
         {/* Order Summary */}
         <div className="h-fit rounded-lg bg-white p-6 shadow">
-          <h3 className="mb-4 text-xl font-semibold">Order Summary</h3>
-          <div className="mb-2 flex justify-between text-lg font-medium text-gray-800">
-            <span>Subtotal</span>
-            <span>{cart?.total_price}</span>
-          </div>
-          <div className="mb-2 flex justify-between text-lg font-medium text-gray-800">
-            <span>Shipping</span>
-            <span>$5.00</span>
-          </div>
-          <div className="mb-2 flex justify-between text-lg font-medium text-gray-800">
-            <span>Tax</span>
-            <span>$6.16</span>
-          </div>
-          <div className="mb-2 flex justify-between text-lg font-medium text-gray-800">
-            <span>Order total</span>
-            <span>${(cart?.total_price + 5 + 6.16).toFixed(2)}</span>
-          </div>
-          <p className="mb-4 text-sm text-gray-500">
-            Shipping and taxes calculated at checkout.
-          </p>
+          <CartSummary totalPrice={cart?.total_price || 0} />
           <div className="flex flex-col gap-3">
-            <button className="w-full rounded-md bg-cyan-600 py-2 font-medium text-white transition hover:bg-cyan-700">
+            <Link
+              to="/checkout"
+              className="w-full rounded-md bg-cyan-600 py-2 font-medium text-white transition hover:bg-cyan-700"
+            >
               Checkout
-            </button>
+            </Link>
             <Link
               to="/products"
               className="text-center text-sm text-cyan-600 hover:underline"

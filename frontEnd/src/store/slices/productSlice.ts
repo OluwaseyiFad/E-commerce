@@ -20,12 +20,15 @@ const productsSlice = createSlice({
     setCart: (state, action) => {
       state.cart = action.payload;
     },
+    clearCart: (state) => {
+      state.cart = [];
+    },
     setOrders: (state, action) => {
       state.orders = action.payload;
     },
   },
 });
 
-export const { setProducts, setCategories, setCart, setOrders } =
+export const { setProducts, setCategories, setCart, clearCart, setOrders } =
   productsSlice.actions;
 export default productsSlice;

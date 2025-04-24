@@ -134,9 +134,18 @@ class CartItem(models.Model):
         return self.quantity * self.product.price
 
 
+# In a real-world application, i would use a more secure way for payment details
+class CardDetails(models.Model):
+    card_number = models.CharField(max_length=19) 
+    expiry = models.CharField(max_length=5)
+    cvv = models.CharField(max_length=4)
+
 class Order(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='orders')
     shipping_address = models.TextField()
+    billing_address = models.TextField()
+    payment_method = models.CharField(max_length=50, choices=[('card', 'Credit/Debit Card'), ('paypal', 'PayPal')])
+    card = models.OneToOneField(CardDetails, on_delete=models.CASCADE, blank=True, null=True)
     status = models.CharField(max_length=50, default='Order placed')
     placed_at = models.DateTimeField(auto_now_add=True)
     
