@@ -9,7 +9,6 @@ import { clearCart } from "@/store/slices/productSlice";
 import ShippingAddressForm from "./ShippingAddressForm";
 import BillingAddressForm from "./BillingAddressForm";
 import CartSummary from "./CartSummary";
-import storage from "redux-persist/lib/storage"; // defaults to localStorage
 
 const CheckOut = () => {
   const [clearCartItems] = useClearCartMutation();
@@ -45,6 +44,7 @@ const CheckOut = () => {
     cvv: "",
   });
 
+  console.log("User Profile: ", userProfile);
   useEffect(() => {
     console.log("Updated Cart: ", cart);
   }, [cart]); // Runs when `cart` state changes
@@ -102,7 +102,6 @@ const CheckOut = () => {
         // and update the Redux state and local storage
         await clearCartItems({});
         dispatch(clearCart());
-        storage.removeItem("persist:root");
         alert("Order placed successfully!");
         navigate("/orders");
       }

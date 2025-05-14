@@ -13,186 +13,177 @@ import {
 } from "../../services/productApi";
 import ProductCard from "./ProductCard";
 
-const filters = [
-  {
-    id: "color",
-    name: "Color",
-    options: [
-      { value: "black", label: "Black", checked: true },
-      { value: "white", label: "White", checked: false },
-      { value: "gray", label: "Gray", checked: false },
-      { value: "red", label: "Red", checked: false },
-      { value: "blue", label: "Blue", checked: false },
-    ],
-  },
-  {
-    id: "storage",
-    name: "Storage",
-    options: [
-      { value: "64gb", label: "64GB", checked: false },
-      { value: "128gb", label: "128GB", checked: true },
-      { value: "256gb", label: "256GB", checked: false },
-      { value: "512gb", label: "512GB", checked: false },
-      { value: "1tb", label: "1TB", checked: false },
-    ],
-  },
-];
+const colorOptions = ["black", "white", "silver", "gold", "blue"];
+const storageOptions = ["64gb", "128gb", "256gb", "512gb", "1tb"];
 
 const Products = () => {
   const dispatch = useAppDispatch();
-  const { data: products, error, isLoading } = useGetProductsQuery({}); // Get products from the backend
-  const { data: categories } = useGetCategoriesQuery({}); // Get categories from the backend
-  const [selectedCategoryName, setSelectedCategoryName] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState(products); // Initialize filteredProducts with all products
+  const { data: products = [], error, isLoading } = useGetProductsQuery({});
+  const { data: categories = [] } = useGetCategoriesQuery({});
 
-  // Filter products based on selected category
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedColors, setSelectedColors] = useState<string[]>([
+    ...colorOptions,
+  ]);
+  const [selectedStorages, setSelectedStorages] = useState<string[]>([
+    ...storageOptions,
+  ]);
+  const [filteredProducts, setFilteredProducts] = useState(products);
+
   useEffect(() => {
-    console.log("selectedCategoryName: ", selectedCategoryName);
     dispatch(setProducts(products));
     dispatch(setCategories(categories));
-    if (selectedCategoryName) {
-      const filtered = products.filter(
-        (product) => product.category === selectedCategoryName,
+  }, [products, categories, dispatch]);
+
+  useEffect(() => {
+    const filtered = products.filter((product: any) => {
+      const matchCategory = selectedCategory
+        ? product.category === selectedCategory
+        : true;
+
+      const availableColors = (product.colors || [])
+        .filter((c) => c.in_stock)
+        .map((c) => c.color.toLowerCase());
+      const matchColor = selectedColors.some((color) =>
+        availableColors.includes(color),
       );
-      setFilteredProducts(filtered);
-    } else {
-      setFilteredProducts(products);
-    }
-  }, [selectedCategoryName, products, categories, dispatch]);
+
+      const availableStorages = (product.storage || [])
+        .filter((s) => s.in_stock)
+        .map((s) => s.size.toLowerCase());
+      const matchStorage = selectedStorages.some((size) =>
+        availableStorages.includes(size),
+      );
+
+      return matchCategory && matchColor && matchStorage;
+    });
+    setFilteredProducts(filtered);
+  }, [selectedCategory, selectedColors, selectedStorages, products]);
+
+  const handleCheckboxChange = (value: string, type: "color" | "storage") => {
+    const toggle = (list: string[]) =>
+      list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
+
+    if (type === "color") setSelectedColors((prev) => toggle(prev));
+    else setSelectedStorages((prev) => toggle(prev));
+  };
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) {
-    console.error("Error fetching product:", error);
-    return <div>Error fetching cart items</div>;
-  }
+  if (error) return <div>Error fetching products</div>;
 
   return (
     <div className="bg-white">
-      <div>
-        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-baseline justify-between border-b border-gray-200 pt-24 pb-6">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-              Latest Products
-            </h1>
-          </div>
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex items-baseline justify-between border-b border-gray-200 pt-24 pb-6">
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+            Latest Products
+          </h1>
+        </div>
 
-          <section aria-labelledby="products-heading" className="pt-6 pb-24">
-            <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-              {/* Filters */}
-              <form className="hidden lg:block">
-                <ul
-                  role="list"
-                  className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900"
-                >
-                  <li>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedCategoryName("")}
-                    >
-                      All Categories
+        <section className="pt-6 pb-24">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+            {/* Filters Sidebar */}
+            <aside className="hidden lg:block">
+              {/* Categories */}
+              <ul className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
+                <li>
+                  <button onClick={() => setSelectedCategory("")}>
+                    All Categories
+                  </button>
+                </li>
+                {categories.map((category) => (
+                  <li key={category.name}>
+                    <button onClick={() => setSelectedCategory(category.name)}>
+                      {category.name}
                     </button>
                   </li>
-                  {categories.map((category) => (
-                    <li key={category.name}>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedCategoryName(category.name)}
-                      >
-                        {category.name}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-
-                {filters.map((section) => (
-                  <Disclosure
-                    key={section.id}
-                    as="div"
-                    className="border-b border-gray-200 py-6"
-                  >
-                    <h3 className="-my-3 flow-root">
-                      <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                        <span className="font-medium text-gray-900">
-                          {section.name}
-                        </span>
-                        <span className="ml-6 flex items-center">
-                          <PlusIcon
-                            aria-hidden="true"
-                            className="size-5 group-data-open:hidden"
-                          />
-                          <MinusIcon
-                            aria-hidden="true"
-                            className="size-5 group-not-data-open:hidden"
-                          />
-                        </span>
-                      </DisclosureButton>
-                    </h3>
-                    <DisclosurePanel className="pt-6">
-                      <div className="space-y-4">
-                        {section.options.map((option, optionIdx) => (
-                          <div key={option.value} className="flex gap-3">
-                            <div className="flex h-5 shrink-0 items-center">
-                              <div className="group grid size-4 grid-cols-1">
-                                <input
-                                  defaultValue={option.value}
-                                  defaultChecked={option.checked}
-                                  id={`filter-${section.id}-${optionIdx}`}
-                                  name={`${section.id}[]`}
-                                  type="checkbox"
-                                  className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-cyan-600 checked:bg-cyan-600 indeterminate:border-cyan-600 indeterminate:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
-                                />
-                                <svg
-                                  fill="none"
-                                  viewBox="0 0 14 14"
-                                  className="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25"
-                                >
-                                  <path
-                                    d="M3 8L6 11L11 3.5"
-                                    strokeWidth={2}
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="opacity-0 group-has-checked:opacity-100"
-                                  />
-                                  <path
-                                    d="M3 7H11"
-                                    strokeWidth={2}
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="opacity-0 group-has-indeterminate:opacity-100"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
-                            <label
-                              htmlFor={`filter-${section.id}-${optionIdx}`}
-                              className="text-sm text-gray-600"
-                            >
-                              {option.label}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </DisclosurePanel>
-                  </Disclosure>
                 ))}
-              </form>
+              </ul>
 
-              {/* Product grid */}
-              <div className="lg:col-span-3">
+              {/* Color Filter */}
+              <Disclosure as="div" className="border-b border-gray-200 py-6">
+                <h3 className="-my-3 flow-root">
+                  <DisclosureButton className="group flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500">
+                    <span className="font-medium text-gray-900">Color</span>
+                    <span className="ml-6 flex items-center">
+                      <PlusIcon className="size-5 group-data-open:hidden" />
+                      <MinusIcon className="size-5 group-not-data-open:hidden" />
+                    </span>
+                  </DisclosureButton>
+                </h3>
+                <DisclosurePanel className="pt-6">
+                  <div className="space-y-4">
+                    {colorOptions.map((color) => (
+                      <div key={color} className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          id={`color-${color}`}
+                          checked={selectedColors.includes(color)}
+                          onChange={() => handleCheckboxChange(color, "color")}
+                          className="h-4 w-4 rounded border-gray-300 text-cyan-600"
+                        />
+                        <label
+                          htmlFor={`color-${color}`}
+                          className="text-sm text-gray-600"
+                        >
+                          {color.charAt(0).toUpperCase() + color.slice(1)}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </DisclosurePanel>
+              </Disclosure>
+
+              {/* Storage Filter */}
+              <Disclosure as="div" className="border-b border-gray-200 py-6">
+                <h3 className="-my-3 flow-root">
+                  <DisclosureButton className="group flex w-full items-center justify-between py-3 text-sm text-gray-400 hover:text-gray-500">
+                    <span className="font-medium text-gray-900">Storage</span>
+                    <span className="ml-6 flex items-center">
+                      <PlusIcon className="size-5 group-data-open:hidden" />
+                      <MinusIcon className="size-5 group-not-data-open:hidden" />
+                    </span>
+                  </DisclosureButton>
+                </h3>
+                <DisclosurePanel className="pt-6">
+                  <div className="space-y-4">
+                    {storageOptions.map((size) => (
+                      <div key={size} className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          id={`storage-${size}`}
+                          checked={selectedStorages.includes(size)}
+                          onChange={() => handleCheckboxChange(size, "storage")}
+                          className="h-4 w-4 rounded border-gray-300 text-cyan-600"
+                        />
+                        <label
+                          htmlFor={`storage-${size}`}
+                          className="text-sm text-gray-600"
+                        >
+                          {size.toUpperCase()}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </DisclosurePanel>
+              </Disclosure>
+            </aside>
+
+            {/* Product Grid */}
+            <div className="lg:col-span-3">
+              {filteredProducts.length > 0 ? (
                 <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-                  {filteredProducts && filteredProducts.length > 0 ? (
-                    filteredProducts.map((product) => (
-                      <ProductCard key={product.id} product={product} />
-                    ))
-                  ) : (
-                    <div>No products found</div>
-                  )}
+                  {filteredProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
                 </div>
-              </div>
+              ) : (
+                <div className="text-gray-600">No products found.</div>
+              )}
             </div>
-          </section>
-        </main>
-      </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 };

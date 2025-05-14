@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/utils/hooks";
 import {
   Bars3Icon,
@@ -46,7 +46,6 @@ const Navbar = ({ open, setOpen }) => {
                 <Link
                   to="/login"
                   onClick={(e) => {
-                    e.preventDefault();
                     dispatch(logout());
                   }}
                   className="text-sm font-medium text-gray-700 hover:text-gray-800"
