@@ -4,34 +4,14 @@ import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
 } from "@headlessui/react";
-import {
-  ChevronDownIcon,
-  MinusIcon,
-  PlusIcon,
-} from "@heroicons/react/20/solid";
+import { MinusIcon, PlusIcon } from "@heroicons/react/20/solid";
 import { setProducts, setCategories } from "@/store/slices/productSlice";
 import {
   useGetProductsQuery,
   useGetCategoriesQuery,
 } from "../../services/productApi";
 import ProductCard from "./ProductCard";
-
-const sortOptions = [
-  { name: "Most Popular", href: "#", current: true },
-  { name: "Best Rating", href: "#", current: false },
-  { name: "Newest", href: "#", current: false },
-  { name: "Price: Low to High", href: "#", current: false },
-  { name: "Price: High to Low", href: "#", current: false },
-];
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
 
 const filters = [
   {
@@ -57,8 +37,6 @@ const filters = [
     ],
   },
 ];
-
-// I noticed when i access this page before accessing productlist page, the categories are not fetched yet.
 
 const Products = () => {
   const dispatch = useAppDispatch();
@@ -96,43 +74,6 @@ const Products = () => {
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">
               Latest Products
             </h1>
-
-            <div className="flex items-center">
-              <Menu as="div" className="relative inline-block text-left">
-                <div>
-                  <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-                    Sort
-                    <ChevronDownIcon
-                      aria-hidden="true"
-                      className="-mr-1 ml-1 size-5 shrink-0 text-gray-400 group-hover:text-gray-500"
-                    />
-                  </MenuButton>
-                </div>
-
-                <MenuItems
-                  transition
-                  className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
-                >
-                  <div className="py-1">
-                    {sortOptions.map((option) => (
-                      <MenuItem key={option.name}>
-                        <a
-                          href={option.href}
-                          className={classNames(
-                            option.current
-                              ? "font-medium text-gray-900"
-                              : "text-gray-500",
-                            "block px-4 py-2 text-sm data-focus:bg-gray-100 data-focus:outline-hidden",
-                          )}
-                        >
-                          {option.name}
-                        </a>
-                      </MenuItem>
-                    ))}
-                  </div>
-                </MenuItems>
-              </Menu>
-            </div>
           </div>
 
           <section aria-labelledby="products-heading" className="pt-6 pb-24">

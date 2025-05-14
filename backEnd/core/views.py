@@ -93,7 +93,7 @@ class CartItemViewSet(viewsets.ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         cart_item = self.get_object()
-        action_type = request.data.get("action")  # 'increment' or 'decrement'
+        action_type = request.data.get("action")
 
         if action_type == "increment":
             cart_item.quantity += 1
@@ -102,47 +102,48 @@ class CartItemViewSet(viewsets.ModelViewSet):
             cart_item.quantity -= 1
             if cart_item.quantity <= 0:
                 cart_item.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
+                return self._return_full_cart()
             cart_item.save()
         elif action_type == "remove":
             cart_item.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return self._return_full_cart()
         else:
             return Response({"detail": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = self.get_serializer(cart_item)
-        return Response(serializer.data)
-    
-    def create(self, serializer):
-        cart = Cart.objects.filter(user=self.request.user).first()
-        if not cart:
-            cart = Cart.objects.create(user=self.request.user)
+        return self._return_full_cart()
 
-        product_id = self.request.data.get('productId')
+    def create(self, request, *args, **kwargs):
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        product_id = request.data.get('productId')
+
         # Check if the product exists
         existing_item = CartItem.objects.filter(cart=cart, product_id=product_id).first()
 
-        # If the product already exists in the cart, increment the quantity
+        # Increment quantity if item exists
         if existing_item:
-            print("existing item found")
             existing_item.quantity += 1
             existing_item.save()
-            serializer = self.get_serializer(existing_item)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            # Create new cart item if it doesn't exist
+            CartItem.objects.create(
+                cart=cart,
+                product_id=product_id,
+                quantity=1,
+                color=request.data.get('color'),
+                size=request.data.get('size')
+            )
 
-        print("existing item not found")
-        # If the product does not exist, create a new cart item
-        new_item = CartItem.objects.create(
-            cart=cart,
-            product_id=product_id,
-            quantity=1,
-            color=self.request.data.get('color'),
-            size=self.request.data.get('size')
-        )
-        serializer = self.get_serializer(new_item)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return self._return_full_cart()
 
-    
+    def _return_full_cart(self):
+        cart = Cart.objects.filter(user=self.request.user).first()
+        if not cart:
+            return Response({"items": [], "totalQuantity": 0}, status=status.HTTP_200_OK)
+
+        serializer = CartSerializer(cart)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
     def perform_destroy(self, instance):
         # Delete the cart item
         instance.delete()
@@ -159,10 +160,11 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         items = data.pop("items", [])
         card_data = data.pop("card", None)
+        payment_method = data.get("payment_method")
 
         # Create card if card data exists
         card = None
-        if card_data:
+        if payment_method == "card" and card_data:
             card = CardDetails.objects.create(
                 card_number=card_data.get("cardNumber"),
                 expiry=card_data.get("expiry"),
@@ -174,13 +176,14 @@ class OrderViewSet(viewsets.ModelViewSet):
             user=request.user,
             shipping_address=data.get("shipping_address"),
             billing_address=data.get("billing_address"),
-            payment_method=data.get("payment_method"),
+            payment_method=payment_method,
             card=card,
         )
 
         # Create order items
         for item in items:
-            product_id = item.get("product_id")
+            product_id = item.get("product")
+            print("product id", product_id)
             product = Product.objects.get(id=product_id)
             OrderItem.objects.create(
                 order=order,

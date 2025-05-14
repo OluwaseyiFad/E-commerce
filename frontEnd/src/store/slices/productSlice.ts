@@ -21,7 +21,8 @@ const productsSlice = createSlice({
       state.cart = action.payload;
     },
     clearCart: (state) => {
-      state.cart = [];
+      Object.assign(state.cart, initialState.cart);
+      localStorage.removeItem("cart");
     },
     setOrders: (state, action) => {
       state.orders = action.payload;

@@ -3,6 +3,7 @@ import { Radio, RadioGroup } from "@headlessui/react";
 import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/utils/hooks";
 import { useCreateCartItemMutation } from "@/services/productApi";
+import { setCart } from "@/store/slices/productSlice";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -51,6 +52,7 @@ const Product = () => {
     try {
       const response = await createCartItem(cartItem).unwrap();
       console.log("Cart item created successfully:", response);
+      dispatch(setCart(response)); // Update the cart in the Redux store
     } catch (error) {
       console.error("Error creating cart item:", error);
     }

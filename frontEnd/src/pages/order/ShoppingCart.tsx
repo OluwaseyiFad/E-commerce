@@ -6,28 +6,29 @@ import {
   useGetCartItemsByUserQuery,
   useUpdateCartItemMutation,
   useDeleteCartItemMutation,
+  useClearCartMutation,
 } from "@/services/productApi";
 import CartSummary from "./CartSummary";
 
 const ShoppingCart = () => {
-  const [updateCartItem] = useUpdateCartItemMutation();
-  const [deleteCartItem] = useDeleteCartItemMutation();
+  const dispatch = useAppDispatch();
+
   const {
     data: cart,
     isLoading,
     error,
     refetch,
   } = useGetCartItemsByUserQuery({});
-  const dispatch = useAppDispatch();
+  const [updateCartItem] = useUpdateCartItemMutation();
+  const [deleteCartItem] = useDeleteCartItemMutation();
+  const [clearCart] = useClearCartMutation();
 
   useEffect(() => {
-    if (cart) {
+    if (cart?.items) {
       dispatch(setCart(cart));
     }
   }, [cart, dispatch]);
 
-  // Function to modify cart item
-  // action can be "increment +", "decrement -", or "remove"
   const modifyCartItem = async (itemId: number, action: string) => {
     try {
       if (action === "remove") {
@@ -41,19 +42,55 @@ const ShoppingCart = () => {
     }
   };
 
+  const handleClearCart = async () => {
+    try {
+      await clearCart({}).unwrap();
+      await refetch();
+    } catch (err) {
+      console.error("Error clearing cart:", err);
+    }
+  };
+
   if (isLoading) return <div className="p-6">Loading...</div>;
   if (error) return <div className="p-6 text-red-500">Error loading cart.</div>;
+
+  const hasItems = cart?.items?.length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="rounded-lg bg-white p-6 shadow lg:col-span-2">
-          <h2 className="mb-4 text-2xl font-semibold">Your Cart</h2>
-          {cart?.items?.length === 0 ? (
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-2xl font-semibold">Your Cart</h2>
+            {hasItems && (
+              <button
+                onClick={handleClearCart}
+                className="flex items-center gap-2 text-red-600 hover:text-red-700"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+                Clear Cart
+              </button>
+            )}
+          </div>
+
+          {!hasItems ? (
             <p className="text-gray-600">Your cart is empty.</p>
           ) : (
             <ul className="divide-y divide-gray-200">
-              {cart?.items?.map((item) => (
+              {cart.items.map((item) => (
                 <li
                   key={item.id}
                   className="flex border-b border-gray-200 py-6"
@@ -66,9 +103,8 @@ const ShoppingCart = () => {
                     />
                   </div>
 
-                  {/* Product details */}
                   <div className="ml-4 flex flex-1 justify-between">
-                    <div className="flex w-full flex-col items-start justify-start space-y-1 text-left">
+                    <div className="flex w-full flex-col space-y-1 text-left">
                       <h3 className="text-base font-medium text-gray-900">
                         {item.product_name}
                       </h3>
@@ -81,7 +117,6 @@ const ShoppingCart = () => {
                       </p>
                     </div>
 
-                    {/* Quantity modification and remove button */}
                     <div className="flex w-28 flex-col items-center justify-center">
                       <div className="flex items-center gap-2">
                         <button
@@ -112,7 +147,6 @@ const ShoppingCart = () => {
           )}
         </div>
 
-        {/* Order Summary */}
         <div className="h-fit rounded-lg bg-white p-6 shadow">
           <CartSummary totalPrice={cart?.total_price || 0} />
           <div className="flex flex-col gap-3">

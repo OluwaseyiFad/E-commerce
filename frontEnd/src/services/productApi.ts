@@ -1,4 +1,3 @@
-import { clear } from "console";
 import { getHeaderAuthorization } from "../utils/functions";
 import baseApi from "./baseApi";
 
