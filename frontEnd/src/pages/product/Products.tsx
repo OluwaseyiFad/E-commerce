@@ -1,25 +1,19 @@
 import { useEffect, useState } from "react";
-import { useAppDispatch } from "@/utils/hooks";
+import { useAppSelector } from "@/utils/hooks";
 import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
 import { MinusIcon, PlusIcon } from "@heroicons/react/20/solid";
-import { setProducts, setCategories } from "@/store/slices/productSlice";
-import {
-  useGetProductsQuery,
-  useGetCategoriesQuery,
-} from "../../services/productApi";
 import ProductCard from "./ProductCard";
 
 const colorOptions = ["black", "white", "silver", "gold", "blue"];
 const storageOptions = ["64gb", "128gb", "256gb", "512gb", "1tb"];
 
 const Products = () => {
-  const dispatch = useAppDispatch();
-  const { data: products = [], error, isLoading } = useGetProductsQuery({});
-  const { data: categories = [] } = useGetCategoriesQuery({});
+  const products = useAppSelector((state) => state.products.products);
+  const categories = useAppSelector((state) => state.products.categories);
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedColors, setSelectedColors] = useState<string[]>([
@@ -31,11 +25,7 @@ const Products = () => {
   const [filteredProducts, setFilteredProducts] = useState(products);
 
   useEffect(() => {
-    dispatch(setProducts(products));
-    dispatch(setCategories(categories));
-  }, [products, categories, dispatch]);
-
-  useEffect(() => {
+    console.log("products", products);
     const filtered = products.filter((product: any) => {
       const matchCategory = selectedCategory
         ? product.category === selectedCategory
@@ -67,9 +57,6 @@ const Products = () => {
     if (type === "color") setSelectedColors((prev) => toggle(prev));
     else setSelectedStorages((prev) => toggle(prev));
   };
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error fetching products</div>;
 
   return (
     <div className="bg-white">

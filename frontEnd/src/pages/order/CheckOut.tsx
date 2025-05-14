@@ -15,14 +15,13 @@ const CheckOut = () => {
   const [createOrder] = useCreateOrderMutation();
   const cart = useAppSelector((state) => state.products.cart);
   const user = useAppSelector((state) => state.auth.user);
-  const userProfile = useAppSelector((state) => state.auth.userProfile);
+  const userProfile = useAppSelector((state) => state.auth.userProfile)[0];
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [shippingAddressOption, setShippingAddressOption] = useState("saved");
   const [billingAddressOption, setBillingAddressOption] = useState("saved");
   const [newShippingAddressData, setNewShippingAddressData] = useState({
-    fullName: "",
     addressLine1: "",
     city: "",
     state: "",
@@ -30,7 +29,6 @@ const CheckOut = () => {
     country: "",
   });
   const [newBillingAddressData, setNewBillingAddressData] = useState({
-    fullName: "",
     addressLine1: "",
     city: "",
     state: "",
@@ -74,12 +72,12 @@ const CheckOut = () => {
       const shippingAddressStr =
         shippingAddressOption === "saved"
           ? userProfile.shipping_address
-          : `${newShippingAddressData.fullName}, ${newShippingAddressData.addressLine1}, ${newShippingAddressData.city}, ${newShippingAddressData.state}, ${newShippingAddressData.postalCode}, ${newShippingAddressData.country}`;
+          : `${newShippingAddressData.addressLine1}, ${newShippingAddressData.city}, ${newShippingAddressData.state}, ${newShippingAddressData.postalCode}, ${newShippingAddressData.country}`;
 
       const billingAddressStr =
         billingAddressOption === "saved"
           ? userProfile.billing_address
-          : `${newBillingAddressData.fullName}, ${newBillingAddressData.addressLine1}, ${newBillingAddressData.city}, ${newBillingAddressData.state}, ${newBillingAddressData.postalCode}, ${newBillingAddressData.country}`;
+          : `${newBillingAddressData.addressLine1}, ${newBillingAddressData.city}, ${newBillingAddressData.state}, ${newBillingAddressData.postalCode}, ${newBillingAddressData.country}`;
 
       const orderPayload = {
         user: user.id,

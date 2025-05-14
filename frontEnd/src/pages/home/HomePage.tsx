@@ -1,9 +1,29 @@
-import { useAppSelector } from "@/utils/hooks";
+import { useEffect } from "react";
+import { useAppDispatch } from "@/utils/hooks";
+import { setProducts, setCategories } from "@/store/slices/productSlice";
+import { setUserProfile } from "@/store/slices/authSlice";
+import { useGetCurrrentUserProfileQuery } from "../../services/userApi";
+import {
+  useGetProductsQuery,
+  useGetCategoriesQuery,
+} from "../../services/productApi";
 import ProductCard from "../product/ProductCard";
 
 const HomePage = () => {
-  const products = useAppSelector((state) => state.products.products);
-  console.log("products", products);
+  const { data: products = [], error, isLoading } = useGetProductsQuery({});
+  const { data: categories = [] } = useGetCategoriesQuery({});
+  const { data: userProfile } = useGetCurrrentUserProfileQuery({});
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    console.log("products", products);
+    dispatch(setProducts(products));
+    dispatch(setCategories(categories));
+    dispatch(setUserProfile(userProfile));
+  }, [products, categories, userProfile, dispatch]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error fetching products</div>;
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}

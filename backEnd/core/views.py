@@ -157,7 +157,7 @@ class OrderViewSet(viewsets.ModelViewSet):
   
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
-
+        print("data", data)
         items = data.pop("items", [])
         card_data = data.pop("card", None)
         payment_method = data.get("payment_method")

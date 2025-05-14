@@ -8,7 +8,8 @@ const OrderSummary = () => {
   const order = useAppSelector((state) => state.products.orders).find(
     (order) => order.id === productId,
   ); // Get the order by id
-  console.log("Order Summary", order);
+  const user = useAppSelector((state) => state.auth.user);
+
   return (
     <div className="mx-auto max-w-4xl space-y-6 rounded-xl bg-white p-6 shadow-md">
       <div>
@@ -36,17 +37,8 @@ const OrderSummary = () => {
                 <p className="text-sm text-gray-500">${item.total_price}</p>
               </div>
             </div>
-            <div className="text-right text-sm text-gray-600">
-              <p>Delivery address</p>
-              <p>Floyd Miles</p>
-              <p>{order.shipping_address}</p>
-              <p className="mt-1">Shipping updates: f•••@example.com</p>
-            </div>
           </div>
           <div>
-            {/* <p className="mb-1 text-sm text-gray-600">
-              {item.status} on {order.placed_at}
-            </p> */}
             <OrderProgress currentStep={item.status} />{" "}
           </div>
         </div>
@@ -57,15 +49,36 @@ const OrderSummary = () => {
         <div className="flex justify-between">
           <p>Billing address</p>
           <div className="text-right">
+            <p>{order.billing_address}</p>
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <p>Shipping address</p>
+          <div className="text-right">
             <p>{order.shipping_address}</p>
           </div>
         </div>
         <div className="flex justify-between">
-          <p>Payment information</p>
+          <p>Shipping updates</p>
           <div className="text-right">
-            <p>Ending with 4242</p>
-            <p>Expires 02/24</p>
+            <p>{user.email}</p>
           </div>
+        </div>
+
+        <div className="flex justify-between">
+          <p>Payment information</p>
+          {order.payment_method === "card" && (
+            <div className="text-right">
+              <p>Card </p>
+              <p>Ending with {order.card.card_number.slice(-4)}</p>
+              <p>Expires {order.card.expiry}</p>
+            </div>
+          )}
+          {order.payment_method === "paypal" && (
+            <div className="text-right">
+              <p>PayPal</p>
+            </div>
+          )}
         </div>
         <div className="flex justify-between font-medium">
           <p>Subtotal</p>

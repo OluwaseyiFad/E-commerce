@@ -49,7 +49,6 @@ const Login = () => {
       const { access, refresh, user } = response.data as LoginResponse;
       dispatch(setAuthTokens({ access, refresh }));
       dispatch(setUser(user));
-
       navigate("/");
     }
     if ("error" in response && response.error) {

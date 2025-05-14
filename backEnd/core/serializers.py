@@ -5,7 +5,7 @@ from django.utils.formats import date_format
 
 from .models import (
     UserProfile, Category, Brand, Product, Cart, CartItem, Order,
-    OrderItem
+    OrderItem, CardDetails
 )
 
 
@@ -96,9 +96,16 @@ class OrderItemSerializer(serializers.ModelSerializer):
         return obj.get_total_price()
     
     
+class CardDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CardDetails
+        fields = ['card_number', 'expiry', 'cvv']
+        read_only_fields = ['card_number', 'expiry', 'cvv']
+    
 class OrderSerializer(serializers.ModelSerializer):
       # Serialize the related OrderItems
     items = OrderItemSerializer(many=True, read_only=True)
+    card = CardDetailsSerializer(read_only=True)
     total_price = serializers.SerializerMethodField()
     placed_at = serializers.SerializerMethodField()
 
@@ -108,6 +115,9 @@ class OrderSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'shipping_address',
+            'billing_address',
+            'payment_method',
+            'card',
             'placed_at',
             'status',
             'items',

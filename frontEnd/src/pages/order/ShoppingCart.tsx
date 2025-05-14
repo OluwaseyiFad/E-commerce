@@ -151,8 +151,16 @@ const ShoppingCart = () => {
           <CartSummary totalPrice={cart?.total_price || 0} />
           <div className="flex flex-col gap-3">
             <Link
-              to="/checkout"
-              className="w-full rounded-md bg-cyan-600 py-2 font-medium text-white transition hover:bg-cyan-700"
+              to={hasItems ? "/checkout" : "#"}
+              onClick={(e) => {
+                if (!hasItems) e.preventDefault(); // prevent navigation if cart is empty
+              }}
+              aria-disabled={!hasItems}
+              className={`w-full rounded-md py-2 font-medium transition ${
+                !hasItems
+                  ? "cursor-not-allowed bg-gray-400 text-gray-300"
+                  : "bg-cyan-600 text-white hover:bg-cyan-700"
+              }`}
             >
               Checkout
             </Link>
