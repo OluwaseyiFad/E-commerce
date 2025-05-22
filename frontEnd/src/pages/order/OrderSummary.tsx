@@ -6,19 +6,23 @@ import { CartItemType, OrderSummaryType, UserType } from "@/utils/types";
 const OrderSummary = () => {
   const { id } = useParams(); // Get order id from the URL
   const productId = id ? parseInt(id, 10) : null;
-  const orders = useAppSelector((state) => state.products.orders) as OrderSummaryType[];
+  const orders = useAppSelector(
+    (state) => state.products.orders,
+  ) as OrderSummaryType[];
   const order = orders.find((order) => order.id === productId); // Get the order by id
   const user = useAppSelector((state) => state.auth.user) as UserType | null;
 
   if (!order) {
     return (
-      <div className="mx-auto max-w-4xl rounded-xl bg-white p-6 shadow-md text-center">
+      <div className="mx-auto max-w-4xl rounded-xl bg-white p-6 text-center shadow-md">
         <h2 className="text-xl font-semibold text-red-600">Order not found</h2>
-        <p className="text-gray-500">We couldn't find the order with ID #{productId}.</p>
+        <p className="text-gray-500">
+          We couldn't find the order with ID #{productId}.
+        </p>
       </div>
     );
   }
-console.log("orders", order);
+  console.log("orders", order);
   return (
     <div className="mx-auto max-w-4xl space-y-6 rounded-xl bg-white p-6 shadow-md">
       <div>

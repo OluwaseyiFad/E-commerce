@@ -17,7 +17,6 @@ export interface UserProfileType {
   shipping_address: string;
 }
 
-
 export interface AuthType {
   user: UserType | null;
   access: string | null;
@@ -32,7 +31,7 @@ export interface CartItemType {
   size: string;
   quantity: number;
   total_price: number;
-};
+}
 
 export interface CartType {
   id: number;
@@ -53,6 +52,10 @@ type StorageOption = {
   in_stock: boolean;
 };
 
+export type AuthHeaders = {
+  Authorization: string;
+};
+
 export interface Product {
   id: number;
   name: string;
@@ -66,7 +69,7 @@ export interface Product {
   storage: StorageOption[];
   created_at: string;
   updated_at: string;
-};
+}
 
 export interface Category {
   id: number;
@@ -76,17 +79,16 @@ export interface Category {
 }
 
 export interface OrderSummaryType {
-    id: number;
-    placed_at: string;
-    items: CartItemType[];
-    status: string;
-    billing_address: string;
-    shipping_address: string;
-    payment_method: string;
-    card?: { card_number: string; expiry: string };
-    total_price: number;
-  }
-
+  id: number;
+  placed_at: string;
+  items: CartItemType[];
+  status: string;
+  billing_address: string;
+  shipping_address: string;
+  payment_method: string;
+  card?: { card_number: string; expiry: string };
+  total_price: number;
+}
 
 export interface OrderType {
   id: number;
@@ -95,10 +97,8 @@ export interface OrderType {
   shipping_address: string;
   card: string | null;
   payment_method: string;
-  placed_at: string; 
+  placed_at: string;
   status: string;
   total_price: number;
   items: CartItemType[];
 }
-
-

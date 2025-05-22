@@ -52,8 +52,20 @@ const ShoppingCart = () => {
     }
   };
 
-  if (isLoading) return <div className="p-6">Loading...</div>;
-  if (error) return <div className="p-6 text-red-500">Error loading cart.</div>;
+  if (isLoading)
+    return (
+      <div className="rounded-md border border-gray-300 bg-gray-100 p-4 text-gray-700 shadow-sm">
+        Loading...
+      </div>
+    );
+  if (error) {
+    console.error("Error fetching order:", error);
+    return (
+      <div className="rounded-md border border-red-300 bg-red-100 p-4 text-red-700 shadow-sm">
+        <strong>No cart found!</strong>
+      </div>
+    );
+  }
 
   const hasItems = cart?.items?.length > 0;
 

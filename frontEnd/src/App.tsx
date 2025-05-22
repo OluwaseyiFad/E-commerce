@@ -37,7 +37,7 @@ function App() {
           <Route index element={<Order />} />
           <Route path=":id" element={<OrderSummary />} />
         </Route>
-        <Route path="user-profile" element={<UserProfile />} />
+        <Route path="profile" element={<UserProfile />} />
       </Route>
     </Routes>
   );

@@ -13,7 +13,10 @@ import { Product } from "@/utils/types";
 const HomePage = () => {
   const { data: products = [], error, isLoading } = useGetProductsQuery({});
   const { data: categories = [] } = useGetCategoriesQuery({});
-  const { data: userProfile } = useGetCurrrentUserProfileQuery({});
+  const { data: userProfileData } = useGetCurrrentUserProfileQuery({});
+  const userProfile = Array.isArray(userProfileData)
+    ? userProfileData[0]
+    : userProfileData;
   const dispatch = useAppDispatch();
 
   useEffect(() => {

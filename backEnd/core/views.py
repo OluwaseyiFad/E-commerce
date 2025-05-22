@@ -22,11 +22,18 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_authenticated:
-            return self.queryset.filter(user=user)
-        return self.queryset.none()  
+    @action(detail=False, methods=['get'], url_path='me')
+    def get_my_profile(self, request):
+        user = request.user
+        profile = UserProfile.objects.filter(user=user).first()
+        if not profile:
+            profile = UserProfile.objects.create(
+                user=user,
+                first_name=user.first_name,
+                last_name=user.last_name
+            )
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data)
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
     def partial_update(self, request, *args, **kwargs):
@@ -195,6 +202,17 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(order)
         return Response(serializer.data, status=status.HTTP_201_CREATED)  
+    
+    def list(self, request, *args, **kwargs):
+        # Get the order for the authenticated user
+        order = Order.objects.filter(user=request.user).first()
+        if not order:
+            print("No order found for this user")
+            return Response({"detail": "No order found for this user"}, status=404)
+
+        # Serialize the order using the OrderSerializer
+        serializer = OrderSerializer(order)
+        return Response(serializer.data)
     
 
 class OrderItemViewSet(viewsets.ModelViewSet):

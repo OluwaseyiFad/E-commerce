@@ -11,11 +11,13 @@ import { Product, Category } from "@/utils/types";
 const colorOptions = ["black", "white", "silver", "gold", "blue"];
 const storageOptions = ["64gb", "128gb", "256gb", "512gb", "1tb"];
 
-
-
 const Products = () => {
-  const products = useAppSelector((state) => state.products.products) as Product[];
-  const categories = useAppSelector((state) => state.products.categories) as Category[];
+  const products = useAppSelector(
+    (state) => state.products.products,
+  ) as Product[];
+  const categories = useAppSelector(
+    (state) => state.products.categories,
+  ) as Category[];
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedColors, setSelectedColors] = useState<string[]>([
@@ -36,7 +38,9 @@ const Products = () => {
 
       const availableColors = (product.colors || [])
         .filter((c: { color: string; in_stock: boolean }) => c.in_stock)
-        .map((c: { color: string; in_stock: boolean }) => c.color.toLowerCase());
+        .map((c: { color: string; in_stock: boolean }) =>
+          c.color.toLowerCase(),
+        );
       const matchColor = selectedColors.some((color) =>
         availableColors.includes(color),
       );

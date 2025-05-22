@@ -1,7 +1,9 @@
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import { useAppDispatch } from "@/utils/hooks";
 import React from "react";
+import { logout } from "@/store/slices/authSlice";
 
 type Props = {
   open: boolean;
@@ -15,6 +17,7 @@ const links = [
 ];
 const DialogOption: React.FC<Props> = ({ open, setOpen }) => {
   const isAuthenticated = !!localStorage.getItem("access");
+  const dispatch = useAppDispatch();
 
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">
@@ -56,16 +59,16 @@ const DialogOption: React.FC<Props> = ({ open, setOpen }) => {
           {isAuthenticated ? (
             <div className="space-y-6 border-t border-gray-200 px-4 py-6">
               <div className="flow-root">
-                <button
+                <Link
+                  to="/login"
                   onClick={() => {
-                    localStorage.removeItem("access");
                     setOpen(false);
-                    window.location.href = "/"; // or use `useNavigate` for better routing
+                    dispatch(logout());
                   }}
                   className="-m-2 block w-full p-2 text-left font-medium text-gray-900"
                 >
                   Log out
-                </button>
+                </Link>
               </div>
             </div>
           ) : (

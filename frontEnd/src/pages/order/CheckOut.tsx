@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/utils/hooks";
 import {
@@ -9,14 +9,21 @@ import { clearCart } from "@/store/slices/productSlice";
 import ShippingAddressForm from "./ShippingAddressForm";
 import BillingAddressForm from "./BillingAddressForm";
 import CartSummary from "./CartSummary";
-import { CartItemType, CartType, UserType, UserProfileType} from "@/utils/types";
+import {
+  CartItemType,
+  CartType,
+  UserType,
+  UserProfileType,
+} from "@/utils/types";
 
 const CheckOut = () => {
   const [clearCartItems] = useClearCartMutation();
   const [createOrder] = useCreateOrderMutation();
   const cart = useAppSelector((state) => state.products.cart) as CartType | [];
   const user = useAppSelector((state) => state.auth.user) as UserType | null;
-  const userProfile = useAppSelector((state) => state.auth.userProfile)?.[0] as UserProfileType | undefined;
+  const userProfile = useAppSelector((state) => state.auth.userProfile)?.[0] as
+    | UserProfileType
+    | undefined;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -43,11 +50,6 @@ const CheckOut = () => {
     cvv: "",
   });
 
-  useEffect(() => {
-    console.log("Updated Cart: ", cart);
-    console.log("User Profile: ", userProfile);
-  }, [cart, userProfile]); // Runs when `cart` state changes
-
   const handleNewShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewShippingAddressData((prev) => ({ ...prev, [name]: value }));
@@ -58,7 +60,8 @@ const CheckOut = () => {
     setNewBillingAddressData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => setPaymentMethod(e.target.value);
+  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setPaymentMethod(e.target.value);
 
   const handleCardDetailsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -82,12 +85,14 @@ const CheckOut = () => {
 
       const orderPayload = {
         user: user?.id,
-        items: Array.isArray(cart) ? [] : cart.items.map((item: CartItemType) => ({
-          product: item.product_id,
-          quantity: item.quantity,
-          color: item.color,
-          size: item.size,
-        })),
+        items: Array.isArray(cart)
+          ? []
+          : cart.items.map((item: CartItemType) => ({
+              product: item.product_id,
+              quantity: item.quantity,
+              color: item.color,
+              size: item.size,
+            })),
         payment_method: paymentMethod,
         shipping_address: shippingAddressStr,
         billing_address: billingAddressStr,
@@ -200,7 +205,9 @@ const CheckOut = () => {
         </div>
 
         <div className="h-fit rounded-lg bg-white p-6 shadow">
-          <CartSummary totalPrice={cart && "total_price" in cart ? cart.total_price : 0} />
+          <CartSummary
+            totalPrice={cart && "total_price" in cart ? cart.total_price : 0}
+          />
         </div>
       </div>
     </div>

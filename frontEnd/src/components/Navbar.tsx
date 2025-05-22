@@ -1,9 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/utils/hooks";
-import {
-  Bars3Icon,
-  ShoppingBagIcon,
-} from "@heroicons/react/24/outline";
+import { Bars3Icon, ShoppingBagIcon } from "@heroicons/react/24/outline";
 import logo from "../assets/logo.svg";
 import { logout } from "../store/slices/authSlice";
 

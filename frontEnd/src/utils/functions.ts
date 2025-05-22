@@ -1,9 +1,12 @@
+import { AuthHeaders } from "./types";
+
 export const getHeaderAuthorization = () => {
-  const headers: any = {};
+  const headers: AuthHeaders = {
+    Authorization: "",
+  };
 
   if (localStorage.getItem("access")) {
     headers.Authorization = `JWT ${localStorage.getItem("access")}`;
   }
-  console.log("headers: ", headers);
   return headers;
 };

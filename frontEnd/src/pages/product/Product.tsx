@@ -26,16 +26,21 @@ const Product = () => {
 
   const dispatch = useAppDispatch();
 
-  
-  const products = useAppSelector((state) => state.products.products) as ProductType[]; // Get products from the Redux store
-  const product = products.find((product) => product.id === productId) as ProductType | undefined; // Find the product by id
+  const products = useAppSelector(
+    (state) => state.products.products,
+  ) as ProductType[]; // Get products from the Redux store
+  const product = products.find((product) => product.id === productId) as
+    | ProductType
+    | undefined; // Find the product by id
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   const transformedColors = product?.colors.map(({ color, in_stock }) => ({
     name: color,
     in_stock,
-    ...((colorClassMap as Record<string, { class: string; selectedClass: string }>)[color] || {
+    ...((
+      colorClassMap as Record<string, { class: string; selectedClass: string }>
+    )[color] || {
       class: "bg-gray-200",
       selectedClass: "ring-gray-400",
     }),

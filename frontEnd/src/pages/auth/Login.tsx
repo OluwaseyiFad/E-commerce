@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useLoginMutation } from "../../services/userApi";
 import { setAuthTokens, setUser } from "../../store/slices/authSlice";
+import { UserType } from "@/utils/types";
 
 interface LoginFormState {
   email: string;
@@ -14,7 +15,7 @@ interface LoginFormState {
 interface LoginResponse {
   access: string;
   refresh: string;
-  user: any;
+  user: UserType;
 }
 
 const initialFormState: LoginFormState = {
@@ -32,6 +33,7 @@ const Login = () => {
 
   const [postLoginData] = useLoginMutation();
 
+  // Handle login form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -39,12 +41,14 @@ const Login = () => {
     setFormState(initialFormState);
   };
 
+  // Handle login logic
   const handleLogin = async () => {
     const formData = new FormData();
     formData.append("email", formState.email);
     formData.append("password", formState.password);
     const response = await postLoginData(formData);
-    console.log("response", response);
+
+    // Check if the response is successful or not and process accordingly
     if ("data" in response && response.data) {
       const { access, refresh, user } = response.data as LoginResponse;
       dispatch(setAuthTokens({ access, refresh }));
@@ -56,7 +60,7 @@ const Login = () => {
     }
     setLoading(false);
   };
-
+  // Handle form input changes
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement

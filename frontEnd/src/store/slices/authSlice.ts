@@ -36,8 +36,11 @@ const authSlice = createSlice({
       // state.access = initialState.access;
       Object.assign(state, initialState);
       localStorage.removeItem("user");
+      localStorage.removeItem("userProfile");
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
+      localStorage.removeItem("cart");
+      localStorage.removeItem("orders");
     },
   },
 });

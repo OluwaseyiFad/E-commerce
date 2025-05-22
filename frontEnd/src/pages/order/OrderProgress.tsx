@@ -1,6 +1,5 @@
 import React from "react";
 
-
 const steps: string[] = ["Order placed", "Processing", "Shipped", "Delivered"];
 
 interface Props {

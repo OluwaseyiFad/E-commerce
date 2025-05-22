@@ -3,7 +3,7 @@ import { useGetOrdersByUserQuery } from "../../services/productApi";
 import { setOrders } from "@/store/slices/productSlice";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import {OrderType} from "@/utils/types";
+import { OrderType } from "@/utils/types";
 
 const Orders: React.FC = () => {
   const { data: orders, isLoading, error } = useGetOrdersByUserQuery({});
@@ -14,11 +14,21 @@ const Orders: React.FC = () => {
     dispatch(setOrders(orders));
   }, [orders, dispatch]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="rounded-md border border-gray-300 bg-gray-100 p-4 text-gray-700 shadow-sm">
+        Loading...
+      </div>
+    );
   if (error) {
     console.error("Error fetching order:", error);
-    return <div>Error fetching order items</div>;
+    return (
+      <div className="rounded-md border border-red-300 bg-red-100 p-4 text-red-700 shadow-sm">
+        <strong>No order found!</strong>
+      </div>
+    );
   }
+
   return (
     <div className="mx-auto mt-10 max-w-2xl p-4">
       <h2 className="mb-4 text-2xl font-semibold">Your Orders</h2>

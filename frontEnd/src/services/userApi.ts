@@ -20,9 +20,10 @@ export const userApi = baseApi.injectEndpoints({
     }),
     getCurrrentUserProfile: builder.query({
       query: () => ({
-        url: "api/user-profile/",
+        url: "api/user-profile/me/",
         headers: getHeaderAuthorization(),
       }),
+      providesTags: ["UserProfile"],
     }),
     patchCurrentUserProfile: builder.mutation({
       query: (body) => ({
@@ -31,6 +32,7 @@ export const userApi = baseApi.injectEndpoints({
         body: body.data,
         headers: getHeaderAuthorization(),
       }),
+      invalidatesTags: ["UserProfile"],
     }),
     login: builder.mutation({
       query: (body) => ({
