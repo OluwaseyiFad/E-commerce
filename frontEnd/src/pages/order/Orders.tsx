@@ -3,12 +3,14 @@ import { useGetOrdersByUserQuery } from "../../services/productApi";
 import { setOrders } from "@/store/slices/productSlice";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import {OrderType} from "@/utils/types";
 
 const Orders: React.FC = () => {
   const { data: orders, isLoading, error } = useGetOrdersByUserQuery({});
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log("orders", orders);
     dispatch(setOrders(orders));
   }, [orders, dispatch]);
 
@@ -21,7 +23,7 @@ const Orders: React.FC = () => {
     <div className="mx-auto mt-10 max-w-2xl p-4">
       <h2 className="mb-4 text-2xl font-semibold">Your Orders</h2>
       <ul className="divide-y divide-gray-200">
-        {orders.map((order) => (
+        {orders.map((order: OrderType) => (
           <li key={order.id} className="flex items-center justify-between py-4">
             <div>
               <p className="text-lg font-medium">Order #{order.id}</p>

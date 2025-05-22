@@ -1,6 +1,13 @@
 import { Link } from "react-router-dom";
+import { Product } from "@/utils/types";
 
-const ProductCard = ({ product }) => {
+
+
+interface ProductCardProps {
+  product: Product;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <Link key={product.id} to={`/products/${product.id}`} className="group">
       <img

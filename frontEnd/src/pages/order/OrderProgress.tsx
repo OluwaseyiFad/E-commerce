@@ -1,11 +1,10 @@
 import React from "react";
 
-type Step = "Order placed" | "Processing" | "Shipped" | "Delivered";
 
-const steps: Step[] = ["Order placed", "Processing", "Shipped", "Delivered"];
+const steps: string[] = ["Order placed", "Processing", "Shipped", "Delivered"];
 
 interface Props {
-  currentStep: Step;
+  currentStep: string;
 }
 
 // OrderProgress component to show the progress of an order

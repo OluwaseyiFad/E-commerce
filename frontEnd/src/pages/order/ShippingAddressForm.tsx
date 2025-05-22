@@ -48,7 +48,7 @@ const ShippingAddressForm = ({
                 key={key}
                 type="text"
                 name={key}
-                value={value}
+                value={value as string}
                 onChange={handleNewShippingChange}
                 placeholder={key
                   .replace(/([A-Z])/g, " $1")

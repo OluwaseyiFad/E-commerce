@@ -8,6 +8,7 @@ import {
   useGetCategoriesQuery,
 } from "../../services/productApi";
 import ProductCard from "../product/ProductCard";
+import { Product } from "@/utils/types";
 
 const HomePage = () => {
   const { data: products = [], error, isLoading } = useGetProductsQuery({});
@@ -71,7 +72,7 @@ const HomePage = () => {
             {/* Show only the first 8 products */}
             {products?.length > 0 ? (
               <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-                {products.slice(0, 8).map((product) => (
+                {products.slice(0, 8).map((product: Product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>

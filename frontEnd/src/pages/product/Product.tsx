@@ -4,8 +4,9 @@ import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/utils/hooks";
 import { useCreateCartItemMutation } from "@/services/productApi";
 import { setCart } from "@/store/slices/productSlice";
+import { Product as ProductType } from "@/utils/types";
 
-function classNames(...classes) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -24,15 +25,17 @@ const Product = () => {
   const productId = id ? parseInt(id, 10) : null;
 
   const dispatch = useAppDispatch();
-  const products = useAppSelector((state) => state.products.products); // Get products from the Redux store
-  const product = products.find((product) => product.id === productId); // Find the product by id
-  const [selectedColor, setSelectedColor] = useState(null);
-  const [selectedSize, setSelectedSize] = useState(null);
 
-  const transformedColors = product.colors.map(({ color, in_stock }) => ({
+  
+  const products = useAppSelector((state) => state.products.products) as ProductType[]; // Get products from the Redux store
+  const product = products.find((product) => product.id === productId) as ProductType | undefined; // Find the product by id
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+
+  const transformedColors = product?.colors.map(({ color, in_stock }) => ({
     name: color,
     in_stock,
-    ...(colorClassMap[color] || {
+    ...((colorClassMap as Record<string, { class: string; selectedClass: string }>)[color] || {
       class: "bg-gray-200",
       selectedClass: "ring-gray-400",
     }),
@@ -156,7 +159,7 @@ const Product = () => {
                         onChange={setSelectedColor}
                         className="flex items-center gap-x-3"
                       >
-                        {transformedColors.map((color) => (
+                        {transformedColors?.map((color) => (
                           <Radio
                             key={color.name}
                             value={color.name}

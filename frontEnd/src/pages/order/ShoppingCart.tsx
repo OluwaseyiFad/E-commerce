@@ -9,6 +9,7 @@ import {
   useClearCartMutation,
 } from "@/services/productApi";
 import CartSummary from "./CartSummary";
+import { CartItemType } from "@/utils/types";
 
 const ShoppingCart = () => {
   const dispatch = useAppDispatch();
@@ -90,7 +91,7 @@ const ShoppingCart = () => {
             <p className="text-gray-600">Your cart is empty.</p>
           ) : (
             <ul className="divide-y divide-gray-200">
-              {cart.items.map((item) => (
+              {cart.items.map((item: CartItemType) => (
                 <li
                   key={item.id}
                   className="flex border-b border-gray-200 py-6"

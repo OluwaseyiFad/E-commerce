@@ -108,7 +108,7 @@ const UserProfile = () => {
               type="text"
               id={field.name}
               name={field.name}
-              value={profile[field.name] || ""}
+              value={profile[field.name as keyof UserProfileType] || ""}
               onChange={handleInputChange}
               className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm focus:border-blue-500 focus:ring-blue-500"
             />

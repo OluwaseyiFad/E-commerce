@@ -9,13 +9,14 @@ import { clearCart } from "@/store/slices/productSlice";
 import ShippingAddressForm from "./ShippingAddressForm";
 import BillingAddressForm from "./BillingAddressForm";
 import CartSummary from "./CartSummary";
+import { CartItemType, CartType, UserType, UserProfileType} from "@/utils/types";
 
 const CheckOut = () => {
   const [clearCartItems] = useClearCartMutation();
   const [createOrder] = useCreateOrderMutation();
-  const cart = useAppSelector((state) => state.products.cart);
-  const user = useAppSelector((state) => state.auth.user);
-  const userProfile = useAppSelector((state) => state.auth.userProfile)[0];
+  const cart = useAppSelector((state) => state.products.cart) as CartType | [];
+  const user = useAppSelector((state) => state.auth.user) as UserType | null;
+  const userProfile = useAppSelector((state) => state.auth.userProfile)?.[0] as UserProfileType | undefined;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -42,24 +43,24 @@ const CheckOut = () => {
     cvv: "",
   });
 
-  console.log("User Profile: ", userProfile);
   useEffect(() => {
     console.log("Updated Cart: ", cart);
-  }, [cart]); // Runs when `cart` state changes
+    console.log("User Profile: ", userProfile);
+  }, [cart, userProfile]); // Runs when `cart` state changes
 
-  const handleNewShippingChange = (e) => {
+  const handleNewShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewShippingAddressData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNewBillingChange = (e) => {
+  const handleNewBillingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewBillingAddressData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePaymentChange = (e) => setPaymentMethod(e.target.value);
+  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => setPaymentMethod(e.target.value);
 
-  const handleCardDetailsChange = (e) => {
+  const handleCardDetailsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCardDetails((prevDetails) => ({
       ...prevDetails,
@@ -71,17 +72,17 @@ const CheckOut = () => {
     try {
       const shippingAddressStr =
         shippingAddressOption === "saved"
-          ? userProfile.shipping_address
+          ? userProfile?.shipping_address
           : `${newShippingAddressData.addressLine1}, ${newShippingAddressData.city}, ${newShippingAddressData.state}, ${newShippingAddressData.postalCode}, ${newShippingAddressData.country}`;
 
       const billingAddressStr =
         billingAddressOption === "saved"
-          ? userProfile.billing_address
+          ? userProfile?.billing_address
           : `${newBillingAddressData.addressLine1}, ${newBillingAddressData.city}, ${newBillingAddressData.state}, ${newBillingAddressData.postalCode}, ${newBillingAddressData.country}`;
 
       const orderPayload = {
-        user: user.id,
-        items: cart.items.map((item) => ({
+        user: user?.id,
+        items: Array.isArray(cart) ? [] : cart.items.map((item: CartItemType) => ({
           product: item.product_id,
           quantity: item.quantity,
           color: item.color,
@@ -199,7 +200,7 @@ const CheckOut = () => {
         </div>
 
         <div className="h-fit rounded-lg bg-white p-6 shadow">
-          <CartSummary totalPrice={cart?.total_price || 0} />
+          <CartSummary totalPrice={cart && "total_price" in cart ? cart.total_price : 0} />
         </div>
       </div>
     </div>

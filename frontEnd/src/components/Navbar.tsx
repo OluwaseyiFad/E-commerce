@@ -2,18 +2,22 @@ import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/utils/hooks";
 import {
   Bars3Icon,
-  MagnifyingGlassIcon,
   ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../assets/logo.svg";
 import { logout } from "../store/slices/authSlice";
 
 import PopoverComponent from "./PopoverComponent";
+import { CartType } from "@/utils/types";
 
-const Navbar = ({ open, setOpen }) => {
+interface NavbarProps {
+  setOpen: (open: boolean) => void;
+}
+
+const Navbar = ({ setOpen }: NavbarProps) => {
   const isAuthenticated = !!localStorage.getItem("access");
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state) => state.products.cart);
+  const cart = useAppSelector((state) => state.products.cart) as CartType | [];
   console.log("cart", cart);
   return (
     <nav aria-label="Top" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -45,7 +49,7 @@ const Navbar = ({ open, setOpen }) => {
               <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                 <Link
                   to="/login"
-                  onClick={(e) => {
+                  onClick={() => {
                     dispatch(logout());
                   }}
                   className="text-sm font-medium text-gray-700 hover:text-gray-800"
@@ -83,7 +87,7 @@ const Navbar = ({ open, setOpen }) => {
                   className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
                 />
                 <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                  {cart?.items?.length || 0}
+                  {Array.isArray(cart) ? 0 : cart?.items?.length || 0}
                 </span>
                 <span className="sr-only">items in cart, view bag</span>
               </Link>

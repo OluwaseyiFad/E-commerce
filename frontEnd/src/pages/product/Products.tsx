@@ -7,13 +7,15 @@ import {
 } from "@headlessui/react";
 import { MinusIcon, PlusIcon } from "@heroicons/react/20/solid";
 import ProductCard from "./ProductCard";
-
+import { Product, Category } from "@/utils/types";
 const colorOptions = ["black", "white", "silver", "gold", "blue"];
 const storageOptions = ["64gb", "128gb", "256gb", "512gb", "1tb"];
 
+
+
 const Products = () => {
-  const products = useAppSelector((state) => state.products.products);
-  const categories = useAppSelector((state) => state.products.categories);
+  const products = useAppSelector((state) => state.products.products) as Product[];
+  const categories = useAppSelector((state) => state.products.categories) as Category[];
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedColors, setSelectedColors] = useState<string[]>([
@@ -22,25 +24,26 @@ const Products = () => {
   const [selectedStorages, setSelectedStorages] = useState<string[]>([
     ...storageOptions,
   ]);
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
 
   useEffect(() => {
     console.log("products", products);
+    console.log("Categories", categories);
     const filtered = products.filter((product: any) => {
       const matchCategory = selectedCategory
         ? product.category === selectedCategory
         : true;
 
       const availableColors = (product.colors || [])
-        .filter((c) => c.in_stock)
-        .map((c) => c.color.toLowerCase());
+        .filter((c: { color: string; in_stock: boolean }) => c.in_stock)
+        .map((c: { color: string; in_stock: boolean }) => c.color.toLowerCase());
       const matchColor = selectedColors.some((color) =>
         availableColors.includes(color),
       );
 
       const availableStorages = (product.storage || [])
-        .filter((s) => s.in_stock)
-        .map((s) => s.size.toLowerCase());
+        .filter((s: { size: string; in_stock: boolean }) => s.in_stock)
+        .map((s: { size: string; in_stock: boolean }) => s.size.toLowerCase());
       const matchStorage = selectedStorages.some((size) =>
         availableStorages.includes(size),
       );

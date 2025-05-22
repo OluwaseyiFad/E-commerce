@@ -48,7 +48,7 @@ const BillingAddressForm = ({
                 key={key}
                 type="text"
                 name={key}
-                value={value}
+                value={value as string}
                 onChange={handleNewBillingChange}
                 placeholder={key
                   .replace(/([A-Z])/g, " $1")

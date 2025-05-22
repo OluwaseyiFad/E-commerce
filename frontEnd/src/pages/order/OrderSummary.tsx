@@ -1,15 +1,24 @@
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "@/utils/hooks";
 import OrderProgress from "./OrderProgress";
+import { CartItemType, OrderSummaryType, UserType } from "@/utils/types";
 
 const OrderSummary = () => {
   const { id } = useParams(); // Get order id from the URL
   const productId = id ? parseInt(id, 10) : null;
-  const order = useAppSelector((state) => state.products.orders).find(
-    (order) => order.id === productId,
-  ); // Get the order by id
-  const user = useAppSelector((state) => state.auth.user);
+  const orders = useAppSelector((state) => state.products.orders) as OrderSummaryType[];
+  const order = orders.find((order) => order.id === productId); // Get the order by id
+  const user = useAppSelector((state) => state.auth.user) as UserType | null;
 
+  if (!order) {
+    return (
+      <div className="mx-auto max-w-4xl rounded-xl bg-white p-6 shadow-md text-center">
+        <h2 className="text-xl font-semibold text-red-600">Order not found</h2>
+        <p className="text-gray-500">We couldn't find the order with ID #{productId}.</p>
+      </div>
+    );
+  }
+console.log("orders", order);
   return (
     <div className="mx-auto max-w-4xl space-y-6 rounded-xl bg-white p-6 shadow-md">
       <div>
@@ -23,7 +32,7 @@ const OrderSummary = () => {
       </div>
 
       {/* Order items */}
-      {order.items.map((item) => (
+      {order.items.map((item: CartItemType) => (
         <div key={item.id} className="space-y-3 rounded-lg border p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -39,7 +48,7 @@ const OrderSummary = () => {
             </div>
           </div>
           <div>
-            <OrderProgress currentStep={item.status} />{" "}
+            <OrderProgress currentStep={order.status} />{" "}
           </div>
         </div>
       ))}
@@ -61,7 +70,7 @@ const OrderSummary = () => {
         <div className="flex justify-between">
           <p>Shipping updates</p>
           <div className="text-right">
-            <p>{user.email}</p>
+            <p>{user?.email}</p>
           </div>
         </div>
 
@@ -70,8 +79,8 @@ const OrderSummary = () => {
           {order.payment_method === "card" && (
             <div className="text-right">
               <p>Card </p>
-              <p>Ending with {order.card.card_number.slice(-4)}</p>
-              <p>Expires {order.card.expiry}</p>
+              <p>Ending with {order.card?.card_number?.slice(-4) ?? "N/A"}</p>
+              <p>Expires {order.card?.expiry ?? "N/A"}</p>
             </div>
           )}
           {order.payment_method === "paypal" && (
