@@ -1,0 +1,22 @@
+certbot --nginx failed (adding SSL)
+
+
+# If i change django code
+sudo systemctl restart gunicorn
+
+# If i change ngix config
+sudo nginx -t  # optional, to test config for errors
+sudo systemctl reload nginx
+
+# If i change static files
+python manage.py collectstatic
+sudo systemctl restart gunicorn (If needed)
+
+
+# If facing issues with gunicorn or with server shitting down, run this to test the services
+gunicorn --bind unix:/run/gunicorn/gunicorn.sock superlian.wsgi:application
+
+
+# if issue is with run/gunicorn folder not available, we can use this code to fix that
+sudo mkdir -p /run/gunicorn
+sudo chown root:www-data /run/gunicorn
