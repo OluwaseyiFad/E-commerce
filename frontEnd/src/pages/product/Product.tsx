@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/utils/hooks";
@@ -23,6 +23,9 @@ const Product = () => {
   const [createCartItem] = useCreateCartItemMutation(); // Hook to create a cart item
   const { id } = useParams(); // Get product id from the URL
   const productId = id ? parseInt(id, 10) : null;
+  const [imgSrc, setImgSrc] = useState(
+    "https://placehold.co/600x400?text=No+Image",
+  );
 
   const dispatch = useAppDispatch();
 
@@ -45,6 +48,12 @@ const Product = () => {
       selectedClass: "ring-gray-400",
     }),
   }));
+
+  useEffect(() => {
+    if (product) {
+      setImgSrc(product.image || "https://placehold.co/600x400?text=No+Image");
+    }
+  }, [product]);
 
   const createCartItemHandler = async () => {
     console.log("Creating cart item with productId:", productId);
@@ -108,25 +117,37 @@ const Product = () => {
         {/* Image gallery */}
         <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
           <img
-            alt={product.name}
-            src="https://picsum.photos/200/300"
+            alt={product.name + " image"}
+            src={imgSrc}
+            onError={() =>
+              setImgSrc("https://placehold.co/600x400?text=No+Image")
+            }
             className="hidden size-full rounded-lg object-cover lg:block"
           />
           <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
             <img
-              alt={product.name}
-              src="https://picsum.photos/200/300"
+              alt={product.name + " image"}
+              src={imgSrc}
+              onError={() =>
+                setImgSrc("https://placehold.co/600x400?text=No+Image")
+              }
               className="aspect-3/2 w-full rounded-lg object-cover"
             />
             <img
-              alt={product.name}
-              src="https://picsum.photos/200/300"
+              alt={product.name + " image"}
+              src={imgSrc}
+              onError={() =>
+                setImgSrc("https://placehold.co/600x400?text=No+Image")
+              }
               className="aspect-3/2 w-full rounded-lg object-cover"
             />
           </div>
           <img
-            alt={product.name}
-            src="https://picsum.photos/200/300"
+            alt={product.name + " image"}
+            src={imgSrc}
+            onError={() =>
+              setImgSrc("https://placehold.co/600x400?text=No+Image")
+            }
             className="aspect-4/5 size-full object-cover sm:rounded-lg lg:aspect-auto"
           />
         </div>

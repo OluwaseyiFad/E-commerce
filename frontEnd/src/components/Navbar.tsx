@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "@/utils/hooks";
+import { useAppDispatch } from "@/utils/hooks";
 import { Bars3Icon, ShoppingBagIcon } from "@heroicons/react/24/outline";
 import logo from "../assets/logo.svg";
 import { logout } from "../store/slices/authSlice";
-
+import { useGetCartItemsByUserQuery } from "@/services/productApi";
 import PopoverComponent from "./PopoverComponent";
-import { CartType } from "@/utils/types";
 
 interface NavbarProps {
   setOpen: (open: boolean) => void;
@@ -14,7 +13,9 @@ interface NavbarProps {
 const Navbar = ({ setOpen }: NavbarProps) => {
   const isAuthenticated = !!localStorage.getItem("access");
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state) => state.products.cart) as CartType | [];
+  const { data: cart } = useGetCartItemsByUserQuery(undefined, {
+    skip: !isAuthenticated,
+  });
   console.log("cart", cart);
   return (
     <nav aria-label="Top" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
