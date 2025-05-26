@@ -36,7 +36,7 @@ export const productApi = baseApi.injectEndpoints({
     }),
     getCartItemsByUser: builder.query({
       query: () => ({
-        url: "/api/cart/",
+        url: "/api/cart/me",
         method: "GET",
         headers: getHeaderAuthorization(),
       }),
@@ -87,7 +87,7 @@ export const productApi = baseApi.injectEndpoints({
     }),
     getOrdersByUser: builder.query({
       query: () => ({
-        url: "/api/orders/",
+        url: "/api/orders/me",
         method: "GET",
         headers: getHeaderAuthorization(),
       }),

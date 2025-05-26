@@ -21,9 +21,9 @@ const CheckOut = () => {
   const [createOrder] = useCreateOrderMutation();
   const cart = useAppSelector((state) => state.products.cart) as CartType | [];
   const user = useAppSelector((state) => state.auth.user) as UserType | null;
-  const userProfile = useAppSelector((state) => state.auth.userProfile)?.[0] as
-    | UserProfileType
-    | undefined;
+  const userProfile = useAppSelector(
+    (state) => state.auth.userProfile,
+  ) as UserProfileType | null;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 

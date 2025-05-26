@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { usePatchCurrentUserProfileMutation } from "@/services/userApi";
-import { useAppDispatch, useAppSelector } from "@/utils/hooks";
-// import { setUserProfile } from "@/store/slices/authSlice";
+import { useAppDispatch } from "@/utils/hooks";
+import { useGetCurrrentUserProfileQuery } from "@/services/userApi";
+import { setUserProfile } from "@/store/slices/authSlice";
 import { UserProfileType } from "@/utils/types";
 
 const initialState: UserProfileType = {
@@ -17,9 +18,9 @@ const initialState: UserProfileType = {
 const UserProfile = () => {
   const dispatch = useAppDispatch();
   const [profile, setProfile] = useState<UserProfileType>(initialState);
-  const userProfileData = useAppSelector(
-    (state) => state.auth.userProfile,
-  ) as UserProfileType | null;
+  const { data: userProfileData, isLoading } = useGetCurrrentUserProfileQuery(
+    {},
+  );
   const [updateProfile] = usePatchCurrentUserProfileMutation();
 
   useEffect(() => {
@@ -50,11 +51,16 @@ const UserProfile = () => {
         id: profile.id,
         data: profile,
       }).unwrap();
-      console.log("Profile updated:", response);
+      dispatch(setUserProfile(response));
     } catch (err) {
       console.error("Error updating profile:", err);
     }
   };
+
+  if (isLoading)
+    return (
+      <p className="mt-10 text-center text-gray-500">Loading profile...</p>
+    );
 
   if (!userProfileData)
     return (

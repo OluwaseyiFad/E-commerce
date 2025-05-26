@@ -68,8 +68,10 @@ class CartViewSet(viewsets.ModelViewSet):
             return Cart.objects.none()
         
         return [cart]  # Return the cart object in a list
-
-    def list(self, request, *args, **kwargs):
+    
+    # This action will be called when the user wants to get their cart
+    @action(detail=False, methods=['get'], url_path='me')
+    def get_my_cart(self, request):
         # Get the cart for the authenticated user
         cart = Cart.objects.filter(user=request.user).first()
 
@@ -79,7 +81,7 @@ class CartViewSet(viewsets.ModelViewSet):
         # Serialize the cart using the CartSerializer
         serializer = CartSerializer(cart)
         return Response(serializer.data)
-    
+
     
     # This action will be called when the user wants to clear their cart
     # It will delete all items in the cart and return a success message
@@ -161,6 +163,17 @@ class CartItemViewSet(viewsets.ModelViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    
+    @action(detail=False, methods=['get'], url_path='me')
+    def get_my_orders(self, request):
+        # Get all orders for the authenticated user
+        orders = Order.objects.filter(user=request.user)
+        if not orders:
+            return Response({"detail": "No orders found for this user"}, status=404)
+
+        # Serialize the orders using the OrderSerializer
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
   
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
@@ -203,16 +216,6 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(order)
         return Response(serializer.data, status=status.HTTP_201_CREATED)  
     
-    def list(self, request, *args, **kwargs):
-        # Get the order for the authenticated user
-        order = Order.objects.filter(user=request.user).first()
-        if not order:
-            print("No order found for this user")
-            return Response({"detail": "No order found for this user"}, status=404)
-
-        # Serialize the order using the OrderSerializer
-        serializer = OrderSerializer(order)
-        return Response(serializer.data)
     
 
 class OrderItemViewSet(viewsets.ModelViewSet):

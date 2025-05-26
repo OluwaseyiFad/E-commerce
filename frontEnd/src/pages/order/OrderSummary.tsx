@@ -107,7 +107,7 @@ const OrderSummary = () => {
         </div>
         <div className="flex justify-between font-semibold">
           <p>Order total</p>
-          <p>${order.total_price + 5 + 6.16}</p>
+          <p>${(order.total_price + 5 + 6.16).toFixed(2)}</p>
         </div>
       </div>
     </div>

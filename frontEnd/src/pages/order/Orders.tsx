@@ -29,6 +29,14 @@ const Orders: React.FC = () => {
     );
   }
 
+  if (!orders || orders.length === 0) {
+    return (
+      <div className="rounded-md border border-red-300 bg-red-100 p-4 text-red-700 shadow-sm">
+        <strong>No order found!</strong>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto mt-10 max-w-2xl p-4">
       <h2 className="mb-4 text-2xl font-semibold">Your Orders</h2>

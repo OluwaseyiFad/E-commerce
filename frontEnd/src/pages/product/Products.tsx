@@ -7,7 +7,8 @@ import {
 } from "@headlessui/react";
 import { MinusIcon, PlusIcon } from "@heroicons/react/20/solid";
 import ProductCard from "./ProductCard";
-import { Product, Category } from "@/utils/types";
+import { Product } from "@/utils/types";
+
 const colorOptions = ["black", "white", "silver", "gold", "blue"];
 const storageOptions = ["64gb", "128gb", "256gb", "512gb", "1tb"];
 
@@ -15,9 +16,6 @@ const Products = () => {
   const products = useAppSelector(
     (state) => state.products.products,
   ) as Product[];
-  const categories = useAppSelector(
-    (state) => state.products.categories,
-  ) as Category[];
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedColors, setSelectedColors] = useState<string[]>([
@@ -28,35 +26,66 @@ const Products = () => {
   ]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
 
+  // Define which categories fall under "Accessories"
+  const accessorySubcategories = [
+    "Bluetooth Speakers",
+    "Headphones",
+    "Wireless Earbuds",
+    "Smartwatches",
+    "Screen Protectors",
+    "Phone Cases",
+    "Chargers & Cables",
+    "Power Banks",
+    "Accessories",
+    "Wearables",
+  ];
+
+  const phoneSubcategories = [
+    "Budget Phones",
+    "Flagship Phones",
+    "Gaming Phones",
+    "Tablets",
+  ];
+
+  // Filter products every time filter state changes
   useEffect(() => {
-    console.log("products", products);
-    console.log("Categories", categories);
-    const filtered = products.filter((product: any) => {
+    const filtered = products.filter((product: Product) => {
+      // Match category or group into "Accessories"
       const matchCategory = selectedCategory
-        ? product.category === selectedCategory
+        ? selectedCategory === "Accessories"
+          ? accessorySubcategories.includes(product.category)
+          : selectedCategory === "Phones"
+            ? phoneSubcategories.includes(product.category)
+            : product.category === selectedCategory
         : true;
 
+      // Extract available in-stock colors
       const availableColors = (product.colors || [])
-        .filter((c: { color: string; in_stock: boolean }) => c.in_stock)
-        .map((c: { color: string; in_stock: boolean }) =>
-          c.color.toLowerCase(),
-        );
-      const matchColor = selectedColors.some((color) =>
-        availableColors.includes(color),
-      );
+        .filter((c) => c.in_stock)
+        .map((c) => c.color.toLowerCase());
 
+      const matchColor =
+        availableColors.length === 0
+          ? true
+          : selectedColors.some((color) => availableColors.includes(color));
+
+      // Extract available in-stock storages
       const availableStorages = (product.storage || [])
-        .filter((s: { size: string; in_stock: boolean }) => s.in_stock)
-        .map((s: { size: string; in_stock: boolean }) => s.size.toLowerCase());
-      const matchStorage = selectedStorages.some((size) =>
-        availableStorages.includes(size),
-      );
+        .filter((s) => s.in_stock)
+        .map((s) => s.size.toLowerCase());
+
+      const matchStorage =
+        availableStorages.length === 0
+          ? true
+          : selectedStorages.some((size) => availableStorages.includes(size));
 
       return matchCategory && matchColor && matchStorage;
     });
+
     setFilteredProducts(filtered);
   }, [selectedCategory, selectedColors, selectedStorages, products]);
 
+  // Toggle checkbox values for color or storage filters
   const handleCheckboxChange = (value: string, type: "color" | "storage") => {
     const toggle = (list: string[]) =>
       list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
@@ -78,20 +107,26 @@ const Products = () => {
           <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
             {/* Filters Sidebar */}
             <aside className="hidden lg:block">
-              {/* Categories */}
+              {/* Category Filter */}
               <ul className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
-                <li>
-                  <button onClick={() => setSelectedCategory("")}>
-                    All Categories
-                  </button>
-                </li>
-                {categories.map((category) => (
-                  <li key={category.name}>
-                    <button onClick={() => setSelectedCategory(category.name)}>
-                      {category.name}
-                    </button>
-                  </li>
-                ))}
+                {["All", "Phones", "Laptops", "Tablets", "Accessories"].map(
+                  (cat) => (
+                    <li key={cat}>
+                      <button
+                        onClick={() =>
+                          setSelectedCategory(cat === "All" ? "" : cat)
+                        }
+                        className={`hover:text-cyan-500 ${
+                          selectedCategory === (cat === "All" ? "" : cat)
+                            ? "font-semibold text-cyan-600"
+                            : ""
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    </li>
+                  ),
+                )}
               </ul>
 
               {/* Color Filter */}
