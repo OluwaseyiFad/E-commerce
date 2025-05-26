@@ -1,10 +1,9 @@
+// Description: TypeScript interfaces for user, product, cart, and order data structures.
+
 export interface UserType {
   id: string;
   email: string;
   username: string;
-  // is_active: boolean;
-  // created_at: Date;
-  // updated_at: Date;
 }
 
 export interface UserProfileType {
@@ -102,3 +101,7 @@ export interface OrderType {
   total_price: number;
   items: CartItemType[];
 }
+
+export type CartSummaryProps = {
+  totalPrice: number;
+};

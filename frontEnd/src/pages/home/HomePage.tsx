@@ -13,21 +13,30 @@ import { Product } from "@/utils/types";
 const HomePage = () => {
   const { data: products = [], error, isLoading } = useGetProductsQuery({});
   const { data: categories = [] } = useGetCategoriesQuery({});
-  const { data: userProfileData } = useGetCurrrentUserProfileQuery({});
-  const userProfile = Array.isArray(userProfileData)
-    ? userProfileData[0]
-    : userProfileData;
+  const { data: userProfile } = useGetCurrrentUserProfileQuery({});
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     console.log("products", products);
+    // Set products, categories, and user profile in the Redux store
     dispatch(setProducts(products));
     dispatch(setCategories(categories));
     dispatch(setUserProfile(userProfile));
   }, [products, categories, userProfile, dispatch]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error fetching products</div>;
+  if (isLoading)
+    return (
+      <div className="rounded-md border border-gray-300 bg-gray-100 p-4 text-gray-700 shadow-sm">
+        Loading...
+      </div>
+    );
+  if (error) {
+    return (
+      <div className="rounded-md border border-red-300 bg-red-100 p-4 text-red-700 shadow-sm">
+        <strong>No products found!</strong>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}

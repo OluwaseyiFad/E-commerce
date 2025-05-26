@@ -3,30 +3,31 @@ import baseApi from "./baseApi";
 
 export const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // Fetch all categories
     getCategories: builder.query({
       query: () => ({
         url: "/api/category",
         method: "GET",
         headers: getHeaderAuthorization(),
       }),
-      // providesTags: ["Categories"],
     }),
+    // Fetch a category by ID
     getCategoryById: builder.query({
       query: (id) => ({
         url: `/api/category/${id}`,
         method: "GET",
         headers: getHeaderAuthorization(),
       }),
-      // providesTags: ["Category"],
     }),
+    // Fetch all products
     getProducts: builder.query({
       query: () => ({
         url: "/api/products",
         method: "GET",
         headers: getHeaderAuthorization(),
       }),
-      // providesTags: ["Products"],
     }),
+    // Fetch a product by ID
     getProductById: builder.query({
       query: (id) => ({
         url: `/api/products/${id}`,
@@ -34,6 +35,7 @@ export const productApi = baseApi.injectEndpoints({
         headers: getHeaderAuthorization(),
       }),
     }),
+    // Fetch cart items for the current user
     getCartItemsByUser: builder.query({
       query: () => ({
         url: "/api/cart/me",
@@ -42,6 +44,7 @@ export const productApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Cart"],
     }),
+    // Mutations for cart operations
     addToCart: builder.mutation({
       query: (newItem) => ({
         url: "/api/cart/",
@@ -85,6 +88,7 @@ export const productApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Cart"],
     }),
+    // Fetch orders for the current user
     getOrdersByUser: builder.query({
       query: () => ({
         url: "/api/orders/me",
@@ -93,6 +97,7 @@ export const productApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Orders"],
     }),
+    // Fetch an order by ID
     getOrderById: builder.query({
       query: (id) => ({
         url: `/api/orders/${id}/`,
@@ -100,6 +105,7 @@ export const productApi = baseApi.injectEndpoints({
         headers: getHeaderAuthorization(),
       }),
     }),
+    // Create a new order
     createOrder: builder.mutation({
       query: (newOrder) => ({
         url: "/api/orders/",
@@ -112,6 +118,7 @@ export const productApi = baseApi.injectEndpoints({
   }),
 });
 
+// Export hooks for the defined endpoints
 export const {
   useGetCategoriesQuery,
   useGetCategoryByIdQuery,

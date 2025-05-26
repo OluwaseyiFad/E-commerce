@@ -53,6 +53,7 @@ const Register = () => {
     setFormState(initialFormState);
   };
 
+  // Handle registration logic
   const handleRegister = async () => {
     const formData = new FormData();
     formData.append("username", formState.userName);
@@ -66,9 +67,11 @@ const Register = () => {
     const response = await register(formData);
     if ("data" in response && response.data) {
       console.log("Registration successful", response.data);
+      // Automatically log in the user after successful registration
       const loginResponse = await login(formData);
       if ("data" in loginResponse && loginResponse.data) {
         const { access, refresh, user } = loginResponse.data as LoginResponse;
+        // Store tokens and user data in Redux store
         dispatch(setAuthTokens({ access, refresh }));
         dispatch(setUser(user));
         console.log("Login successful", loginResponse.data);

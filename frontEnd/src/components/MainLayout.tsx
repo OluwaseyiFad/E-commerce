@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 import { useState } from "react";
 
 const MainLayout = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // State to control the dialog visibility
 
   return (
     <div className="bg-white">

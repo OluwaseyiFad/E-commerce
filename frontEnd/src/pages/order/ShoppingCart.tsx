@@ -26,10 +26,12 @@ const ShoppingCart = () => {
 
   useEffect(() => {
     if (cart?.items) {
-      dispatch(setCart(cart));
+      dispatch(setCart(cart)); // Update the cart in the global state
     }
   }, [cart, dispatch]);
 
+  // Function to modify cart item quantity or remove it
+  // action can be "increment", "decrement", or "remove"
   const modifyCartItem = async (itemId: number, action: string) => {
     try {
       if (action === "remove") {
@@ -40,15 +42,18 @@ const ShoppingCart = () => {
       await refetch();
     } catch (err) {
       console.error("Error modifying cart item:", err);
+      alert("failed to modify cart item");
     }
   };
 
+  // Function to clear the entire cart
   const handleClearCart = async () => {
     try {
       await clearCart({}).unwrap();
-      await refetch();
+      await refetch(); // Refetch to update the cart state
     } catch (err) {
       console.error("Error clearing cart:", err);
+      alert("Failed to clear cart");
     }
   };
 
@@ -59,7 +64,6 @@ const ShoppingCart = () => {
       </div>
     );
   if (error) {
-    console.error("Error fetching order:", error);
     return (
       <div className="rounded-md border border-red-300 bg-red-100 p-4 text-red-700 shadow-sm">
         <strong>No cart found!</strong>
@@ -75,6 +79,7 @@ const ShoppingCart = () => {
         <div className="rounded-lg bg-white p-6 shadow lg:col-span-2">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-2xl font-semibold">Your Cart</h2>
+            {/* Show ClearCart button only if there are items in the cart */}
             {hasItems && (
               <button
                 onClick={handleClearCart}
@@ -99,6 +104,7 @@ const ShoppingCart = () => {
             )}
           </div>
 
+          {/* Show message if cart is empty otherwise show cart items */}
           {!hasItems ? (
             <p className="text-gray-600">Your cart is empty.</p>
           ) : (

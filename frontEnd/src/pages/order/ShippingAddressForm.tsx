@@ -1,9 +1,11 @@
+import { UserType } from "@/utils/types";
+
 type Props = {
   shippingAddressOption: string;
-  handleShippingAddressChange: (e: any) => void;
-  newShippingAddressData: any;
+  handleShippingAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  newShippingAddressData: Record<string, string>;
   handleNewShippingChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  user: any;
+  user: UserType;
 };
 
 const ShippingAddressForm = ({
@@ -13,6 +15,7 @@ const ShippingAddressForm = ({
   handleNewShippingChange,
   user,
 }: Props) => {
+  // Display shipping address form only if user is logged in
   return (
     user && (
       <div>
@@ -40,7 +43,7 @@ const ShippingAddressForm = ({
             <span>Enter new shipping address</span>
           </label>
         </div>
-
+        {/* Render new shipping address fields if selected */}
         {shippingAddressOption === "new" && (
           <div className="mt-4 space-y-3">
             {Object.entries(newShippingAddressData).map(([key, value]) => (

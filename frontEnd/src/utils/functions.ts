@@ -1,5 +1,6 @@
 import { AuthHeaders } from "./types";
 
+// Get the authorization header for API requests
 export const getHeaderAuthorization = () => {
   const headers: AuthHeaders = {
     Authorization: "",

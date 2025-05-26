@@ -10,6 +10,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
+// Mapping colors to their respective classes
 const colorClassMap = {
   Black: { class: "bg-black", selectedClass: "ring-black" },
   White: { class: "bg-white", selectedClass: "ring-gray-300" },
@@ -18,14 +19,13 @@ const colorClassMap = {
   Blue: { class: "bg-blue-500", selectedClass: "ring-blue-600" },
 };
 
-// Add feature list to products that covers warranty, battery Life, display, camera, Condition etc
 const Product = () => {
   const [createCartItem] = useCreateCartItemMutation(); // Hook to create a cart item
   const { id } = useParams(); // Get product id from the URL
   const productId = id ? parseInt(id, 10) : null;
   const [imgSrc, setImgSrc] = useState(
     "https://placehold.co/600x400?text=No+Image",
-  );
+  ); // Default image source
 
   const dispatch = useAppDispatch();
 
@@ -38,6 +38,7 @@ const Product = () => {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
+  // Transform colors to match the expected format
   const transformedColors = product?.colors.map(({ color, in_stock }) => ({
     name: color,
     in_stock,
@@ -50,16 +51,14 @@ const Product = () => {
   }));
 
   useEffect(() => {
+    // Set the initial image source based on the product
     if (product) {
-      setImgSrc(product.image || "https://placehold.co/600x400?text=No+Image");
+      setImgSrc(product.image);
     }
   }, [product]);
 
+  // Handler to create a cart item
   const createCartItemHandler = async () => {
-    console.log("Creating cart item with productId:", productId);
-    console.log("Selected color:", selectedColor);
-    console.log("Selected size:", selectedSize);
-
     const cartItem = {
       productId: productId,
       color: selectedColor,
@@ -68,7 +67,6 @@ const Product = () => {
 
     try {
       const response = await createCartItem(cartItem).unwrap();
-      console.log("Cart item created successfully:", response);
       dispatch(setCart(response)); // Update the cart in the Redux store
     } catch (error) {
       console.error("Error creating cart item:", error);
@@ -304,17 +302,6 @@ const Product = () => {
                 <p className="text-base text-gray-900">{product.description}</p>
               </div>
             </div>
-            {/* For features */}
-            {/* <div className="mt-6">
-              <h4 className="text-sm font-semibold text-gray-900">
-                Key Features
-              </h4>
-              <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-gray-700">
-                {product.features?.map((feature, idx) => (
-                  <li key={idx}>{feature}</li>
-                ))}
-              </ul>
-            </div> */}
           </div>
         </div>
       </div>

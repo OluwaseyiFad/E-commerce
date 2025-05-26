@@ -1,9 +1,11 @@
+import { UserType } from "@/utils/types";
+
 type Props = {
   billingAddressOption: string;
-  handleBillingAddressChange: (e: any) => void;
-  newBillingAddressData: any;
+  handleBillingAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  newBillingAddressData: Record<string, string>;
   handleNewBillingChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  user: any;
+  user: UserType;
 };
 
 const BillingAddressForm = ({
@@ -13,6 +15,7 @@ const BillingAddressForm = ({
   handleNewBillingChange,
   user,
 }: Props) => {
+  // Display billing address form only if user is logged in
   return (
     user && (
       <div>
@@ -40,7 +43,7 @@ const BillingAddressForm = ({
             <span>Enter new billing address</span>
           </label>
         </div>
-
+        {/* Render new billing address fields if selected */}
         {billingAddressOption === "new" && (
           <div className="mt-4 space-y-3">
             {Object.entries(newBillingAddressData).map(([key, value]) => (

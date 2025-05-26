@@ -18,14 +18,15 @@ const initialState: UserProfileType = {
 const UserProfile = () => {
   const dispatch = useAppDispatch();
   const [profile, setProfile] = useState<UserProfileType>(initialState);
-  const { data: userProfileData, isLoading } = useGetCurrrentUserProfileQuery(
-    {},
-  );
+  const {
+    data: userProfileData,
+    isLoading,
+    error,
+  } = useGetCurrrentUserProfileQuery({});
   const [updateProfile] = usePatchCurrentUserProfileMutation();
 
   useEffect(() => {
-    console.log("userProfileData", userProfileData);
-
+    // If userProfileData is available, update the profile state
     if (userProfileData) {
       setProfile({
         id: userProfileData.id || 0,
@@ -39,19 +40,21 @@ const UserProfile = () => {
     }
   }, [userProfileData, dispatch]);
 
+  // Handle input changes for profile fields
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle form submission to update profile
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior
     try {
       const response = await updateProfile({
         id: profile.id,
         data: profile,
       }).unwrap();
-      dispatch(setUserProfile(response));
+      dispatch(setUserProfile(response)); // Update the Redux store with the new profile data
     } catch (err) {
       console.error("Error updating profile:", err);
     }
@@ -59,20 +62,24 @@ const UserProfile = () => {
 
   if (isLoading)
     return (
-      <p className="mt-10 text-center text-gray-500">Loading profile...</p>
+      <div className="rounded-md border border-gray-300 bg-gray-100 p-4 text-gray-700 shadow-sm">
+        Loading...
+      </div>
     );
-
-  if (!userProfileData)
+  if (error) {
     return (
-      <p className="mt-10 text-center text-red-500">Failed to load profile.</p>
+      <div className="rounded-md border border-red-300 bg-red-100 p-4 text-red-700 shadow-sm">
+        <strong>No Profile found!</strong>
+      </div>
     );
+  }
 
   return (
     <div className="mx-auto mt-12 max-w-xl rounded-2xl border bg-white p-6 shadow-md">
       <h1 className="mb-6 text-center text-xl font-semibold text-gray-800">
         Edit Profile
       </h1>
-
+      {/* Form to update user profile */}
       <form onSubmit={handleSubmit} className="space-y-5">
         {[
           { label: "First Name", name: "first_name" },

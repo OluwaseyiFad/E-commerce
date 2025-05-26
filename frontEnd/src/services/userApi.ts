@@ -1,23 +1,29 @@
 import { getHeaderAuthorization } from "../utils/functions";
 import baseApi from "./baseApi";
 
+// User API service for handling user-related operations
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // Fetch all users
     getUsers: builder.query({
       query: () => ({
         url: "auth/users/",
         headers: getHeaderAuthorization(),
       }),
     }),
+    // Fetch a user by ID
     getUserById: builder.query({
       query: (id) => `auth/users/${id}/`,
     }),
+    // Fetch the current logged-in user
     getCurrentUser: builder.query({
       query: () => ({
         url: "auth/users/me/",
         headers: getHeaderAuthorization(),
       }),
     }),
+
+    // Fetch the current user's profile
     getCurrrentUserProfile: builder.query({
       query: () => ({
         url: "api/user-profile/me/",
@@ -25,6 +31,7 @@ export const userApi = baseApi.injectEndpoints({
       }),
       providesTags: ["UserProfile"],
     }),
+    // Update the current user's profile
     patchCurrentUserProfile: builder.mutation({
       query: (body) => ({
         url: `api/user-profile/${body.id}/`,
@@ -34,6 +41,7 @@ export const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["UserProfile"],
     }),
+    // User authentication endpoints
     login: builder.mutation({
       query: (body) => ({
         url: "auth/login/",
@@ -51,6 +59,7 @@ export const userApi = baseApi.injectEndpoints({
   }),
 });
 
+// Export hooks for the defined endpoints
 export const {
   useGetUsersQuery,
   useGetUserByIdQuery,

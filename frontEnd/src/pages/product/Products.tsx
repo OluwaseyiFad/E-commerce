@@ -40,6 +40,7 @@ const Products = () => {
     "Wearables",
   ];
 
+  // Define which categories fall under "Phones"
   const phoneSubcategories = [
     "Budget Phones",
     "Flagship Phones",
@@ -50,7 +51,7 @@ const Products = () => {
   // Filter products every time filter state changes
   useEffect(() => {
     const filtered = products.filter((product: Product) => {
-      // Match category or group into "Accessories"
+      // Match category or group into "Accessories" or "Phones"
       const matchCategory = selectedCategory
         ? selectedCategory === "Accessories"
           ? accessorySubcategories.includes(product.category)

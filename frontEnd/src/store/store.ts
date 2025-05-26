@@ -22,16 +22,18 @@ const persistedReducer = persistReducer(
   }),
 );
 
+// Configure the store with the persisted reducer and middleware
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"], // Ignore these actions for serializability check
       },
     }).concat(baseApi.middleware),
 });
 
+// Export the persistor and types for use in the application
 export type RootState = ReturnType<typeof persistedReducer>;
 export type AppDispatch = typeof store.dispatch;
 

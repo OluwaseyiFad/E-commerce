@@ -34,6 +34,7 @@ const OrderProgress = ({ currentStep }: Props) => {
       : "bg-gray-300";
 
   return (
+    // Display the progress of the order with dots and lines
     <div className="mt-2 flex items-center justify-between space-x-2">
       {steps.map((step, idx) => (
         <React.Fragment key={step}>

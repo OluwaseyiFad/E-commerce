@@ -6,10 +6,11 @@ interface ProductCardProps {
   product: Product;
 }
 
+// ProductCard component to display individual product details
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [imgSrc, setImgSrc] = useState(
     product.image || "https://placehold.co/600x400?text=No+Image",
-  );
+  ); // Default image if none available
   return (
     <Link key={product.id} to={`/products/${product.id}`} className="group">
       <img

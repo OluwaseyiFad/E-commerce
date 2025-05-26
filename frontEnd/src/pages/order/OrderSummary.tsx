@@ -12,6 +12,7 @@ const OrderSummary = () => {
   const order = orders.find((order) => order.id === productId); // Get the order by id
   const user = useAppSelector((state) => state.auth.user) as UserType | null;
 
+  // If no order is found, display a message
   if (!order) {
     return (
       <div className="mx-auto max-w-4xl rounded-xl bg-white p-6 text-center shadow-md">
@@ -22,7 +23,6 @@ const OrderSummary = () => {
       </div>
     );
   }
-  console.log("orders", order);
   return (
     <div className="mx-auto max-w-4xl space-y-6 rounded-xl bg-white p-6 shadow-md">
       <div>

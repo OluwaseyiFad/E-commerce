@@ -1,8 +1,5 @@
 import React from "react";
-
-type CartSummaryProps = {
-  totalPrice: number;
-};
+import { CartSummaryProps } from "@/utils/types";
 
 const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice }) => {
   const TAX_RATE = 0.0616; // 6.16%
