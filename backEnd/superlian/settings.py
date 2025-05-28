@@ -25,8 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*1!s(ra&dullo085u+_u%+t-v&gk-@7rgorob@nu*hyhuf&42t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = False
-DEBUG = True
+DEBUG = False
+# DEBUG = True
 
 ALLOWED_HOSTS = ['162.213.249.167', 'superlian.tech']
 
@@ -125,12 +125,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = "/static/"
-STATIC_ROOT = "/var/www/superlian/staticfiles"
+if DEBUG:
+    # Development settings
+    STATIC_URL = "/static/"
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-# Media Settings
-MEDIA_URL = "/media/"
-MEDIA_ROOT = "/var/www/superlian/media" 
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+else:
+    # Production settings
+    STATIC_URL = "/static/"
+    STATIC_ROOT = "/var/www/superlian/staticfiles"
+
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = "/var/www/superlian/media"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -175,7 +184,8 @@ CORS_ALLOW_METHODS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
+    "http://localhost:5173",      # for local dev
+    "http://superlian.tech",      # for production domain
 ]
 
 ######### CORS Header Settings Ends Here... ##########
