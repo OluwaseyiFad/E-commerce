@@ -56,7 +56,8 @@ const Login = () => {
       navigate("/");
     }
     if ("error" in response && response.error) {
-      setMessage(JSON.stringify(response.error));
+      console.error("Login error:", response.error);
+      setMessage("Incorrect email or password.");
     }
     setLoading(false);
   };

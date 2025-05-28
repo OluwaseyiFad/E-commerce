@@ -49,8 +49,8 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    handleRegister();
-    setFormState(initialFormState);
+    await handleRegister();
+    setLoading(false);
   };
 
   // Handle registration logic
@@ -65,23 +65,45 @@ const Register = () => {
     formData.append("shipping_address", formState.shippingAddress);
 
     const response = await register(formData);
+
     if ("data" in response && response.data) {
-      console.log("Registration successful", response.data);
-      // Automatically log in the user after successful registration
+      // Success! Clear form and login
+      setFormState(initialFormState);
+
       const loginResponse = await login(formData);
       if ("data" in loginResponse && loginResponse.data) {
         const { access, refresh, user } = loginResponse.data as LoginResponse;
-        // Store tokens and user data in Redux store
         dispatch(setAuthTokens({ access, refresh }));
         dispatch(setUser(user));
-        console.log("Login successful", loginResponse.data);
       }
-      setLoading(false);
-      // Redirect to the home page or any other page
       navigate("/");
     } else if ("error" in response && response.error) {
-      console.error("Registration failed", response.error);
-      setMessage(JSON.stringify(response.error));
+      console.error("Registration error:", response.error);
+
+      // Type guard: check if error has a 'data' field
+      if (
+        typeof response.error === "object" &&
+        response.error !== null &&
+        "data" in response.error
+      ) {
+        const errors = (response.error as { data: any }).data;
+
+        // Flatten the errors into a string for display
+        const messages = Object.entries(errors)
+          .map(([field, msgs]) => {
+            if (Array.isArray(msgs)) {
+              return `${field}: ${msgs.join(" ")}`;
+            }
+            return `${field}: ${msgs}`;
+          })
+          .join("\n");
+
+        setMessage(messages);
+      } else {
+        setMessage("Registration failed. Please try again.");
+      }
+
+      setLoading(false);
     }
   };
 

@@ -1,14 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const safeParse = (key: string) => {
+  const item = localStorage.getItem(key);
+  if (item && item !== "undefined") {
+    try {
+      return JSON.parse(item);
+    } catch {
+      return null; // in case JSON is malformed
+    }
+  }
+  return null;
+};
+
 const initialState = {
   access: localStorage.getItem("access") || null,
   refresh: localStorage.getItem("refresh") || null,
-  user: localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user") as string)
-    : null,
-  userProfile: localStorage.getItem("userProfile")
-    ? JSON.parse(localStorage.getItem("userProfile") as string)
-    : null,
+  user: safeParse("user"),
+  userProfile: safeParse("userProfile"),
 };
 
 // Redux slice for authentication state management
