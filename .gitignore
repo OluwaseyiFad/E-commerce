@@ -13,6 +13,16 @@ media/
 */migrations/
 !*/migrations/__init__.py
 
+# SSL certificates
+*.pem
+*.crt
+superlian_tech.zip
+superlian_tech.ca-bundle
+superlian.csr
+
+# Other files
+debug_txt
+
 # VSCode settings
 .vscode/
 

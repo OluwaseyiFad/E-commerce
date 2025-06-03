@@ -186,6 +186,7 @@ CORS_ALLOW_METHODS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",      # for local dev
     "http://superlian.tech",      # for production domain
+    "https://superlian.tech",      # for production domain
 ]
 
 ######### CORS Header Settings Ends Here... ##########
