@@ -39,7 +39,7 @@ sudo chown -R www-data:www-data /var/www/superlian
 
 # For changes in the frontEnd, we need to run the following commands
 npm run build
-sudo rm -rf /var/www/superlian/*
+sudo rm -rf /var/www/superlian/assets/ /var/www/superlian/index.html /var/www/superlian/vite.svg
 sudo cp -r /root/superlian/frontEnd/dist/* /var/www/superlian/
 sudo systemctl reload nginx
 sudo systemctl restart gunicorn

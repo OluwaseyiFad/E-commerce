@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch } from "@/utils/hooks";
 import { setCart } from "@/store/slices/productSlice";
@@ -10,6 +10,9 @@ import {
 } from "@/services/productApi";
 import CartSummary from "./CartSummary";
 import { CartItemType } from "@/utils/types";
+import ReactPaginate from "react-paginate";
+
+const ITEMS_PER_PAGE = 8; // Number of items per page
 
 const ShoppingCart = () => {
   const dispatch = useAppDispatch();
@@ -24,14 +27,33 @@ const ShoppingCart = () => {
   const [deleteCartItem] = useDeleteCartItemMutation();
   const [clearCart] = useClearCartMutation();
 
+  const [currentPage, setCurrentPage] = useState(0);
+
   useEffect(() => {
     if (cart?.items) {
-      dispatch(setCart(cart)); // Update the cart in the global state
+      dispatch(setCart(cart)); // Update global cart state
     }
   }, [cart, dispatch]);
 
-  // Function to modify cart item quantity or remove it
-  // action can be "increment", "decrement", or "remove"
+  // Pagination calculation
+  const pageCount = cart?.items
+    ? Math.ceil(cart.items.length / ITEMS_PER_PAGE)
+    : 0;
+
+  // Get items for the current page
+  const paginatedItems = cart?.items
+    ? cart.items.slice(
+        currentPage * ITEMS_PER_PAGE,
+        (currentPage + 1) * ITEMS_PER_PAGE,
+      )
+    : [];
+
+  // Handle page change for pagination
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setCurrentPage(selected);
+  };
+
+  // Modify cart item quantity or remove
   const modifyCartItem = async (itemId: number, action: string) => {
     try {
       if (action === "remove") {
@@ -42,15 +64,15 @@ const ShoppingCart = () => {
       await refetch();
     } catch (err) {
       console.error("Error modifying cart item:", err);
-      alert("failed to modify cart item");
+      alert("Failed to modify cart item");
     }
   };
 
-  // Function to clear the entire cart
+  // Clear the entire cart
   const handleClearCart = async () => {
     try {
       await clearCart({}).unwrap();
-      await refetch(); // Refetch to update the cart state
+      await refetch();
     } catch (err) {
       console.error("Error clearing cart:", err);
       alert("Failed to clear cart");
@@ -63,15 +85,14 @@ const ShoppingCart = () => {
         Loading...
       </div>
     );
-  if (error) {
+  if (error)
     return (
       <div className="rounded-md border border-red-300 bg-red-100 p-4 text-red-700 shadow-sm">
         <strong>No cart found!</strong>
       </div>
     );
-  }
 
-  const hasItems = cart?.items?.length > 0;
+  const hasItems = cart?.items?.length > 0; // Check if cart has items
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
@@ -79,7 +100,6 @@ const ShoppingCart = () => {
         <div className="rounded-lg bg-white p-6 shadow lg:col-span-2">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-2xl font-semibold">Your Cart</h2>
-            {/* Show ClearCart button only if there are items in the cart */}
             {hasItems && (
               <button
                 onClick={handleClearCart}
@@ -104,75 +124,94 @@ const ShoppingCart = () => {
             )}
           </div>
 
-          {/* Show message if cart is empty otherwise show cart items */}
           {!hasItems ? (
             <p className="text-gray-600">Your cart is empty.</p>
           ) : (
-            <ul className="divide-y divide-gray-200">
-              {cart.items.map((item: CartItemType) => (
-                <li
-                  key={item.id}
-                  className="flex border-b border-gray-200 py-6"
-                >
-                  <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                    <img
-                      src="https://picsum.photos/200/300"
-                      alt={item.product_name}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-
-                  <div className="ml-4 flex flex-1 justify-between">
-                    <div className="flex w-full flex-col space-y-1 text-left">
-                      <h3 className="text-base font-medium text-gray-900">
-                        {item.product_name}
-                      </h3>
-                      <div className="flex gap-3 text-sm text-gray-500">
-                        {item.color && <span>{item.color}</span>}
-                        {item.size && <span>{item.size}</span>}
-                      </div>
-                      <p className="text-sm text-gray-900">
-                        ${item.total_price.toFixed(2)}
-                      </p>
+            <>
+              <ul className="divide-y divide-gray-200">
+                {/* Map paginated items to display as list */}
+                {paginatedItems.map((item: CartItemType) => (
+                  <li
+                    key={item.id}
+                    className="flex border-b border-gray-200 py-6"
+                  >
+                    <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                      <img
+                        src="https://picsum.photos/200/300"
+                        alt={item.product_name}
+                        className="h-full w-full object-cover"
+                      />
                     </div>
 
-                    <div className="flex w-28 flex-col items-center justify-center">
-                      <div className="flex items-center gap-2">
+                    <div className="ml-4 flex flex-1 justify-between">
+                      <div className="flex w-full flex-col space-y-1 text-left">
+                        <h3 className="text-base font-medium text-gray-900">
+                          {item.product_name}
+                        </h3>
+                        <div className="flex gap-3 text-sm text-gray-500">
+                          {item.color && <span>{item.color}</span>}
+                          {item.size && <span>{item.size}</span>}
+                        </div>
+                        <p className="text-sm text-gray-900">
+                          ${item.total_price.toFixed(2)}
+                        </p>
+                      </div>
+
+                      <div className="flex w-28 flex-col items-center justify-center">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => modifyCartItem(item.id, "increment")}
+                            className="text-lg font-bold text-green-600"
+                          >
+                            +
+                          </button>
+                          <span className="text-sm">Qty: {item.quantity}</span>
+                          <button
+                            onClick={() => modifyCartItem(item.id, "decrement")}
+                            className="text-lg font-bold text-red-600"
+                          >
+                            -
+                          </button>
+                        </div>
                         <button
-                          onClick={() => modifyCartItem(item.id, "increment")}
-                          className="text-lg font-bold text-green-600"
+                          onClick={() => modifyCartItem(item.id, "remove")}
+                          className="mt-2 text-sm text-cyan-600 hover:underline"
                         >
-                          +
-                        </button>
-                        <span className="text-sm">Qty: {item.quantity}</span>
-                        <button
-                          onClick={() => modifyCartItem(item.id, "decrement")}
-                          className="text-lg font-bold text-red-600"
-                        >
-                          -
+                          Remove
                         </button>
                       </div>
-                      <button
-                        onClick={() => modifyCartItem(item.id, "remove")}
-                        className="mt-2 text-sm text-cyan-600 hover:underline"
-                      >
-                        Remove
-                      </button>
                     </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Pagination controls */}
+              <ReactPaginate
+                pageCount={pageCount}
+                onPageChange={handlePageChange}
+                containerClassName="mt-6 flex justify-center gap-2 text-sm"
+                pageClassName="cursor-pointer rounded-md border border-gray-300 px-3 py-1 hover:bg-cyan-600 hover:text-white"
+                activeClassName="bg-cyan-600 text-white"
+                previousLabel="<"
+                nextLabel=">"
+                disabledClassName="opacity-50 cursor-not-allowed"
+                breakLabel="..."
+                breakClassName="px-2"
+                marginPagesDisplayed={1}
+                pageRangeDisplayed={3}
+              />
+            </>
           )}
         </div>
 
+        {/* Cart Summary and Checkout */}
         <div className="h-fit rounded-lg bg-white p-6 shadow">
           <CartSummary totalPrice={cart?.total_price || 0} />
           <div className="flex flex-col gap-3">
             <Link
               to={hasItems ? "/checkout" : "#"}
               onClick={(e) => {
-                if (!hasItems) e.preventDefault(); // prevent navigation if cart is empty
+                if (!hasItems) e.preventDefault();
               }}
               aria-disabled={!hasItems}
               className={`w-full rounded-md py-2 font-medium transition ${

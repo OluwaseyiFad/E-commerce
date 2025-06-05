@@ -8,6 +8,7 @@ import {
 import { MinusIcon, PlusIcon } from "@heroicons/react/20/solid";
 import ProductCard from "./ProductCard";
 import { Product } from "@/utils/types";
+import ReactPaginate from "react-paginate";
 
 const colorOptions = ["black", "white", "silver", "gold", "blue"];
 const storageOptions = ["64gb", "128gb", "256gb", "512gb", "1tb"];
@@ -25,6 +26,10 @@ const Products = () => {
     ...storageOptions,
   ]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 8;
 
   // Define which categories fall under "Accessories"
   const accessorySubcategories = [
@@ -84,6 +89,7 @@ const Products = () => {
     });
 
     setFilteredProducts(filtered);
+    setCurrentPage(0); // reset to first page when filters change
   }, [selectedCategory, selectedColors, selectedStorages, products]);
 
   // Toggle checkbox values for color or storage filters
@@ -94,6 +100,13 @@ const Products = () => {
     if (type === "color") setSelectedColors((prev) => toggle(prev));
     else setSelectedStorages((prev) => toggle(prev));
   };
+
+  const offset = currentPage * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(
+    offset,
+    offset + itemsPerPage,
+  );
+  const pageCount = Math.ceil(filteredProducts.length / itemsPerPage);
 
   return (
     <div className="bg-white">
@@ -201,12 +214,28 @@ const Products = () => {
 
             {/* Product Grid */}
             <div className="lg:col-span-3">
-              {filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-                  {filteredProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
+              {paginatedProducts.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                    {paginatedProducts.map((product) => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+                  <div className="mt-10 flex justify-center">
+                    <ReactPaginate
+                      previousLabel={"←"}
+                      nextLabel={"→"}
+                      pageCount={pageCount}
+                      onPageChange={({ selected }) => setCurrentPage(selected)}
+                      containerClassName="flex gap-2 text-gray-700"
+                      activeClassName="text-cyan-600 font-bold"
+                      pageClassName="px-3 py-1 border rounded"
+                      previousClassName="px-3 py-1 border rounded"
+                      nextClassName="px-3 py-1 border rounded"
+                      disabledClassName="opacity-50 cursor-not-allowed"
+                    />
+                  </div>
+                </>
               ) : (
                 <div className="text-gray-600">No products found.</div>
               )}
