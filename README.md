@@ -1,37 +1,22 @@
-# E-commerce Platform
+# E-commerce Platform (School Project)
 
-An advanced e-commerce website facilitating the sale of phones and gadgets, featuring personalized recommendations and a modern full-stack architecture.
+An advanced e-commerce website facilitating the sale of phones and gadgets, featuring a modern full-stack architecture.
 
 ## Features
 
 - Product catalog with phones and gadgets
-- Recommendation engine for personalized shopping
 - User authentication and profiles
 - Shopping cart and checkout workflow
 - Order history and management
-- Admin dashboard for product and order management
+- Admin dashboard for user, product, and order management
 
 ## Tech Stack
 
 - **Front End:** React, TypeScript, Vite
-- **Back End:** Node.js, Express
-- **Database:** (add your DB, e.g., MongoDB, PostgreSQL)
+- **Back End:** Django, Rest Framework
+- **Database:** SQLite
 - **APIs:** RESTful endpoints for all major features
 
-## Repository Structure
-
-```
-/
-├── frontEnd/        # Front-end (React, TypeScript, Vite)
-│   └── README.md
-├── backEnd/         # Back-end (API, business logic, server)
-│   └── README.md
-├── resources/       # Documentation and assets
-├── Presentation.pptx
-├── documentation links
-├── LICENSE
-└── .gitignore
-```
 
 ## Getting Started
 
@@ -39,6 +24,7 @@ An advanced e-commerce website facilitating the sale of phones and gadgets, feat
 
 - Node.js (v18+ recommended)
 - npm or yarn
+- python3
 
 ### Front End Setup
 
@@ -66,10 +52,13 @@ python3 manage.py runserver
 
 ### Environment Variables
 
-Create a `.env` file in the `backEnd/` directory with the following contents (example):
+Create a `.env` file in the `backEnd/` directory and set variables if needed
 
 ```
-SECRET_KEY=your_secret_key
+DJANGO_SECRET_KEY
+DJANGO_DEBUG
+DJANGO_ALLOWED_HOSTS
+CORS_ALLOWED_ORIGINS
 ```
 
 ## API Overview
@@ -82,14 +71,15 @@ The backend exposes a RESTful API for frontend consumption. Below are some sampl
 | POST   | /auth/login            | User login                         |
 | GET    | /api/products          | List all products                  |
 | GET    | /api/products/:id      | Get product details                |
-| POST   | /api/cart              | Add item to cart                   |
-| GET    | /api/cart              | Get user's cart                    |
+| GET    | /api/categories        | Get product categories             |
+| POST   | /api/cart              | Update cart                        |
+| GET    | /api/cart/me           | Get current user's cart            |
+| POST   | /api/cart-item/        | Create new cart item               |
+| PATCH  | /api/cart-item/:id     | Update cart item                   |
 | POST   | /api/orders            | Place a new order                  |
-| GET    | /api/orders            | Get user's order history           |
+| GET    | /api/orders/me         | Get current user's order history   |
 
-> For full API documentation, see the backend or use an API tool like Postman with your running backend.
-
-## Documentation
+> For full API documentation, see the backend or services folder on the frontend
 
 
 ## License
@@ -98,4 +88,3 @@ This project is licensed under the terms of the [LICENSE](LICENSE).
 
 ---
 
-*For questions or suggestions, please open an issue or contact the maintainer.*
