@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 import { useAppDispatch } from "@/utils/hooks";
 import { Bars3Icon, ShoppingBagIcon } from "@heroicons/react/24/outline";
 import logo from "../assets/logo.svg";
+import baseApi from "@/services/baseApi";
 import { logout } from "../store/slices/authSlice";
+import { resetStore } from "../store/slices/productSlice";
 import { useGetCartItemsByUserQuery } from "@/services/productApi";
 import PopoverComponent from "./PopoverComponent";
 
@@ -49,6 +51,8 @@ const Navbar = ({ setOpen }: NavbarProps) => {
                   to="/login"
                   onClick={() => {
                     dispatch(logout());
+                    dispatch(resetStore()); // Reset product store
+                    dispatch(baseApi.util.resetApiState()); // Reset API state
                   }}
                   className="text-sm font-medium text-gray-700 hover:text-gray-800"
                 >

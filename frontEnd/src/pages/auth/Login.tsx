@@ -3,6 +3,8 @@ import logo from "../../assets/logo.svg";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { resetAuth } from "@/store/slices/authSlice";
+import { resetStore } from "@/store/slices/productSlice";
 import { useLoginMutation } from "../../services/userApi";
 import { setAuthTokens, setUser } from "../../store/slices/authSlice";
 import { UserType } from "@/utils/types";
@@ -31,7 +33,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [postLoginData] = useLoginMutation();
+  const [postLoginData] = useLoginMutation(); // Custom hook for login mutation
 
   // Handle login form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -51,12 +53,14 @@ const Login = () => {
     // Check if the response is successful or not and process accordingly
     if ("data" in response && response.data) {
       const { access, refresh, user } = response.data as LoginResponse;
+      dispatch(resetAuth()); // Clear previous user session completely
+      dispatch(resetStore()); // Reset product store
       dispatch(setAuthTokens({ access, refresh }));
       dispatch(setUser(user));
       navigate("/");
     }
     if ("error" in response && response.error) {
-      console.error("Login error:", response.error);
+      // console.error("Login error:", response.error);
       setMessage("Incorrect email or password.");
     }
     setLoading(false);

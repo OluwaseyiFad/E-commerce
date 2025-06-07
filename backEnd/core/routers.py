@@ -7,7 +7,8 @@ from .views import (
 
 
 
-# routes = routers.SimpleRouter()
+# Create a router and register our viewsets with it
+
 routes = routers.DefaultRouter()
 
 routes.register(r'user-profile', UserProfileViewSet, basename='user-profile')

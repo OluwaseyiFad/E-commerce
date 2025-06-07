@@ -41,6 +41,16 @@ export const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["UserProfile"],
     }),
+    // Create the current user's profile
+    createCurrentUserProfile: builder.mutation({
+      query: (data) => ({
+        url: "api/user-profile/",
+        method: "POST",
+        body: data,
+        headers: getHeaderAuthorization(),
+      }),
+      invalidatesTags: ["UserProfile"],
+    }),
     // User authentication endpoints
     login: builder.mutation({
       query: (body) => ({
@@ -68,4 +78,5 @@ export const {
   useGetCurrentUserQuery,
   useGetCurrrentUserProfileQuery,
   usePatchCurrentUserProfileMutation,
+  useCreateCurrentUserProfileMutation,
 } = userApi;

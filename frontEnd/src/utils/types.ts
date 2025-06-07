@@ -26,6 +26,7 @@ export interface CartItemType {
   id: number;
   product_id: number;
   product_name: string;
+  product_image: string;
   color: string;
   size: string;
   quantity: number;

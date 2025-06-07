@@ -22,6 +22,8 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    # This action will be called when the user wants to get their profile
+    # It will return the profile of the authenticated user or create one if it doesn't exist
     @action(detail=False, methods=['get'], url_path='me')
     def get_my_profile(self, request):
         user = request.user
@@ -34,8 +36,10 @@ class UserProfileViewSet(viewsets.ModelViewSet):
             )
         serializer = self.get_serializer(profile)
         return Response(serializer.data)
+    
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+        
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return super().partial_update(request, *args, **kwargs)
@@ -144,6 +148,7 @@ class CartItemViewSet(viewsets.ModelViewSet):
 
         return self._return_full_cart()
 
+    # This method returns the full cart details after any operation
     def _return_full_cart(self):
         cart = Cart.objects.filter(user=self.request.user).first()
         if not cart:

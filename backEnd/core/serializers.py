@@ -8,6 +8,7 @@ from .models import (
     OrderItem, CardDetails
 )
 
+# Serializers for the models in the application
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,6 +25,7 @@ class UserSerializer(BaseUserSerializer):
         
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    # Custom serializer to include user data in the token response
     def validate(self, attrs):
         data = super().validate(attrs)
         data['user'] = UserSerializer(self.user).data
@@ -62,6 +64,7 @@ class CartItemSerializer(serializers.ModelSerializer):
         fields = ['id', 'product_name', 'product_id', 'quantity', 'total_price', 'color', 'size']
         read_only_fields = ['id', 'product_name', 'product_id', 'quantity', 'color', 'size']
         
+    # Method to calculate the total price of the cart item
     def get_total_price(self, obj):
         return obj.get_total_price()
         
@@ -75,6 +78,7 @@ class CartSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'created_at', 'updated_at', 'items', 'total_price']
         read_only_fields = ['created_at', 'updated_at']
 
+    # Method to calculate the total price of the cart
     def get_total_price(self, obj):
         return obj.get_total_price()
 
@@ -83,15 +87,18 @@ class CartSerializer(serializers.ModelSerializer):
 class OrderItemSerializer(serializers.ModelSerializer):
     # Use a SerializerMethodField to get the product name
     product_name = serializers.CharField(source='product.name', read_only=True)
+    # Use a SerializerMethodField to get the product image
+    product_image = serializers.ImageField(source='product.image', read_only=True)
     # Use a SerializerMethodField to get the product price
     total_price = serializers.SerializerMethodField()
     
     
     class Meta:
         model = OrderItem
-        fields = ['id', 'product_name', 'status', 'quantity', 'total_price', 'color', 'size']
-        read_only_fields = ['id', 'product_name', 'quantity', 'color', 'size']
+        fields = ['id', 'product_name', 'product_image', 'status', 'quantity', 'total_price', 'color', 'size']
+        read_only_fields = ['id', 'product_name', 'product_image', 'quantity', 'color', 'size']
         
+    # Method to calculate the total price of the order item
     def get_total_price(self, obj):
         return obj.get_total_price()
     
@@ -125,6 +132,7 @@ class OrderSerializer(serializers.ModelSerializer):
         ]
         
 
+    # Method to calculate the total price of the order
     def get_total_price(self, obj):
         return obj.get_total_price()
     

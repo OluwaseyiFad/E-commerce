@@ -46,21 +46,36 @@ const authSlice = createSlice({
       localStorage.setItem("userProfile", JSON.stringify(state.userProfile));
     },
 
-    // Action to log out the user and clear authentication state
-    logout: (state) => {
+    // Action to reset authentication state
+    resetAuth: (state) => {
       localStorage.removeItem("user");
       localStorage.removeItem("userProfile");
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
-      localStorage.removeItem("cart");
-      localStorage.removeItem("orders");
-      Object.assign(state, initialState);
+
+      state.access = null;
+      state.refresh = null;
+      state.user = null;
+      state.userProfile = null;
+    },
+
+    // Action to log out the user and clear authentication state
+    logout: (state) => {
+      state.access = null;
+      state.refresh = null;
+      state.user = null;
+      state.userProfile = null;
+
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      localStorage.removeItem("user");
+      localStorage.removeItem("userProfile");
     },
   },
 });
 
 // Export actions for use in components
-export const { setAuthTokens, setUser, setUserProfile, logout } =
+export const { setAuthTokens, setUser, setUserProfile, logout, resetAuth } =
   authSlice.actions;
 
 export default authSlice;

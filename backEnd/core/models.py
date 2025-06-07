@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 # Create your models here.
 
 class UserManager(BaseUserManager):
+    # Custom user manager for creating users and superusers
     def create_user(self, username, email, password=None, **extra_fields):
         if not email:
             raise ValueError('The Email field must be set')
@@ -25,6 +26,8 @@ class UserManager(BaseUserManager):
         return self.create_user(username, email, password, **extra_fields)
     
     
+# Custom user model that extends AbstractUser
+# This allows us to use email as the username field and add additional fields
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(max_length=255, unique=True)
@@ -42,7 +45,8 @@ class CustomUser(AbstractUser):
         return self.email
 
 
-
+# User profile model that extends the CustomUser model
+# This allows us to store additional user information
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
@@ -93,14 +97,6 @@ class Product(models.Model):
         return self.name
 
 
-class Review(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
-    rating = models.IntegerField()
-    comment = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True) 
-
 
 class Cart(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='cart')
@@ -134,7 +130,7 @@ class CartItem(models.Model):
         return self.quantity * self.product.price
 
 
-# In a real-world application, i would use a more secure way for payment details
+# In a real-world application, i would use a more secure way for managing payment details
 class CardDetails(models.Model):
     card_number = models.CharField(max_length=19) 
     expiry = models.CharField(max_length=5)
@@ -161,6 +157,7 @@ class Order(models.Model):
     #     return str(self.id)
 
 
+# This model represents an item in an order
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -172,25 +169,4 @@ class OrderItem(models.Model):
     def get_total_price(self):
         return self.quantity * self.product.price
 
-
-class Wishlist(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='wishlist')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    added_at = models.DateTimeField(auto_now_add=True)
-
-
-class Promotion(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    discount_percentage = models.PositiveIntegerField()
-    active = models.BooleanField(default=True)
-    valid_from = models.DateTimeField()
-    valid_to = models.DateTimeField()
-
-
-class ContactMessage(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    message = models.TextField()
-    sent_at = models.DateTimeField(auto_now_add=True)
 

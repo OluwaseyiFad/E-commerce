@@ -3,7 +3,9 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { useAppDispatch } from "@/utils/hooks";
 import React from "react";
+import baseApi from "@/services/baseApi";
 import { logout } from "@/store/slices/authSlice";
+import { resetStore } from "@/store/slices/productSlice";
 
 type Props = {
   open: boolean;
@@ -64,6 +66,8 @@ const DialogOption: React.FC<Props> = ({ open, setOpen }) => {
                   onClick={() => {
                     setOpen(false);
                     dispatch(logout());
+                    dispatch(resetStore());
+                    dispatch(baseApi.util.resetApiState());
                   }}
                   className="-m-2 block w-full p-2 text-left font-medium text-gray-900"
                 >

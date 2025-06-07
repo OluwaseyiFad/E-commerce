@@ -30,9 +30,6 @@ const OrderSummary = () => {
           Order <span className="text-cyan-600">#{productId}</span>
         </h2>
         <p className="text-sm text-gray-500">Order placed {order.placed_at}</p>
-        <a href="#" className="text-sm text-cyan-600 hover:underline">
-          View Invoice
-        </a>
       </div>
 
       {/* Order items */}
@@ -41,7 +38,10 @@ const OrderSummary = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <img
-                src="https://picsum.photos/200/300"
+                src={
+                  item.product_image ||
+                  "https://placehold.co/200x300?text=No+Image"
+                }
                 alt={item.product_name}
                 className="h-16 w-16 rounded object-cover"
               />

@@ -25,15 +25,31 @@ const productsSlice = createSlice({
     setOrders: (state, action) => {
       state.orders = action.payload;
     },
-    // Action to clear the cart and remove it from local storage
     clearCart: (state) => {
+      state.cart = [];
       localStorage.removeItem("cart");
-      Object.assign(state.cart, initialState.cart);
+    },
+    // Action to clear store state and remove them from local storage
+    resetStore: (state) => {
+      localStorage.removeItem("cart");
+      localStorage.removeItem("orders");
+      localStorage.removeItem("categories");
+      localStorage.removeItem("products");
+      state.cart = [];
+      state.orders = [];
+      state.categories = [];
+      state.products = [];
     },
   },
 });
 
 // Export actions for use in components
-export const { setProducts, setCategories, setCart, clearCart, setOrders } =
-  productsSlice.actions;
+export const {
+  setProducts,
+  setCategories,
+  setCart,
+  setOrders,
+  clearCart,
+  resetStore,
+} = productsSlice.actions;
 export default productsSlice;

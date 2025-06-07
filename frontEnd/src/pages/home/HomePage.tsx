@@ -17,7 +17,7 @@ const HomePage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    console.log("products", products);
+    // console.log("products", products);
     // Set products, categories, and user profile in the Redux store
     dispatch(setProducts(products));
     dispatch(setCategories(categories));

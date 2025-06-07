@@ -22,6 +22,7 @@ superlian.csr
 
 # Other files
 debug_txt
+resources/
 
 # VSCode settings
 .vscode/

@@ -2,7 +2,13 @@ import logo from "../../assets/logo.svg";
 import { Link } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useRegisterMutation, useLoginMutation } from "@/services/userApi";
+import { resetAuth } from "@/store/slices/authSlice";
+import { resetStore } from "@/store/slices/productSlice";
+import {
+  useRegisterMutation,
+  useLoginMutation,
+  useCreateCurrentUserProfileMutation,
+} from "@/services/userApi";
 import { setAuthTokens, setUser } from "@/store/slices/authSlice";
 import { useState } from "react";
 import { UserType } from "@/utils/types";
@@ -41,6 +47,7 @@ const Register = () => {
 
   const [register] = useRegisterMutation();
   const [login] = useLoginMutation();
+  const [createUserProfile] = useCreateCurrentUserProfileMutation();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -61,8 +68,6 @@ const Register = () => {
     formData.append("password", formState.password);
     formData.append("first_name", formState.firstName);
     formData.append("last_name", formState.lastName);
-    formData.append("billing_address", formState.billingAddress);
-    formData.append("shipping_address", formState.shippingAddress);
 
     const response = await register(formData);
 
@@ -73,12 +78,31 @@ const Register = () => {
       const loginResponse = await login(formData);
       if ("data" in loginResponse && loginResponse.data) {
         const { access, refresh, user } = loginResponse.data as LoginResponse;
+        dispatch(resetAuth()); // Clear previous user session completely
+        dispatch(resetStore()); // Reset product store
         dispatch(setAuthTokens({ access, refresh }));
         dispatch(setUser(user));
+
+        // Create user profile
+        const profileResponse = await createUserProfile({
+          user: user.id,
+          first_name: formState.firstName,
+          last_name: formState.lastName,
+          billing_address: formState.billingAddress,
+          shipping_address: formState.shippingAddress,
+          phone_number: "0000000000", // Placeholder, should be updated by user if needed
+        });
+        // console.log("Profile creation response:", profileResponse);
+        if ("data" in profileResponse) {
+          navigate("/");
+        } else {
+          // alert("Profile creation failed.");
+          setMessage("Profile creation failed.");
+        }
       }
       navigate("/");
     } else if ("error" in response && response.error) {
-      console.error("Registration error:", response.error);
+      // console.error("Registration error:", response.error);
 
       // Type guard: check if error has a 'data' field
       if (

@@ -8,6 +8,8 @@ from import_export.admin  import ImportExportModelAdmin
 
 # Register your models here.
 
+# Custom admin classes for each model
+
 class CustomUserAdmin(ImportExportModelAdmin):
     pass
 
