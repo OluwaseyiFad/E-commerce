@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,14 +25,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*1!s(ra&dullo085u+_u%+t-v&gk-@7rgorob@nu*hyhuf&42t'
+SECRET_KEY = os.getenv(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-dev-placeholder-key-change-me"
+)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-# DEBUG = True
+# DEBUG: get from env or default to True (development)
+DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in ("true", "1", "yes")
 
-ALLOWED_HOSTS = ['162.213.249.167', 'superlian.tech']
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 
 
 # Application definition
@@ -183,10 +188,6 @@ CORS_ALLOW_METHODS = [
     "PUT",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",      # for local dev
-    "http://superlian.tech",      # for production domain
-    "https://superlian.tech",      # for production domain
-]
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:5173").split(",")
 
 ######### CORS Header Settings Ends Here... ##########
