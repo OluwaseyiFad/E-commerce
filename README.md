@@ -35,7 +35,7 @@ Live website: https://superlian.tech/
 cd backEnd
 ```
 
-### Environment Variables
+#### Environment Variables
 
 Create a `.env` file in the `backEnd/` directory and set variables
 
