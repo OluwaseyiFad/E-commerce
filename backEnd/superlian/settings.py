@@ -33,8 +33,7 @@ SECRET_KEY = os.getenv(
 # DEBUG: get from env or default to True (development)
 DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in ("true", "1", "yes")
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
-
+ALLOWED_HOSTS = [host.strip() for host in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",") if host]
 
 # Application definition
 
