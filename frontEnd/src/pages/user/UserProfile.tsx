@@ -4,6 +4,7 @@ import { useAppDispatch } from "@/utils/hooks";
 import { useGetCurrrentUserProfileQuery } from "@/services/userApi";
 import { setUserProfile } from "@/store/slices/authSlice";
 import { UserProfileType } from "@/utils/types";
+import { al } from "node_modules/react-router/dist/development/route-data-CGHGzi13.d.mts";
 
 const initialState: UserProfileType = {
   id: 0,
@@ -55,6 +56,7 @@ const UserProfile = () => {
         data: profile,
       }).unwrap();
       dispatch(setUserProfile(response)); // Update the Redux store with the new profile data
+      alert("Profile updated successfully!");
     } catch (err) {
       console.error("Error updating profile:", err);
     }
