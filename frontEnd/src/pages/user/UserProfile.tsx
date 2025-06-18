@@ -4,7 +4,6 @@ import { useAppDispatch } from "@/utils/hooks";
 import { useGetCurrrentUserProfileQuery } from "@/services/userApi";
 import { setUserProfile } from "@/store/slices/authSlice";
 import { UserProfileType } from "@/utils/types";
-import { al } from "node_modules/react-router/dist/development/route-data-CGHGzi13.d.mts";
 
 const initialState: UserProfileType = {
   id: 0,
