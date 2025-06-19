@@ -1,9 +1,10 @@
 from django.contrib import admin
+from import_export.admin  import ImportExportModelAdmin
 from core.models import (
     CustomUser, UserProfile, Category, Brand, Product,
     Cart, CartItem, Order, OrderItem, CardDetails
 )
-from import_export.admin  import ImportExportModelAdmin
+from core.forms import ProductAdminForm
 
 
 # Register your models here.
@@ -23,9 +24,11 @@ class BrandAdmin(ImportExportModelAdmin):
     pass
 
 class ProductAdmin(admin.ModelAdmin):
+    form = ProductAdminForm
     list_display = ['name', 'brand', 'price', 'stock', 'category']
     search_fields = ['name', 'brand']
     list_filter = ['category']
+
 
 class CartItemAdmin(ImportExportModelAdmin):
     pass
