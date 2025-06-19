@@ -72,6 +72,7 @@ npm run dev
 
 #### Log in to the Django admin panel with the superuser credentials you created via http://127.0.0.1:8000/admin/    or <CORRECT_URL>/admin
 - Navigate to the "Categorys" section and add some categories
+- Navigate to the "Brands" section and add some brands
 - Navigate to the "Products" section and add some products
 
 #### Log in to the frontend with the superuser credentials you created: http://localhost:5174/login  or <CORRECT_URL>/login
