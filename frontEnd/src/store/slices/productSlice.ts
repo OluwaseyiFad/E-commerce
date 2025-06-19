@@ -38,11 +38,6 @@ const productsSlice = createSlice({
 });
 
 // Export actions for use in components
-export const {
-  setProducts,
-  setCart,
-  setOrders,
-  clearCart,
-  resetStore,
-} = productsSlice.actions;
+export const { setProducts, setCart, setOrders, clearCart, resetStore } =
+  productsSlice.actions;
 export default productsSlice;

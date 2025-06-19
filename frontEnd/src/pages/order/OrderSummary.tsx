@@ -39,12 +39,18 @@ const OrderSummary = () => {
             <div className="flex items-center space-x-4">
               <img
                 src={
-                  item.product_image ||
+                  item.product_image?.trim() ||
                   "https://placehold.co/200x300?text=No+Image"
                 }
-                alt={item.product_name}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.onerror = null;
+                  target.src = "https://placehold.co/200x300?text=No+Image";
+                }}
+                alt={item.product_name || "Product image"}
                 className="h-16 w-16 rounded object-cover"
               />
+
               <div>
                 <p className="font-medium">{item.product_name}</p>
                 <p className="text-sm text-gray-500">${item.total_price}</p>

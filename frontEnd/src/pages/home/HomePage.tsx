@@ -3,9 +3,7 @@ import { useAppDispatch } from "@/utils/hooks";
 import { setProducts } from "@/store/slices/productSlice";
 import { setUserProfile } from "@/store/slices/authSlice";
 import { useGetCurrrentUserProfileQuery } from "../../services/userApi";
-import {
-  useGetProductsQuery,
-} from "../../services/productApi";
+import { useGetProductsQuery } from "../../services/productApi";
 import ProductCard from "../product/ProductCard";
 import { Product } from "@/utils/types";
 

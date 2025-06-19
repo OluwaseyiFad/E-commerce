@@ -137,7 +137,7 @@ const ShoppingCart = () => {
                   >
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                       <img
-                        src="https://picsum.photos/200/300"
+                        src="https://placehold.co/200x300?text=No+Image"
                         alt={item.product_name}
                         className="h-full w-full object-cover"
                       />
