@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  categories: [],
   products: [],
   cart: [],
   orders: [],
@@ -15,9 +14,6 @@ const productsSlice = createSlice({
     // Reducers to set products, categories, cart, and orders
     setProducts: (state, action) => {
       state.products = action.payload;
-    },
-    setCategories: (state, action) => {
-      state.categories = action.payload;
     },
     setCart: (state, action) => {
       state.cart = action.payload;
@@ -33,11 +29,9 @@ const productsSlice = createSlice({
     resetStore: (state) => {
       localStorage.removeItem("cart");
       localStorage.removeItem("orders");
-      localStorage.removeItem("categories");
       localStorage.removeItem("products");
       state.cart = [];
       state.orders = [];
-      state.categories = [];
       state.products = [];
     },
   },
@@ -46,7 +40,6 @@ const productsSlice = createSlice({
 // Export actions for use in components
 export const {
   setProducts,
-  setCategories,
   setCart,
   setOrders,
   clearCart,

@@ -1,18 +1,16 @@
 import { useEffect } from "react";
 import { useAppDispatch } from "@/utils/hooks";
-import { setProducts, setCategories } from "@/store/slices/productSlice";
+import { setProducts } from "@/store/slices/productSlice";
 import { setUserProfile } from "@/store/slices/authSlice";
 import { useGetCurrrentUserProfileQuery } from "../../services/userApi";
 import {
   useGetProductsQuery,
-  useGetCategoriesQuery,
 } from "../../services/productApi";
 import ProductCard from "../product/ProductCard";
 import { Product } from "@/utils/types";
 
 const HomePage = () => {
   const { data: products = [], error, isLoading } = useGetProductsQuery({});
-  const { data: categories = [] } = useGetCategoriesQuery({});
   const { data: userProfile } = useGetCurrrentUserProfileQuery({});
   const dispatch = useAppDispatch();
 
@@ -20,9 +18,8 @@ const HomePage = () => {
     // console.log("products", products);
     // Set products, categories, and user profile in the Redux store
     dispatch(setProducts(products));
-    dispatch(setCategories(categories));
     dispatch(setUserProfile(userProfile));
-  }, [products, categories, userProfile, dispatch]);
+  }, [products, userProfile, dispatch]);
 
   if (isLoading)
     return (

@@ -3,22 +3,6 @@ import baseApi from "./baseApi";
 
 export const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // Fetch all categories
-    getCategories: builder.query({
-      query: () => ({
-        url: "/api/category",
-        method: "GET",
-        headers: getHeaderAuthorization(),
-      }),
-    }),
-    // Fetch a category by ID
-    getCategoryById: builder.query({
-      query: (id) => ({
-        url: `/api/category/${id}`,
-        method: "GET",
-        headers: getHeaderAuthorization(),
-      }),
-    }),
     // Fetch all products
     getProducts: builder.query({
       query: () => ({
@@ -120,8 +104,6 @@ export const productApi = baseApi.injectEndpoints({
 
 // Export hooks for the defined endpoints
 export const {
-  useGetCategoriesQuery,
-  useGetCategoryByIdQuery,
   useGetProductsQuery,
   useGetProductByIdQuery,
   useGetCartItemsByUserQuery,

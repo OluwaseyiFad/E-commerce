@@ -18,7 +18,6 @@ const Navbar = ({ setOpen }: NavbarProps) => {
   const { data: cart } = useGetCartItemsByUserQuery(undefined, {
     skip: !isAuthenticated,
   });
-  console.log("cart", cart);
   return (
     <nav aria-label="Top" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="border-b border-gray-200">

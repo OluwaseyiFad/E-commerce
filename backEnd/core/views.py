@@ -1,17 +1,16 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
+from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
+
 from .serializers import (
-    CustomTokenObtainPairSerializer, UserProfileSerializer, UserSerializer,
-    CategorySerializer, BrandSerializer, ProductSerializer, CartSerializer, CartItemSerializer,
+    CustomTokenObtainPairSerializer, UserProfileSerializer, UserSerializer, ProductSerializer, CartSerializer, CartItemSerializer,
     OrderSerializer, OrderItemSerializer
     )
 from .models import (
-    UserProfile, Category, Brand, Product, Cart, CartItem,
+    UserProfile, Product, Cart, CartItem,
     Order, OrderItem, CardDetails
     )
-
-from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -45,14 +44,6 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         return super().partial_update(request, *args, **kwargs)
 
     
-    
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    
-class BrandViewSet(viewsets.ModelViewSet):
-    queryset = Brand.objects.all()
-    serializer_class = BrandSerializer
     
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()

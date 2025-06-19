@@ -56,8 +56,8 @@ const UserProfile = () => {
       }).unwrap();
       dispatch(setUserProfile(response)); // Update the Redux store with the new profile data
       alert("Profile updated successfully!");
-    } catch (err) {
-      console.error("Error updating profile:", err);
+    } catch {
+      alert("Failed to update profile. Please try again.");
     }
   };
 

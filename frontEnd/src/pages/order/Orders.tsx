@@ -35,7 +35,6 @@ const Orders: React.FC = () => {
     );
 
   if (error) {
-    console.error("Error fetching order:", error);
     return (
       <div className="rounded-md border border-red-300 bg-red-100 p-4 text-red-700 shadow-sm">
         <strong>No order found!</strong>

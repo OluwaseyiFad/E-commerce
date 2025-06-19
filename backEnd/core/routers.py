@@ -1,8 +1,8 @@
 from rest_framework import routers
 
 from .views import (
-    UserProfileViewSet, CategoryViewSet, ProductViewSet, CartViewSet,
-    CartItemViewSet, OrderViewSet, OrderItemViewSet, BrandViewSet
+    UserProfileViewSet, ProductViewSet, CartViewSet,
+    CartItemViewSet, OrderViewSet, OrderItemViewSet
 )
 
 
@@ -12,8 +12,6 @@ from .views import (
 routes = routers.DefaultRouter()
 
 routes.register(r'user-profile', UserProfileViewSet, basename='user-profile')
-routes.register(r'category', CategoryViewSet, basename='category')
-routes.register(r'brand', BrandViewSet, basename='brand')
 routes.register(r'products', ProductViewSet, basename='products')
 routes.register(r'cart', CartViewSet, basename='cart')
 routes.register(r'cart-item', CartItemViewSet, basename='cart-item')

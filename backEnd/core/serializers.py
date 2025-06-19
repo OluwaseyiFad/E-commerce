@@ -4,7 +4,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.utils.formats import date_format
 
 from .models import (
-    UserProfile, Category, Brand, Product, Cart, CartItem, Order,
+    UserProfile, Product, Cart, CartItem, Order,
     OrderItem, CardDetails
 )
 
@@ -32,18 +32,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return data
     
 
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = "__all__"
-        
-class BrandSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Brand
-        fields = "__all__"
-        
 class ProductSerializer(serializers.ModelSerializer):
-    category = serializers.StringRelatedField()
     class Meta:
         model = Product
         fields = "__all__"
