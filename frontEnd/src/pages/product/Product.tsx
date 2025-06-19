@@ -52,7 +52,7 @@ const Product = () => {
 
   useEffect(() => {
     // Set the initial image source based on the product
-    if (product) {
+    if (product && product.image) {
       setImgSrc(product.image);
     }
   }, [product]);
