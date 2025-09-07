@@ -1,6 +1,6 @@
 # E-commerce Platform (School Project)
 
-An advanced e-commerce website facilitating the sale of phones and gadgets, featuring a modern full-stack architecture.
+An e-commerce website facilitating the sale of phones and gadgets, featuring a modern full-stack architecture.
 
 
 ## Features
