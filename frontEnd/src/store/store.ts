@@ -7,20 +7,35 @@ import authSlice from "./slices/authSlice";
 import productSlice from "./slices/productSlice";
 import baseApi from "../services/baseApi";
 
-const persistConfig = {
+// Root persist configuration
+const rootPersistConfig = {
   key: "root",
+  storage,
+  blacklist: [baseApi.reducerPath], // Exclude API cache from persisting (prevents stale data)
+};
+
+
+const authPersistConfig = {
+  key: "auth",
+  storage,
+  blacklist: ["access", "refresh"], // Exclude JWT tokens from persisting
+};
+
+
+const productsPersistConfig = {
+  key: "products",
   storage,
 };
 
-// use persistReducer to persist states across refreshes
-const persistedReducer = persistReducer(
-  persistConfig,
-  combineReducers({
-    auth: authSlice.reducer,
-    products: productSlice.reducer,
-    [baseApi.reducerPath]: baseApi.reducer,
-  }),
-);
+
+const rootReducer = combineReducers({
+  auth: persistReducer(authPersistConfig, authSlice.reducer),
+  products: persistReducer(productsPersistConfig, productSlice.reducer),
+  [baseApi.reducerPath]: baseApi.reducer,
+});
+
+
+const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 
 // Configure the store with the persisted reducer and middleware
 export const store = configureStore({
@@ -33,7 +48,7 @@ export const store = configureStore({
     }).concat(baseApi.middleware),
 });
 
-// Export the persistor and types for use in the application
+
 export type RootState = ReturnType<typeof persistedReducer>;
 export type AppDispatch = typeof store.dispatch;
 
