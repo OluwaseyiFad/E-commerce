@@ -1,22 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const safeParse = (key: string) => {
-  const item = localStorage.getItem(key);
-  if (item && item !== "undefined") {
-    try {
-      return JSON.parse(item);
-    } catch {
-      return null; // in case JSON is malformed
-    }
-  }
-  return null;
-};
 
+// User and userProfile will be rehydrated by redux-persist
 const initialState = {
   access: localStorage.getItem("access") || null,
   refresh: localStorage.getItem("refresh") || null,
-  user: safeParse("user"),
-  userProfile: safeParse("userProfile"),
+  user: null,
+  userProfile: null,
 };
 
 // Redux slice for authentication state management
@@ -38,18 +28,14 @@ const authSlice = createSlice({
     // Action to set user information
     setUser: (state, action) => {
       state.user = action.payload;
-      localStorage.setItem("user", JSON.stringify(state.user));
     },
     // Action to set user profile information
     setUserProfile: (state, action) => {
       state.userProfile = action.payload;
-      localStorage.setItem("userProfile", JSON.stringify(state.userProfile));
     },
 
     // Action to reset authentication state
     resetAuth: (state) => {
-      localStorage.removeItem("user");
-      localStorage.removeItem("userProfile");
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
 
@@ -68,13 +54,10 @@ const authSlice = createSlice({
 
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
-      localStorage.removeItem("user");
-      localStorage.removeItem("userProfile");
     },
   },
 });
 
-// Export actions for use in components
 export const { setAuthTokens, setUser, setUserProfile, logout, resetAuth } =
   authSlice.actions;
 

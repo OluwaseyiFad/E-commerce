@@ -7,6 +7,7 @@ const initialState = {
 };
 
 // Redux slice for managing products, categories, cart, and orders
+// All product data is persisted via redux-persist
 const productsSlice = createSlice({
   name: "products",
   initialState,
@@ -23,13 +24,9 @@ const productsSlice = createSlice({
     },
     clearCart: (state) => {
       state.cart = [];
-      localStorage.removeItem("cart");
     },
-    // Action to clear store state and remove them from local storage
+    // Action to clear store state
     resetStore: (state) => {
-      localStorage.removeItem("cart");
-      localStorage.removeItem("orders");
-      localStorage.removeItem("products");
       state.cart = [];
       state.orders = [];
       state.products = [];
@@ -37,7 +34,6 @@ const productsSlice = createSlice({
   },
 });
 
-// Export actions for use in components
 export const { setProducts, setCart, setOrders, clearCart, resetStore } =
   productsSlice.actions;
 export default productsSlice;
