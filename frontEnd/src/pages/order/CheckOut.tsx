@@ -1,122 +1,35 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "@/utils/hooks";
-import {
-  useClearCartMutation,
-  useCreateOrderMutation,
-  useGetCartItemsByUserQuery,
-} from "@/services/productApi";
-import { clearCart } from "@/store/slices/productSlice";
+import { useGetCartItemsByUserQuery } from "@/services/productApi";
+import { useCheckout } from "@/hooks/useCheckout";
 import ShippingAddressForm from "./ShippingAddressForm";
 import BillingAddressForm from "./BillingAddressForm";
+import PaymentSection from "@/components/checkout/PaymentSection";
 import CartSummary from "./CartSummary";
-import { CartItemType, UserType, UserProfileType } from "@/utils/types";
 
 const CheckOut = () => {
-  const [clearCartItems] = useClearCartMutation();
-  const [createOrder] = useCreateOrderMutation();
   const { data: cart, isLoading, error } = useGetCartItemsByUserQuery({});
-  const user = useAppSelector((state) => state.auth.user) as UserType | null;
-  const userProfile = useAppSelector(
-    (state) => state.auth.userProfile,
-  ) as UserProfileType | null;
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
-  // State for shipping and billing address options
-  const [shippingAddressOption, setShippingAddressOption] = useState("saved");
-  const [billingAddressOption, setBillingAddressOption] = useState("saved");
-  const [newShippingAddressData, setNewShippingAddressData] = useState({
-    addressLine1: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    country: "",
-  });
-  const [newBillingAddressData, setNewBillingAddressData] = useState({
-    addressLine1: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    country: "",
-  });
-  // State for payment method and card details
-  const [paymentMethod, setPaymentMethod] = useState("card");
-  const [cardDetails, setCardDetails] = useState({
-    cardNumber: "",
-    expiry: "",
-    cvv: "",
-  });
-
-  // Handlers for shipping and billing address changes
-  const handleNewShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewShippingAddressData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleNewBillingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewBillingAddressData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // Handlers for payment details changes
-  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setPaymentMethod(e.target.value);
-
-  const handleCardDetailsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCardDetails((prevDetails) => ({
-      ...prevDetails,
-      [name]: value,
-    }));
-  };
-
-  // Function to handle order placement
-  const handlePlaceOrder = async () => {
-    // Validate required fields
-    try {
-      // Use saved addresses if selected or new addresses if provided
-      const shippingAddressStr =
-        shippingAddressOption === "saved"
-          ? userProfile?.shipping_address
-          : `${newShippingAddressData.addressLine1}, ${newShippingAddressData.city}, ${newShippingAddressData.state}, ${newShippingAddressData.postalCode}, ${newShippingAddressData.country}`;
-
-      const billingAddressStr =
-        billingAddressOption === "saved"
-          ? userProfile?.billing_address
-          : `${newBillingAddressData.addressLine1}, ${newBillingAddressData.city}, ${newBillingAddressData.state}, ${newBillingAddressData.postalCode}, ${newBillingAddressData.country}`;
-
-      // Set up the order payload
-      const orderPayload = {
-        user: user?.id,
-        items: Array.isArray(cart)
-          ? []
-          : cart.items.map((item: CartItemType) => ({
-              product: item.product_id,
-              quantity: item.quantity,
-              color: item.color,
-              size: item.size,
-            })),
-        payment_method: paymentMethod,
-        shipping_address: shippingAddressStr,
-        billing_address: billingAddressStr,
-        card: cardDetails,
-      };
-      const response = await createOrder(orderPayload).unwrap();
-
-      if (response?.id) {
-        // Clear the cart in the backend
-        // and update the Redux state and local storage
-        await clearCartItems({});
-        dispatch(clearCart());
-        alert("Order placed successfully!");
-        navigate("/orders");
-      }
-    } catch (error) {
-      console.error("Order placement failed:", error);
-      alert("Failed to place order. Please try again.");
-    }
-  };
+  const {
+    // Shipping address
+    shippingAddressOption,
+    setShippingAddressOption,
+    newShippingAddressData,
+    handleNewShippingChange,
+    // Billing address
+    billingAddressOption,
+    setBillingAddressOption,
+    newBillingAddressData,
+    handleNewBillingChange,
+    // Payment
+    paymentMethod,
+    handlePaymentMethodChange,
+    cardDetails,
+    handleCardDetailsChange,
+    // Order placement
+    handlePlaceOrder,
+    // User data
+    user,
+    userProfile,
+  } = useCheckout();
 
   if (isLoading)
     return (
@@ -166,63 +79,15 @@ const CheckOut = () => {
             user={user}
           />
 
-          <div>
-            <h3 className="text-lg font-medium">Payment Method</h3>
-            <div className="mt-2 space-y-2">
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="payment"
-                  value="card"
-                  checked={paymentMethod === "card"}
-                  onChange={handlePaymentChange}
-                />
-                <span>Credit/Debit Card</span>
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="payment"
-                  value="paypal"
-                  checked={paymentMethod === "paypal"}
-                  onChange={handlePaymentChange}
-                />
-                <span>PayPal</span>
-              </label>
-            </div>
-
-            {paymentMethod === "card" && (
-              <div className="mt-4 space-y-4">
-                <input
-                  type="text"
-                  name="cardNumber"
-                  placeholder="Card Number"
-                  value={cardDetails.cardNumber}
-                  onChange={handleCardDetailsChange}
-                  className="w-full rounded-md border p-2"
-                />
-                <input
-                  type="text"
-                  name="expiry"
-                  placeholder="Expiry (MM/YY)"
-                  value={cardDetails.expiry}
-                  onChange={handleCardDetailsChange}
-                  className="w-full rounded-md border p-2"
-                />
-                <input
-                  type="password"
-                  name="cvv"
-                  placeholder="CVV"
-                  value={cardDetails.cvv}
-                  onChange={handleCardDetailsChange}
-                  className="w-full rounded-md border p-2"
-                />
-              </div>
-            )}
-          </div>
+          <PaymentSection
+            paymentMethod={paymentMethod}
+            onPaymentMethodChange={handlePaymentMethodChange}
+            cardDetails={cardDetails}
+            onCardDetailsChange={handleCardDetailsChange}
+          />
 
           <button
-            onClick={handlePlaceOrder}
+            onClick={() => handlePlaceOrder(cart)}
             className="w-full rounded-md bg-cyan-600 py-2 font-medium text-white hover:bg-cyan-700"
           >
             Place Order
