@@ -12,6 +12,7 @@ import {
 import { setAuthTokens, setUser } from "@/store/slices/authSlice";
 import { useState } from "react";
 import { UserType } from "@/utils/types";
+import { sanitizeEmail, sanitizeText } from "@/utils/sanitize";
 
 interface RegisterFormState {
   userName: string;
@@ -62,12 +63,28 @@ const Register = () => {
 
   // Handle registration logic
   const handleRegister = async () => {
+    // Sanitize all inputs before sending to API
+    const sanitizedEmail = sanitizeEmail(formState.email);
+    const sanitizedPassword = sanitizeText(formState.password);
+    const sanitizedUserName = sanitizeText(formState.userName);
+    const sanitizedFirstName = sanitizeText(formState.firstName);
+    const sanitizedLastName = sanitizeText(formState.lastName);
+    const sanitizedBillingAddress = sanitizeText(formState.billingAddress);
+    const sanitizedShippingAddress = sanitizeText(formState.shippingAddress);
+
+    // Validate sanitized email
+    if (!sanitizedEmail) {
+      setMessage("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("username", formState.userName);
-    formData.append("email", formState.email);
-    formData.append("password", formState.password);
-    formData.append("first_name", formState.firstName);
-    formData.append("last_name", formState.lastName);
+    formData.append("username", sanitizedUserName);
+    formData.append("email", sanitizedEmail);
+    formData.append("password", sanitizedPassword);
+    formData.append("first_name", sanitizedFirstName);
+    formData.append("last_name", sanitizedLastName);
 
     const response = await register(formData);
 
@@ -86,10 +103,10 @@ const Register = () => {
         // Create user profile
         const profileResponse = await createUserProfile({
           user: user.id,
-          first_name: formState.firstName,
-          last_name: formState.lastName,
-          billing_address: formState.billingAddress,
-          shipping_address: formState.shippingAddress,
+          first_name: sanitizedFirstName,
+          last_name: sanitizedLastName,
+          billing_address: sanitizedBillingAddress,
+          shipping_address: sanitizedShippingAddress,
           phone_number: "0000000000", // Placeholder, should be updated by user if needed
         });
         // console.log("Profile creation response:", profileResponse);
