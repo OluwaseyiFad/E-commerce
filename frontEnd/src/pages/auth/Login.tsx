@@ -9,11 +9,17 @@ import { useLoginMutation } from "../../services/userApi";
 import { setAuthTokens, setUser } from "../../store/slices/authSlice";
 import { UserType } from "@/utils/types";
 import { sanitizeEmail, sanitizeText } from "@/utils/sanitize";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
-interface LoginFormState {
-  email: string;
-  password: string;
-}
+// Zod validation schema
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 interface LoginResponse {
   access: string;
@@ -21,34 +27,33 @@ interface LoginResponse {
   user: UserType;
 }
 
-const initialFormState: LoginFormState = {
-  email: "",
-  password: "",
-};
-
 const Login = () => {
-  const [formState, setFormState] = useState<LoginFormState>(initialFormState);
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [postLoginData] = useLoginMutation(); // Custom hook for login mutation
+  const [postLoginData] = useLoginMutation();
 
-  // Handle login form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    handleLogin();
-    setFormState(initialFormState);
-  };
+  // React Hook Form setup with Zod validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
   // Handle login logic
-  const handleLogin = async () => {
+  const onSubmit = async (data: LoginFormData) => {
+    setLoading(true);
+    setMessage("");
+
     // Sanitize inputs before sending to API
-    const sanitizedEmail = sanitizeEmail(formState.email);
-    const sanitizedPassword = sanitizeText(formState.password);
+    const sanitizedEmail = sanitizeEmail(data.email);
+    const sanitizedPassword = sanitizeText(data.password);
 
     // Validate sanitized email
     if (!sanitizedEmail) {
@@ -69,25 +74,13 @@ const Login = () => {
       dispatch(resetStore()); // Reset product store
       dispatch(setAuthTokens({ access, refresh }));
       dispatch(setUser(user));
+      reset();
       navigate("/");
     }
     if ("error" in response && response.error) {
-      // console.error("Login error:", response.error);
       setMessage("Incorrect email or password.");
     }
     setLoading(false);
-  };
-  // Handle form input changes
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
   };
 
   return (
@@ -100,7 +93,7 @@ const Login = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label
               htmlFor="email"
@@ -111,15 +104,15 @@ const Login = () => {
             <div className="mt-2">
               <input
                 id="email"
-                name="email"
                 type="email"
-                value={formState.email}
-                required
-                onChange={handleChange}
+                {...register("email")}
                 autoComplete="email"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-600 sm:text-sm/6"
               />
             </div>
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
+            )}
           </div>
 
           <div>
@@ -142,15 +135,15 @@ const Login = () => {
             <div className="mt-2">
               <input
                 id="password"
-                name="password"
                 type="password"
-                value={formState.password}
-                required
-                onChange={handleChange}
+                {...register("password")}
                 autoComplete="current-password"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-600 sm:text-sm/6"
               />
             </div>
+            {errors.password && (
+              <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
+            )}
           </div>
 
           {message && <div className="text-sm text-red-500">{message}</div>}
