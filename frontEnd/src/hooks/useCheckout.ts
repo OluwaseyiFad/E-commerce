@@ -7,6 +7,7 @@ import {
 } from "@/services/productApi";
 import { clearCart } from "@/store/slices/productSlice";
 import { CartItemType, UserType, UserProfileType } from "@/utils/types";
+import { sanitizeText } from "@/utils/sanitize";
 
 interface CardDetails {
   cardNumber: string;
@@ -58,12 +59,14 @@ export const useCheckout = () => {
   // Event handlers for address changes
   const handleNewShippingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setNewShippingAddressData((prev) => ({ ...prev, [name]: value }));
+    const sanitizedValue = sanitizeText(value);
+    setNewShippingAddressData((prev) => ({ ...prev, [name]: sanitizedValue }));
   };
 
   const handleNewBillingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setNewBillingAddressData((prev) => ({ ...prev, [name]: value }));
+    const sanitizedValue = sanitizeText(value);
+    setNewBillingAddressData((prev) => ({ ...prev, [name]: sanitizedValue }));
   };
 
   // Event handlers for payment changes
@@ -73,9 +76,10 @@ export const useCheckout = () => {
 
   const handleCardDetailsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const sanitizedValue = sanitizeText(value);
     setCardDetails((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: sanitizedValue,
     }));
   };
 
