@@ -6,6 +6,7 @@ import storage from "redux-persist/lib/storage"; // defaults to localStorage
 import authSlice from "./slices/authSlice";
 import productSlice from "./slices/productSlice";
 import wishlistSlice from "./slices/wishlistSlice";
+import errorSlice from "./slices/errorSlice";
 import baseApi from "../services/baseApi";
 
 // Root persist configuration
@@ -38,6 +39,7 @@ const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authSlice.reducer),
   products: persistReducer(productsPersistConfig, productSlice.reducer),
   wishlist: persistReducer(wishlistPersistConfig, wishlistSlice.reducer),
+  error: errorSlice,
   [baseApi.reducerPath]: baseApi.reducer,
 });
 
