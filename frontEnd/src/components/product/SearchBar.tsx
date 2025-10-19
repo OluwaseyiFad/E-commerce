@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { sanitizeSearchQuery } from "@/utils/sanitize";
+import debounce from "lodash.debounce";
+import { SEARCH_DEBOUNCE_DELAY } from "@/utils/constants";
 
 interface SearchBarProps {
   searchQuery: string;
@@ -10,16 +12,42 @@ interface SearchBarProps {
 /**
  * SearchBar Component - Allows users to search products by name or brand
  * Sanitizes search input to prevent XSS attacks
+ * Debounces search input for better performance
  */
 const SearchBar: React.FC<SearchBarProps> = ({
   searchQuery,
   onSearchChange,
   resultCount,
 }) => {
+  // Local state for immediate UI updates
+  const [localQuery, setLocalQuery] = useState(searchQuery);
+
+  // Sync with prop changes (e.g., when parent resets search)
+  useEffect(() => {
+    setLocalQuery(searchQuery);
+  }, [searchQuery]);
+
+  // Debounced search handler
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      const sanitized = sanitizeSearchQuery(value);
+      onSearchChange(sanitized);
+    }, SEARCH_DEBOUNCE_DELAY),
+    [onSearchChange]
+  );
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
   const handleSearchInput = (value: string) => {
-    // Sanitize search query before passing to parent
-    const sanitized = sanitizeSearchQuery(value);
-    onSearchChange(sanitized);
+    // Update local state immediately for responsive UI
+    setLocalQuery(value);
+    // Debounce the actual search
+    debouncedSearch(value);
   };
 
   return (
@@ -43,7 +71,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         </div>
         <input
           type="text"
-          value={searchQuery}
+          value={localQuery}
           onChange={(e) => handleSearchInput(e.target.value)}
           placeholder="Search products by name or brand..."
           className="block w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-3 text-sm placeholder-gray-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
