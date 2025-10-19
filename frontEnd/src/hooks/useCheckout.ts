@@ -8,6 +8,7 @@ import {
 import { clearCart } from "@/store/slices/productSlice";
 import { CartItemType, UserType, UserProfileType } from "@/utils/types";
 import { sanitizeText } from "@/utils/sanitize";
+import toast from "react-hot-toast";
 
 interface CardDetails {
   cardNumber: string;
@@ -120,12 +121,12 @@ export const useCheckout = () => {
         // Clear the cart in the backend and update the Redux state
         await clearCartItems({});
         dispatch(clearCart());
-        alert("Order placed successfully!");
+        toast.success("Order placed successfully!");
         navigate("/orders");
       }
     } catch (error) {
       console.error("Order placement failed:", error);
-      alert("Failed to place order. Please try again.");
+      toast.error("Failed to place order. Please try again.");
     }
   };
 

@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router";
 import "./App.css";
+import { Toaster } from "react-hot-toast";
 
 import Product from "./pages/product/Product";
 import ShoppingCart from "./pages/order/ShoppingCart";
@@ -20,6 +21,7 @@ import Wishlist from "./pages/wishlist/Wishlist";
 function App() {
   return (
     <ErrorBoundary>
+      <Toaster position="top-right" />
       <Routes>
       {/* Public routes without MainLayout */}
       <Route path="/login" element={<Login />} />
