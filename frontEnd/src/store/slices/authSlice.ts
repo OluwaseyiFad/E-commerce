@@ -1,8 +1,26 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { UserType, UserProfileType } from "@/utils/types";
 
+/**
+ * Authentication State Interface
+ */
+interface AuthState {
+  access: string | null;
+  refresh: string | null;
+  user: UserType | null;
+  userProfile: UserProfileType | null;
+}
+
+/**
+ * Token Payload Interface
+ */
+interface TokenPayload {
+  access: string;
+  refresh: string;
+}
 
 // User and userProfile will be rehydrated by redux-persist
-const initialState = {
+const initialState: AuthState = {
   access: localStorage.getItem("access") || null,
   refresh: localStorage.getItem("refresh") || null,
   user: null,
@@ -15,7 +33,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     // Action to set authentication tokens
-    setAuthTokens: (state, action) => {
+    setAuthTokens: (state, action: PayloadAction<TokenPayload>) => {
       state.refresh = action.payload.refresh;
       state.access = action.payload.access;
       if (state.access) {
@@ -26,11 +44,11 @@ const authSlice = createSlice({
       }
     },
     // Action to set user information
-    setUser: (state, action) => {
+    setUser: (state, action: PayloadAction<UserType>) => {
       state.user = action.payload;
     },
     // Action to set user profile information
-    setUserProfile: (state, action) => {
+    setUserProfile: (state, action: PayloadAction<UserProfileType>) => {
       state.userProfile = action.payload;
     },
 

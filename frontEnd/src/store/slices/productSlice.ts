@@ -1,6 +1,16 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Product } from "@/utils/types";
 
-const initialState = {
+/**
+ * Products State Interface
+ */
+interface ProductsState {
+  products: Product[];
+  cart: any[]; // TODO: Define CartItem type
+  orders: any[]; // TODO: Define Order type
+}
+
+const initialState: ProductsState = {
   products: [],
   cart: [],
   orders: [],
@@ -13,13 +23,13 @@ const productsSlice = createSlice({
   initialState,
   reducers: {
     // Reducers to set products, categories, cart, and orders
-    setProducts: (state, action) => {
+    setProducts: (state, action: PayloadAction<Product[]>) => {
       state.products = action.payload;
     },
-    setCart: (state, action) => {
+    setCart: (state, action: PayloadAction<any[]>) => {
       state.cart = action.payload;
     },
-    setOrders: (state, action) => {
+    setOrders: (state, action: PayloadAction<any[]>) => {
       state.orders = action.payload;
     },
     clearCart: (state) => {
