@@ -1,7 +1,6 @@
 import { useGetCartItemsByUserQuery } from "@/services/productApi";
 import { useCheckout } from "@/hooks/useCheckout";
-import ShippingAddressForm from "./ShippingAddressForm";
-import BillingAddressForm from "./BillingAddressForm";
+import AddressForm from "@/components/checkout/AddressForm";
 import PaymentSection from "@/components/checkout/PaymentSection";
 import CartSummary from "./CartSummary";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -60,23 +59,21 @@ const CheckOut = () => {
         <div className="rounded-lg bg-white p-6 shadow">
           <h2 className="mb-6 text-2xl font-semibold">Checkout</h2>
 
-          <ShippingAddressForm
-            shippingAddressOption={shippingAddressOption}
-            handleShippingAddressChange={(e) =>
-              setShippingAddressOption(e.target.value)
-            }
-            newShippingAddressData={newShippingAddressData}
-            handleNewShippingChange={handleNewShippingChange}
+          <AddressForm
+            addressType="shipping"
+            addressOption={shippingAddressOption}
+            onOptionChange={(e) => setShippingAddressOption(e.target.value)}
+            newAddressData={newShippingAddressData}
+            onAddressChange={handleNewShippingChange}
             user={user}
           />
 
-          <BillingAddressForm
-            billingAddressOption={billingAddressOption}
-            handleBillingAddressChange={(e) =>
-              setBillingAddressOption(e.target.value)
-            }
-            newBillingAddressData={newBillingAddressData}
-            handleNewBillingChange={handleNewBillingChange}
+          <AddressForm
+            addressType="billing"
+            addressOption={billingAddressOption}
+            onOptionChange={(e) => setBillingAddressOption(e.target.value)}
+            newAddressData={newBillingAddressData}
+            onAddressChange={handleNewBillingChange}
             user={user}
           />
 
