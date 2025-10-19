@@ -1,4 +1,5 @@
 import React from "react";
+import { sanitizeSearchQuery } from "@/utils/sanitize";
 
 interface SearchBarProps {
   searchQuery: string;
@@ -8,12 +9,19 @@ interface SearchBarProps {
 
 /**
  * SearchBar Component - Allows users to search products by name or brand
+ * Sanitizes search input to prevent XSS attacks
  */
 const SearchBar: React.FC<SearchBarProps> = ({
   searchQuery,
   onSearchChange,
   resultCount,
 }) => {
+  const handleSearchInput = (value: string) => {
+    // Sanitize search query before passing to parent
+    const sanitized = sanitizeSearchQuery(value);
+    onSearchChange(sanitized);
+  };
+
   return (
     <div className="mb-6">
       <div className="relative">
@@ -36,7 +44,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         <input
           type="text"
           value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
+          onChange={(e) => handleSearchInput(e.target.value)}
           placeholder="Search products by name or brand..."
           className="block w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-3 text-sm placeholder-gray-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
         />

@@ -8,6 +8,7 @@ import { resetStore } from "@/store/slices/productSlice";
 import { useLoginMutation } from "../../services/userApi";
 import { setAuthTokens, setUser } from "../../store/slices/authSlice";
 import { UserType } from "@/utils/types";
+import { sanitizeEmail, sanitizeText } from "@/utils/sanitize";
 
 interface LoginFormState {
   email: string;
@@ -45,9 +46,20 @@ const Login = () => {
 
   // Handle login logic
   const handleLogin = async () => {
+    // Sanitize inputs before sending to API
+    const sanitizedEmail = sanitizeEmail(formState.email);
+    const sanitizedPassword = sanitizeText(formState.password);
+
+    // Validate sanitized email
+    if (!sanitizedEmail) {
+      setMessage("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("email", formState.email);
-    formData.append("password", formState.password);
+    formData.append("email", sanitizedEmail);
+    formData.append("password", sanitizedPassword);
     const response = await postLoginData(formData);
 
     // Check if the response is successful or not and process accordingly

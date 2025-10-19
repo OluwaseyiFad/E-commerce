@@ -4,6 +4,7 @@ import { useAppDispatch } from "@/utils/hooks";
 import { useGetCurrrentUserProfileQuery } from "@/services/userApi";
 import { setUserProfile } from "@/store/slices/authSlice";
 import { UserProfileType } from "@/utils/types";
+import { sanitizeFormData } from "@/utils/sanitize";
 
 const initialState: UserProfileType = {
   id: 0,
@@ -50,9 +51,12 @@ const UserProfile = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission behavior
     try {
+      // Sanitize all form data before sending to API
+      const sanitizedProfile = sanitizeFormData(profile);
+
       const response = await updateProfile({
-        id: profile.id,
-        data: profile,
+        id: sanitizedProfile.id,
+        data: sanitizedProfile,
       }).unwrap();
       dispatch(setUserProfile(response)); // Update the Redux store with the new profile data
       alert("Profile updated successfully!");
