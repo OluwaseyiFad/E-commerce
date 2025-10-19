@@ -4,6 +4,7 @@ import { Product } from "@/utils/types";
 import ProductFilters from "@/components/filters/ProductFilters";
 import ProductGrid from "@/components/product/ProductGrid";
 import ProductPagination from "@/components/product/ProductPagination";
+import SearchBar from "@/components/product/SearchBar";
 import { useProductFilters } from "@/hooks/useProductFilters";
 
 const COLOR_OPTIONS = ["black", "white", "silver", "gold", "blue"];
@@ -21,6 +22,8 @@ const Products = () => {
   // Use custom hook for filter logic
   const {
     filteredProducts,
+    searchQuery,
+    setSearchQuery,
     selectedCategory,
     setSelectedCategory,
     selectedColors,
@@ -47,6 +50,11 @@ const Products = () => {
 
   const handleStorageToggle = (storage: string) => {
     handleStorageChange(storage);
+    setCurrentPage(0);
+  };
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
     setCurrentPage(0);
   };
 
@@ -77,6 +85,11 @@ const Products = () => {
 
             {/* Product Grid and Pagination */}
             <div className="lg:col-span-3">
+              <SearchBar
+                searchQuery={searchQuery}
+                onSearchChange={handleSearchChange}
+                resultCount={filteredProducts.length}
+              />
               <ProductGrid products={paginatedProducts} />
               <ProductPagination
                 pageCount={pageCount}

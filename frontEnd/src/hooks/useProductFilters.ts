@@ -33,11 +33,18 @@ export const useProductFilters = (
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedColors, setSelectedColors] = useState<string[]>([...colorOptions]);
   const [selectedStorages, setSelectedStorages] = useState<string[]>([...storageOptions]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
 
   // Filter products whenever filter criteria change
   useEffect(() => {
     const filtered = products.filter((product: Product) => {
+      // Search matching by name or brand
+      const matchSearch = searchQuery
+        ? product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          String(product.brand).toLowerCase().includes(searchQuery.toLowerCase())
+        : true;
+
       // Category matching with grouping
       const matchCategory = selectedCategory
         ? selectedCategory === "Accessories"
@@ -67,11 +74,11 @@ export const useProductFilters = (
           ? true
           : selectedStorages.some((size) => availableStorages.includes(size));
 
-      return matchCategory && matchColor && matchStorage;
+      return matchSearch && matchCategory && matchColor && matchStorage;
     });
 
     setFilteredProducts(filtered);
-  }, [selectedCategory, selectedColors, selectedStorages, products]);
+  }, [searchQuery, selectedCategory, selectedColors, selectedStorages, products]);
 
   // Toggle functions
   const handleColorChange = (color: string) => {
@@ -88,6 +95,8 @@ export const useProductFilters = (
 
   return {
     filteredProducts,
+    searchQuery,
+    setSearchQuery,
     selectedCategory,
     setSelectedCategory,
     selectedColors,
