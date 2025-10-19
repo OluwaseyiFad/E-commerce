@@ -8,6 +8,7 @@ import Order from "./pages/order/Orders";
 import OrderSummary from "./pages/order/OrderSummary";
 import MainLayout from "./components/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 import Products from "./pages/product/Products";
 import HomePage from "./pages/home/HomePage";
@@ -18,7 +19,8 @@ import Wishlist from "./pages/wishlist/Wishlist";
 
 function App() {
   return (
-    <Routes>
+    <ErrorBoundary>
+      <Routes>
       {/* Public routes without MainLayout */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -81,6 +83,7 @@ function App() {
         />
       </Route>
     </Routes>
+    </ErrorBoundary>
   );
 }
 
