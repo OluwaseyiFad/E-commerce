@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { Product } from "@/utils/types";
 
 // Category groupings
@@ -34,11 +34,10 @@ export const useProductFilters = (
   const [selectedColors, setSelectedColors] = useState<string[]>([...colorOptions]);
   const [selectedStorages, setSelectedStorages] = useState<string[]>([...storageOptions]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
 
-  // Filter products whenever filter criteria change
-  useEffect(() => {
-    const filtered = products.filter((product: Product) => {
+  // Memoize filtered products to avoid recalculating on every render
+  const filteredProducts = useMemo(() => {
+    return products.filter((product: Product) => {
       // Search matching by name or brand
       const matchSearch = searchQuery
         ? product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -76,8 +75,6 @@ export const useProductFilters = (
 
       return matchSearch && matchCategory && matchColor && matchStorage;
     });
-
-    setFilteredProducts(filtered);
   }, [searchQuery, selectedCategory, selectedColors, selectedStorages, products]);
 
   // Toggle functions
