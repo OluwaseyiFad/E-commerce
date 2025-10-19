@@ -9,6 +9,7 @@ import { clearCart } from "@/store/slices/productSlice";
 import { CartItemType, UserType, UserProfileType } from "@/utils/types";
 import { sanitizeText } from "@/utils/sanitize";
 import toast from "react-hot-toast";
+import { getOperationError } from "@/utils/apiErrors";
 
 interface CardDetails {
   cardNumber: string;
@@ -124,9 +125,10 @@ export const useCheckout = () => {
         toast.success("Order placed successfully!");
         navigate("/orders");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Order placement failed:", error);
-      toast.error("Failed to place order. Please try again.");
+      const errorMessage = getOperationError("place-order", error);
+      toast.error(errorMessage);
     }
   };
 
