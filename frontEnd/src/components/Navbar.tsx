@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { useAppDispatch } from "@/utils/hooks";
-import { Bars3Icon, ShoppingBagIcon } from "@heroicons/react/24/outline";
+import { useAppDispatch, useAppSelector } from "@/utils/hooks";
+import { Bars3Icon, ShoppingBagIcon, HeartIcon } from "@heroicons/react/24/outline";
 import logo from "../assets/logo.svg";
 import baseApi from "@/services/baseApi";
 import { logout } from "../store/slices/authSlice";
@@ -15,6 +15,7 @@ interface NavbarProps {
 const Navbar = ({ setOpen }: NavbarProps) => {
   const isAuthenticated = !!localStorage.getItem("access");
   const dispatch = useAppDispatch();
+  const wishlistItems = useAppSelector((state) => state.wishlist.items);
   const { data: cart } = useGetCartItemsByUserQuery(undefined, {
     skip: !isAuthenticated,
   });
@@ -76,6 +77,23 @@ const Navbar = ({ setOpen }: NavbarProps) => {
                 </Link>
               </div>
             )}
+
+            {/* Wishlist */}
+            <div className="ml-4 flow-root lg:ml-6">
+              <Link
+                to="/wishlist"
+                className="group -m-2 flex items-center p-2"
+              >
+                <HeartIcon
+                  aria-hidden="true"
+                  className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
+                />
+                <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
+                  {wishlistItems.length}
+                </span>
+                <span className="sr-only">items in wishlist</span>
+              </Link>
+            </div>
 
             {/* Cart */}
             <div className="ml-4 flow-root lg:ml-6">

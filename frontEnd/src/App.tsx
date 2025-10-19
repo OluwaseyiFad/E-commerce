@@ -14,6 +14,7 @@ import HomePage from "./pages/home/HomePage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import UserProfile from "./pages/user/UserProfile";
+import Wishlist from "./pages/wishlist/Wishlist";
 
 function App() {
   return (
@@ -31,6 +32,8 @@ function App() {
           <Route index element={<Products />} />
           <Route path=":id" element={<Product />} />
         </Route>
+
+        <Route path="wishlist" element={<Wishlist />} />
 
         {/* Protected routes that requires authentication */}
         <Route
