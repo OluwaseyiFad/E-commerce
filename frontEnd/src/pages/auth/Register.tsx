@@ -13,16 +13,22 @@ import { setAuthTokens, setUser } from "@/store/slices/authSlice";
 import { useState } from "react";
 import { UserType } from "@/utils/types";
 import { sanitizeEmail, sanitizeText } from "@/utils/sanitize";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
-interface RegisterFormState {
-  userName: string;
-  firstName: string;
-  lastName: string;
-  billingAddress: string;
-  shippingAddress: string;
-  email: string;
-  password: string;
-}
+// Zod validation schema
+const registerSchema = z.object({
+  userName: z.string().min(3, "Username must be at least 3 characters"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  billingAddress: z.string().min(5, "Billing address must be at least 5 characters"),
+  shippingAddress: z.string().min(5, "Shipping address must be at least 5 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type RegisterFormData = z.infer<typeof registerSchema>;
 
 interface LoginResponse {
   access: string;
@@ -30,47 +36,40 @@ interface LoginResponse {
   user: UserType;
 }
 
-const initialFormState: RegisterFormState = {
-  email: "",
-  password: "",
-  userName: "",
-  firstName: "",
-  lastName: "",
-  billingAddress: "",
-  shippingAddress: "",
-};
-
 const Register = () => {
-  const [formState, setFormState] =
-    useState<RegisterFormState>(initialFormState);
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
-  const [register] = useRegisterMutation();
+  const [registerUser] = useRegisterMutation();
   const [login] = useLoginMutation();
   const [createUserProfile] = useCreateCurrentUserProfileMutation();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Handle regsiter form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    await handleRegister();
-    setLoading(false);
-  };
+  // React Hook Form setup with Zod validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+  });
 
   // Handle registration logic
-  const handleRegister = async () => {
+  const onSubmit = async (data: RegisterFormData) => {
+    setLoading(true);
+    setMessage("");
+
     // Sanitize all inputs before sending to API
-    const sanitizedEmail = sanitizeEmail(formState.email);
-    const sanitizedPassword = sanitizeText(formState.password);
-    const sanitizedUserName = sanitizeText(formState.userName);
-    const sanitizedFirstName = sanitizeText(formState.firstName);
-    const sanitizedLastName = sanitizeText(formState.lastName);
-    const sanitizedBillingAddress = sanitizeText(formState.billingAddress);
-    const sanitizedShippingAddress = sanitizeText(formState.shippingAddress);
+    const sanitizedEmail = sanitizeEmail(data.email);
+    const sanitizedPassword = sanitizeText(data.password);
+    const sanitizedUserName = sanitizeText(data.userName);
+    const sanitizedFirstName = sanitizeText(data.firstName);
+    const sanitizedLastName = sanitizeText(data.lastName);
+    const sanitizedBillingAddress = sanitizeText(data.billingAddress);
+    const sanitizedShippingAddress = sanitizeText(data.shippingAddress);
 
     // Validate sanitized email
     if (!sanitizedEmail) {
@@ -86,11 +85,11 @@ const Register = () => {
     formData.append("first_name", sanitizedFirstName);
     formData.append("last_name", sanitizedLastName);
 
-    const response = await register(formData);
+    const response = await registerUser(formData);
 
     if ("data" in response && response.data) {
       // Success! Clear form and login
-      setFormState(initialFormState);
+      reset();
 
       const loginResponse = await login(formData);
       if ("data" in loginResponse && loginResponse.data) {
@@ -109,18 +108,14 @@ const Register = () => {
           shipping_address: sanitizedShippingAddress,
           phone_number: "0000000000", // Placeholder, should be updated by user if needed
         });
-        // console.log("Profile creation response:", profileResponse);
+
         if ("data" in profileResponse) {
           navigate("/");
         } else {
-          // alert("Profile creation failed.");
           setMessage("Profile creation failed.");
         }
       }
-      navigate("/");
     } else if ("error" in response && response.error) {
-      // console.error("Registration error:", response.error);
-
       // Type guard: check if error has a 'data' field
       if (
         typeof response.error === "object" &&
@@ -143,22 +138,9 @@ const Register = () => {
       } else {
         setMessage("Registration failed. Please try again.");
       }
-
-      setLoading(false);
     }
-  };
 
-  // Handle form input changes
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
+    setLoading(false);
   };
 
   return (
@@ -171,7 +153,7 @@ const Register = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label
               htmlFor="userName"
@@ -182,15 +164,15 @@ const Register = () => {
             <div className="mt-2">
               <input
                 id="userName"
-                name="userName"
                 type="text"
-                value={formState.userName}
-                onChange={handleChange}
-                required
-                autoComplete="given-name"
+                {...register("userName")}
+                autoComplete="username"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-600 sm:text-sm/6"
               />
             </div>
+            {errors.userName && (
+              <p className="mt-1 text-sm text-red-500">{errors.userName.message}</p>
+            )}
           </div>
           <div>
             <label
@@ -202,15 +184,15 @@ const Register = () => {
             <div className="mt-2">
               <input
                 id="firstName"
-                name="firstName"
                 type="text"
-                value={formState.firstName}
-                onChange={handleChange}
-                required
+                {...register("firstName")}
                 autoComplete="given-name"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-600 sm:text-sm/6"
               />
             </div>
+            {errors.firstName && (
+              <p className="mt-1 text-sm text-red-500">{errors.firstName.message}</p>
+            )}
           </div>
           <div>
             <label
@@ -222,15 +204,15 @@ const Register = () => {
             <div className="mt-2">
               <input
                 id="lastName"
-                name="lastName"
                 type="text"
-                value={formState.lastName}
-                onChange={handleChange}
-                required
+                {...register("lastName")}
                 autoComplete="family-name"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-600 sm:text-sm/6"
               />
             </div>
+            {errors.lastName && (
+              <p className="mt-1 text-sm text-red-500">{errors.lastName.message}</p>
+            )}
           </div>
           <div>
             <label
@@ -242,15 +224,15 @@ const Register = () => {
             <div className="mt-2">
               <input
                 id="billingAddress"
-                name="billingAddress"
                 type="text"
-                value={formState.billingAddress}
-                onChange={handleChange}
-                required
+                {...register("billingAddress")}
                 autoComplete="address-line1"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-600 sm:text-sm/6"
               />
             </div>
+            {errors.billingAddress && (
+              <p className="mt-1 text-sm text-red-500">{errors.billingAddress.message}</p>
+            )}
           </div>
           <div>
             <label
@@ -262,15 +244,15 @@ const Register = () => {
             <div className="mt-2">
               <input
                 id="shippingAddress"
-                name="shippingAddress"
                 type="text"
-                value={formState.shippingAddress}
-                onChange={handleChange}
-                required
+                {...register("shippingAddress")}
                 autoComplete="address-line2"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-600 sm:text-sm/6"
               />
             </div>
+            {errors.shippingAddress && (
+              <p className="mt-1 text-sm text-red-500">{errors.shippingAddress.message}</p>
+            )}
           </div>
           <div>
             <label
@@ -282,38 +264,36 @@ const Register = () => {
             <div className="mt-2">
               <input
                 id="email"
-                name="email"
                 type="email"
-                value={formState.email}
-                onChange={handleChange}
-                required
+                {...register("email")}
                 autoComplete="email"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-600 sm:text-sm/6"
               />
             </div>
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
+            )}
           </div>
 
           <div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                Password
-              </label>
-            </div>
+            <label
+              htmlFor="password"
+              className="block text-sm/6 font-medium text-gray-900"
+            >
+              Password
+            </label>
             <div className="mt-2">
               <input
                 id="password"
-                name="password"
                 type="password"
-                value={formState.password}
-                onChange={handleChange}
-                required
-                autoComplete="current-password"
+                {...register("password")}
+                autoComplete="new-password"
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-600 sm:text-sm/6"
               />
             </div>
+            {errors.password && (
+              <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
+            )}
           </div>
           {message && <div className="text-sm text-red-500">{message}</div>}
           <div>
