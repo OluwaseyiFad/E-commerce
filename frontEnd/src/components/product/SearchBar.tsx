@@ -52,8 +52,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <div className="mb-6">
+      <label htmlFor="product-search" className="sr-only">
+        Search products
+      </label>
       <div className="relative">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3" aria-hidden="true">
           <svg
             className="h-5 w-5 text-gray-400"
             fill="none"
@@ -70,15 +73,19 @@ const SearchBar: React.FC<SearchBarProps> = ({
           </svg>
         </div>
         <input
-          type="text"
+          id="product-search"
+          type="search"
+          role="searchbox"
           value={localQuery}
           onChange={(e) => handleSearchInput(e.target.value)}
           placeholder="Search products by name or brand..."
+          aria-label="Search products by name or brand"
+          aria-describedby={searchQuery ? "search-results" : undefined}
           className="block w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-3 text-sm placeholder-gray-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
         />
       </div>
       {searchQuery && (
-        <p className="mt-2 text-sm text-gray-600">
+        <p id="search-results" className="mt-2 text-sm text-gray-600" role="status" aria-live="polite">
           Found {resultCount} {resultCount === 1 ? "product" : "products"} matching "{searchQuery}"
         </p>
       )}

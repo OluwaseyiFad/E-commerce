@@ -26,10 +26,17 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
   const wishlistItems = useAppSelector((state) => state.wishlist.items);
   const isInWishlist = wishlistItems.includes(productId);
 
-  const handleToggle = (e: React.MouseEvent) => {
+  const handleToggle = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault(); // Prevent navigation if button is inside a link
     e.stopPropagation(); // Prevent event bubbling
     dispatch(toggleWishlist(productId));
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Activate on Enter or Space
+    if (e.key === "Enter" || e.key === " ") {
+      handleToggle(e);
+    }
   };
 
   const sizeClasses = {
@@ -43,6 +50,7 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
   return (
     <button
       onClick={handleToggle}
+      onKeyDown={handleKeyDown}
       className={`group rounded-full p-2 transition-colors hover:bg-gray-100 ${className}`}
       aria-label={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
       title={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
