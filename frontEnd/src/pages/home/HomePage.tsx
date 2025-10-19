@@ -6,6 +6,7 @@ import { useGetCurrrentUserProfileQuery } from "../../services/userApi";
 import { useGetProductsQuery } from "../../services/productApi";
 import ProductCard from "../product/ProductCard";
 import { Product } from "@/utils/types";
+import ProductGridSkeleton from "@/components/skeletons/ProductGridSkeleton";
 
 const HomePage = () => {
   const { data: products = [], error, isLoading } = useGetProductsQuery({});
@@ -19,12 +20,41 @@ const HomePage = () => {
     dispatch(setUserProfile(userProfile));
   }, [products, userProfile, dispatch]);
 
-  if (isLoading)
+  if (isLoading) {
     return (
-      <div className="rounded-md border border-gray-300 bg-gray-100 p-4 text-gray-700 shadow-sm">
-        Loading...
+      <div className="min-h-screen bg-gray-50">
+        {/* Hero Section */}
+        <section className="bg-cyan-900 py-20 text-white">
+          <div className="mx-auto max-w-7xl px-4 text-center">
+            <h1 className="text-4xl leading-tight font-bold">
+              Discover Your Perfect Device
+            </h1>
+            <p className="mt-4 text-lg">
+              Explore a wide range of phones, iPads, tablets, and accessories! all
+              at unbeatable prices.
+            </p>
+          </div>
+        </section>
+
+        {/* Featured Products Skeleton */}
+        <section id="shop-now" className="py-20">
+          <div className="mx-auto max-w-7xl px-4">
+            <div className="flex items-center justify-between">
+              <div className="text-center md:text-left">
+                <h2 className="text-3xl font-semibold">Featured Products</h2>
+                <p className="mt-2 text-lg text-gray-600">
+                  Loading products...
+                </p>
+              </div>
+            </div>
+            <div className="mt-12">
+              <ProductGridSkeleton count={8} />
+            </div>
+          </div>
+        </section>
       </div>
     );
+  }
   if (error) {
     return (
       <div className="rounded-md border border-red-300 bg-red-100 p-4 text-red-700 shadow-sm">
