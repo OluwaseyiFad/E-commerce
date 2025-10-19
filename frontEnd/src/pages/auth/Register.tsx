@@ -16,16 +16,17 @@ import { sanitizeEmail, sanitizeText } from "@/utils/sanitize";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { VALIDATION, DEFAULT_PHONE_NUMBER } from "@/utils/constants";
 
 // Zod validation schema
 const registerSchema = z.object({
-  userName: z.string().min(3, "Username must be at least 3 characters"),
+  userName: z.string().min(VALIDATION.USERNAME_MIN_LENGTH, `Username must be at least ${VALIDATION.USERNAME_MIN_LENGTH} characters`),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
-  billingAddress: z.string().min(5, "Billing address must be at least 5 characters"),
-  shippingAddress: z.string().min(5, "Shipping address must be at least 5 characters"),
+  billingAddress: z.string().min(VALIDATION.ADDRESS_MIN_LENGTH, `Billing address must be at least ${VALIDATION.ADDRESS_MIN_LENGTH} characters`),
+  shippingAddress: z.string().min(VALIDATION.ADDRESS_MIN_LENGTH, `Shipping address must be at least ${VALIDATION.ADDRESS_MIN_LENGTH} characters`),
   email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(VALIDATION.PASSWORD_MIN_LENGTH, `Password must be at least ${VALIDATION.PASSWORD_MIN_LENGTH} characters`),
 });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -106,7 +107,7 @@ const Register = () => {
           last_name: sanitizedLastName,
           billing_address: sanitizedBillingAddress,
           shipping_address: sanitizedShippingAddress,
-          phone_number: "0000000000", // Placeholder, should be updated by user if needed
+          phone_number: DEFAULT_PHONE_NUMBER, // Placeholder, should be updated by user if needed
         });
 
         if ("data" in profileResponse) {
