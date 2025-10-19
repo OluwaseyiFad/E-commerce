@@ -4,6 +4,7 @@ import ShippingAddressForm from "./ShippingAddressForm";
 import BillingAddressForm from "./BillingAddressForm";
 import PaymentSection from "@/components/checkout/PaymentSection";
 import CartSummary from "./CartSummary";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const CheckOut = () => {
   const { data: cart, isLoading, error } = useGetCartItemsByUserQuery({});
@@ -33,8 +34,8 @@ const CheckOut = () => {
 
   if (isLoading)
     return (
-      <div className="rounded-md border border-gray-300 bg-gray-100 p-4 text-gray-700 shadow-sm">
-        Loading...
+      <div className="flex min-h-screen items-center justify-center">
+        <LoadingSpinner size="lg" message="Loading checkout..." />
       </div>
     );
   if (error) {
