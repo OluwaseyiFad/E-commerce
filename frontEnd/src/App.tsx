@@ -1,28 +1,32 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
 
-import Product from "./pages/product/Product";
-import ShoppingCart from "./pages/order/ShoppingCart";
-import CheckOut from "./pages/order/CheckOut";
-import Order from "./pages/order/Orders";
-import OrderSummary from "./pages/order/OrderSummary";
 import MainLayout from "./components/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorBoundary from "./components/ErrorBoundary";
+import LoadingSpinner from "./components/LoadingSpinner";
 
-import Products from "./pages/product/Products";
-import HomePage from "./pages/home/HomePage";
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
-import UserProfile from "./pages/user/UserProfile";
-import Wishlist from "./pages/wishlist/Wishlist";
+// Lazy load all page components for code splitting
+const Product = lazy(() => import("./pages/product/Product"));
+const Products = lazy(() => import("./pages/product/Products"));
+const HomePage = lazy(() => import("./pages/home/HomePage"));
+const Login = lazy(() => import("./pages/auth/Login"));
+const Register = lazy(() => import("./pages/auth/Register"));
+const ShoppingCart = lazy(() => import("./pages/order/ShoppingCart"));
+const CheckOut = lazy(() => import("./pages/order/CheckOut"));
+const Order = lazy(() => import("./pages/order/Orders"));
+const OrderSummary = lazy(() => import("./pages/order/OrderSummary"));
+const UserProfile = lazy(() => import("./pages/user/UserProfile"));
+const Wishlist = lazy(() => import("./pages/wishlist/Wishlist"));
 
 function App() {
   return (
     <ErrorBoundary>
       <Toaster position="top-right" />
-      <Routes>
+      <Suspense fallback={<LoadingSpinner size="lg" fullScreen message="Loading..." />}>
+        <Routes>
       {/* Public routes without MainLayout */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -85,6 +89,7 @@ function App() {
         />
       </Route>
     </Routes>
+      </Suspense>
     </ErrorBoundary>
   );
 }
